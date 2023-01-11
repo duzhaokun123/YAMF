@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YAMF</string>
+    <string name="details">详情</string>
+    <string name="unknown_error">未知错误</string>
+    <string name="activated">已激活</string>
+    <string name="need_reboot">需要重启</string>
+    <string name="not_activated">未激活</string>
+    <string name="need_reboot_message">已有的窗口不会出现问题\n但新建窗口将导致系统崩溃</string>
+    <string name="reboot">重启</string>
+</resources>

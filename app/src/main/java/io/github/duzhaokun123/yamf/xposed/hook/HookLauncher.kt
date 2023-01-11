@@ -22,19 +22,25 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.xposed.OpenInYAMFBroadcastReceiver
+import io.github.duzhaokun123.yamf.xposed.log
 
 
 class HookLauncher : IXposedHookLoadPackage {
+    companion object {
+        const val TAG = "YAMF_HookLauncher"
+    }
 
     private var mUserContext: Context? = null
 
-    override fun handleLoadPackage(param: XC_LoadPackage.LoadPackageParam) {
-        hookLauncherAfterQ(param.classLoader)
+    override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
+        if (runCatching{ lpparam.classLoader.loadClass("com.android.quickstep.TaskOverlayFactory") }.isFailure) return
+        log(TAG, "hooking ${lpparam.packageName}")
+        hookLauncherAfterQ(lpparam.classLoader)
     }
 
     @SuppressLint("PrivateApi")
     private fun hookLauncherAfterQ(classLoader: ClassLoader) {
-        if (runCatching{ classLoader.loadClass("com.android.quickstep.TaskOverlayFactory") }.isFailure) return
+
         XposedBridge.hookAllMethods(XposedHelpers.findClass("com.android.quickstep.TaskOverlayFactory", classLoader), "getEnabledShortcuts", object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
                 val taskView = param.args[0] as View
@@ -48,12 +54,12 @@ class HookLauncher : IXposedHookLoadPackage {
 
                 val class_RemoteActionShortcut = XposedHelpers.findClass("com.android.launcher3.popup.RemoteActionShortcut", classLoader)
                 val intent = Intent(OpenInYAMFBroadcastReceiver.ACTION_OPEN_IN_YAMF).apply {
-//                    setPackage("android")
+                    setPackage("android")
                     putExtra(OpenInYAMFBroadcastReceiver.EXTRA_TASK_ID, taskId)
                 }
                 val action = RemoteAction(
-                    Icon.createWithResource(getUserContext(), R.drawable.ic_android_black_24dp),
-                    "open",
+                    Icon.createWithResource(getUserContext(), R.drawable.ic_picture_in_picture_alt_24),
+                    "Open with YAMF",
                     "",
                     PendingIntent.getBroadcast(
                         AndroidAppHelper.currentApplication(),

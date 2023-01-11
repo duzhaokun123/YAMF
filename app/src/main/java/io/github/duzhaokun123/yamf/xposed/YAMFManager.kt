@@ -5,12 +5,15 @@ import android.content.IntentFilter
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.os.Process
+import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
+import io.github.duzhaokun123.yamf.model.Config
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
-import io.github.duzhaokun123.yamf.utils.TipUtils
-import io.github.duzhaokun123.yamf.utils.runMain
+import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
+import io.github.duzhaokun123.yamf.utils.gson
 import io.github.qauxv.ui.CommonContextWrapper
+import java.io.File
 
 
 class YAMFManager : IYAMFManager.Stub() {
@@ -19,13 +22,25 @@ class YAMFManager : IYAMFManager.Stub() {
         var instance: YAMFManager? = null
         lateinit var systemContext: Context
         val windowList = mutableListOf<Int>()
+        lateinit var config: Config
+        val configFile = File("/data/system/yamf.json")
 
         fun systemReady() {
             systemContext.registerReceiver(
                 OpenInYAMFBroadcastReceiver, IntentFilter(
                     OpenInYAMFBroadcastReceiver.ACTION_OPEN_IN_YAMF))
-            TipUtils.init(systemContext, "[YAMF] ")
+            TipUtil.init(systemContext, "[YAMF] ")
             Instances.init(systemContext)
+            if (configFile.exists().not()) {
+                configFile.parentFile!!.mkdirs()
+                configFile.createNewFile()
+            }
+            runCatching {
+                config = gson.fromJson(configFile.readText(), Config::class.java)
+            }.onFailure {
+                config = Config()
+            }
+            log(TAG, "config: $config")
         }
 
         fun addWindow(id: Int) {
@@ -76,6 +91,13 @@ class YAMFManager : IYAMFManager.Stub() {
         runMain {
             createWindowLocal(densityDpi, flags) {
                 r = it
+                if (taskId == 0) return@createWindowLocal
+                runCatching {
+                    Instances.activityTaskManager.moveRootTaskToDisplay(taskId, it)
+                }.onFailure {  t ->
+                    if (t is Error) throw t
+                    TipUtil.showToast("can't move task $taskId")
+                }
             }
         }
         while (r == 0) {
@@ -84,122 +106,18 @@ class YAMFManager : IYAMFManager.Stub() {
         return r
     }
 
-//    override fun createVirtualDisplay(
-//        name: String,
-//        width: Int,
-//        height: Int,
-//        densityDpi: Int,
-//        surface: Surface?,
-//        flags: Int
-//    ): Int {
-//        var displayId = 0
-//        runMain {
-//            val virtualDisplay = displayManager.createVirtualDisplay(name, width, height, densityDpi, surface, flags)
-//            Log.d(TAG, "createVirtualDisplay: displayId: ${virtualDisplay.display.displayId}")
-//            displayMap[virtualDisplay.display.displayId] = virtualDisplay
-//            displayId = virtualDisplay.display.displayId
-//        }
-//        while (displayId == 0) {
-//            Thread.yield()
-//        }
-//        return displayId
-//    }
-//
-//    override fun resizeVirtualDisplay(id: Int, width: Int, height: Int, densityDpi: Int): Boolean {
-//        var r: Boolean? = null
-//        runMain {
-//            val virtualDisplay = displayMap[id]
-//            r = if (virtualDisplay == null)
-//                false
-//            else {
-//                virtualDisplay.resize(width, height, densityDpi)
-//                true
-//            }
-//        }
-//        while (r == null) {
-//            Thread.yield()
-//        }
-//        return r!!
-//    }
-//
-//    override fun setVirtualDisplaySurface(id: Int, surface: Surface?): Boolean {
-//        var r: Boolean? = null
-//        runMain {
-//            val virtualDisplay = displayMap[id]
-//            r = if (virtualDisplay == null)
-//                false
-//            else {
-//                virtualDisplay.surface = surface
-//                true
-//            }
-//        }
-//        while (r == null) {
-//            Thread.yield()
-//        }
-//        return r!!
-//    }
-//
-//    override fun releaseVirtualDisplay(id: Int): Boolean {
-//        var r: Boolean? = null
-//        runMain {
-//            val virtualDisplay = displayMap[id]
-//            r = if (virtualDisplay == null)
-//                false
-//            else {
-//                virtualDisplay.release()
-//                displayMap.remove(id)
-//                true
-//            }
-//        }
-//        while (r == null) {
-//            Thread.yield()
-//        }
-//        return r!!
-//    }
-//
-//    override fun releaseAll(): Boolean {
-//        runMain {
-//            displayMap.values.forEach {
-//                it.release()
-//            }
-//            displayMap.clear()
-//        }
-//        return true
-//    }
-//
-//    override fun getVirtualDisplayInfoS(id: Int): String {
-//        return displayMap[id]?.display.toString()
-//    }
-//
-//    override fun getVirtualDisplayIds(): IntArray {
-//        return displayMap.keys.toIntArray()
-//    }
+    override fun getBuildTime(): Long {
+        return BuildConfig.BUILD_TIME
+    }
 
-//    override fun showOverlay() {
-//        runMain {
-//            wc.classLoader.loadClass("androidx.cardview.widget.CardView")
-//        }
-//    }
-//
-//    override fun showOverlay() {
-//        runMain {
-//            val wm = systemContext.getSystemService(WindowManager::class.java)
-//            val params = WindowManager.LayoutParams(
-//                WindowManager.LayoutParams.WRAP_CONTENT,
-//                WindowManager.LayoutParams.WRAP_CONTENT,
-//                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-//                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
-//                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-//                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-//                        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED or
-//                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
-//                PixelFormat.TRANSLUCENT
-//            ).apply {
-//                gravity = Gravity.START or Gravity.TOP
-//                x = 0
-//                y = 0
-//            }
-//            wm.addView(LayoutInflater.from(wc).inflate(R.layout.window_app, null), params)
-//        }
-//    }
+    override fun getConfigJson(): String {
+        return gson.toJson(config)
+    }
+
+    override fun updateConfig(newConfig: String) {
+        config = gson.fromJson(newConfig, Config::class.java)
+        runMain {
+            configFile.writeText(newConfig)
+        }
+    }
 }

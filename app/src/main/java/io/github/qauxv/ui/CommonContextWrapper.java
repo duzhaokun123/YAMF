@@ -153,7 +153,7 @@ public class CommonContextWrapper extends ContextThemeWrapper {
         if (isAppCompatContext(base)) {
             return base;
         }
-        return new CommonContextWrapper(base, R.style.Theme_YAMF,
+        return new CommonContextWrapper(base, R.style.Theme_YAMF_Window,
                 recreateNighModeConfig(base, base.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK));
     }
 

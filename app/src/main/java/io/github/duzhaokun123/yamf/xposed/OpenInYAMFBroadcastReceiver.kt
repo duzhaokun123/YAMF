@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.hardware.display.DisplayManager
 //import io.github.duzhaokun123.yamf.ui.overlay.AppWindow
-import io.github.duzhaokun123.yamf.utils.TipUtils
+import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 
 object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
@@ -17,10 +17,15 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
             ACTION_OPEN_IN_YAMF -> {
                 val taskId = intent.getIntExtra(EXTRA_TASK_ID, 0)
                 if (taskId == 0) {
-                    TipUtils.showToast("bad taskid 0")
+                    TipUtil.showToast("bad taskid 0")
                 } else {
                     YAMFManager.createWindowLocal(200, (1 shl 10) or (1 shl 9) or DisplayManager.VIRTUAL_DISPLAY_FLAG_SECURE) {
-                        Instances.activityTaskManager.moveRootTaskToDisplay(taskId, it)
+                        runCatching {
+                            Instances.activityTaskManager.moveRootTaskToDisplay(taskId, it)
+                        }.onFailure {  t ->
+                            if (t is Error) throw t
+                            TipUtil.showToast("can't move task $taskId")
+                        }
                     }
                 }
             }

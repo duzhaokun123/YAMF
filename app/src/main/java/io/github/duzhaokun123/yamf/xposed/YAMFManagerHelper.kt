@@ -44,44 +44,17 @@ object YAMFManagerHelper : IYAMFManager, DeathRecipient {
         return getService()?.createWindow(densityDpi, flags, taskId) ?: 0
     }
 
-//    override fun createVirtualDisplay(
-//        name: String,
-//        width: Int,
-//        height: Int,
-//        densityDpi: Int,
-//        surface: Surface?,
-//        flags: Int
-//    ): Int {
-//        return getService()?.createVirtualDisplay(name, width, height, densityDpi, surface, flags) ?: 0
-//    }
-//
-//    override fun resizeVirtualDisplay(id: Int, width: Int, height: Int, densityDpi: Int): Boolean {
-//        return getService()?.resizeVirtualDisplay(id, width, height, densityDpi) ?: false
-//    }
-//
-//    override fun setVirtualDisplaySurface(id: Int, surface: Surface?): Boolean {
-//        return getService()?.setVirtualDisplaySurface(id, surface) ?: false
-//    }
-//
-//    override fun releaseVirtualDisplay(id: Int): Boolean {
-//        return getService()?.releaseVirtualDisplay(id) ?: false
-//    }
-//
-//    override fun releaseAll(): Boolean {
-//        return getService()?.releaseAll() ?: false
-//    }
-//
-//    override fun getVirtualDisplayInfoS(id: Int): String? {
-//        return getService()?.getVirtualDisplayInfoS(id)
-//    }
-//
-//    override fun getVirtualDisplayIds(): IntArray? {
-//        return getService()?.virtualDisplayIds
-//    }
-//
-//    override fun showOverlay() {
-//        getService()?.showOverlay()
-//    }
+    override fun getBuildTime(): Long {
+        return getService()?.buildTime ?: 0
+    }
+
+    override fun getConfigJson(): String {
+        return getService()?.configJson ?: "{}"
+    }
+
+    override fun updateConfig(newConfig: String) {
+        getService()?.updateConfig(newConfig)
+    }
 
     private fun getService(): IYAMFManager? {
         if (service != null) return service

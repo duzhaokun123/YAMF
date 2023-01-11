@@ -14,13 +14,15 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
-import io.github.duzhaokun123.yamf.utils.TipUtils
-import io.github.duzhaokun123.yamf.utils.runMain
+import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import kotlinx.coroutines.Job
@@ -62,7 +64,7 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
 //                    it2.isTop = false
 //            }
         }
-        binding.vResize.setOnTouchListener(object : View.OnTouchListener {
+        binding.ibResize.setOnTouchListener(object : View.OnTouchListener {
             var beginX = 0F
             var beginY = 0F
             var beginWidth = 0
@@ -96,7 +98,7 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
                         }
                     }
                     MotionEvent.ACTION_UP -> {
-                        binding.cv.updateLayoutParams {
+                        binding.cvApp.updateLayoutParams {
                             val targetWidth = beginWidth + offsetX.toInt()
                             if (targetWidth > 0)
                                 width = targetWidth
@@ -148,7 +150,7 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
             newEvent.recycle()
             true
         }
-        binding.vBack.setOnClickListener {
+        binding.ibBack.setOnClickListener {
             val down = KeyEvent(
                 SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(),
@@ -173,21 +175,26 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
             Instances.inputManager.injectInputEvent(up, 0)
         }
         binding.ibRotate.setOnClickListener {
-            val cardHeight = binding.cv.height
+            val cardHeight = binding.cvApp.height
             val surfaceWidth = binding.surface.width
             val surfaceHeight = binding.surface.height
             binding.vSizePreviewer.updateLayoutParams {
                 width = surfaceHeight
                 height = surfaceWidth + cardHeight - surfaceHeight
             }
-            binding.cv.updateLayoutParams {
+            binding.cvApp.updateLayoutParams {
                 width = surfaceHeight
                 height = surfaceWidth + cardHeight - surfaceHeight
             }
         }
-        binding.ibInfo.setOnClickListener {
-            TipUtils.showToast("$virtualDisplay")
-        }
+//        binding.ibInfo.setOnClickListener {
+//            MaterialAlertDialogBuilder(context)
+//                .setTitle("info")
+//                .setMessage("${getTopRootTask()}\n$virtualDisplay")
+//                .show()
+//                .findViewById<TextView>(android.R.id.message)
+//                ?.setTextIsSelectable(true)
+//        }
         binding.ibClose.setOnClickListener {
             onDestroy()
         }
@@ -196,7 +203,7 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
                 Instances.activityTaskManager.moveRootTaskToDisplay(taskId, 0)
             }?.onFailure { t ->
                 if (t is Error) throw t
-                TipUtils.showToast("${t.message}")
+                TipUtil.showToast("${t.message}")
             }?.onSuccess {
                 binding.ibClose.callOnClick()
             }

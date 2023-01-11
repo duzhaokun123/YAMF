@@ -1,6 +1,12 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.YAMF" parent="Theme.Material3.DynamicColors.DayNight">
-
+    <style name="Theme.YAMF" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
+    <style name="Theme.YAMF.Window" parent="Theme.Material3.DynamicColors.DayNight" />
 </resources>

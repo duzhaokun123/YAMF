@@ -14,21 +14,9 @@ interface IYAMFManager {
     */
     int createWindow(int densityDpi, int flags, int taskId);
 
+    long getBuildTime();
 
+    String getConfigJson();
 
-//    int createVirtualDisplay(String name, int width, int height, int densityDpi, in Surface surface, int flags);
-//
-//    boolean resizeVirtualDisplay(int id, int width, int height, int densityDpi);
-//
-//    boolean setVirtualDisplaySurface(int id, in Surface surface);
-//
-//    boolean releaseVirtualDisplay(int id);
-//
-//    boolean releaseAll();
-//
-//    String getVirtualDisplayInfoS(int id);
-//
-//    int[] getVirtualDisplayIds();
-//
-//    void showOverlay();
+    void updateConfig(String newConfig);
 }
