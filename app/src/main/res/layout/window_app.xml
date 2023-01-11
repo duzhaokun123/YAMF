@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:padding="12dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv"
+                android:layout_width="200dp"
+                android:layout_height="400dp"
+                app:cardBackgroundColor="?colorBackgroundFloating"
+                app:cardCornerRadius="@dimen/app_card_radius"
+                app:cardElevation="4dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <SurfaceView
+                        android:id="@+id/surface"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/v_resize"
+                        android:layout_below="@id/ll_top" />
+
+                    <ImageButton
+                        android:id="@+id/v_resize"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:background="@null"
+                        android:src="@drawable/vd_vector"
+                        app:tint="?colorOnBackground" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/v_back"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_arrow_back_24"
+                            app:tint="?colorOnBackground" />
+
+                        <ImageButton
+                            android:id="@+id/ib_rotate"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="4dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_screen_rotation_alt_24"
+                            app:tint="?colorOnBackground" />
+
+                        <ImageButton
+                            android:id="@+id/ib_info"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="4dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_info_24"
+                            app:tint="?colorOnBackground" />
+
+                        <ImageButton
+                            android:id="@+id/ib_fullscreen"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="4dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_fullscreen_24"
+                            app:tint="?colorOnBackground" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/ll_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="28dp">
+
+                        <ImageView
+                            android:id="@+id/iv_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_centerVertical="true"
+                            android:layout_margin="2dp"
+                            android:src="@drawable/ic_android_black_24dp" />
+
+                        <TextView
+                            android:id="@+id/tv_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="2dp"
+                            android:layout_toStartOf="@id/ib_close"
+                            android:layout_toEndOf="@id/iv_icon"
+                            android:maxLines="1"
+                            android:text="name" />
+
+                        <ImageButton
+                            android:id="@+id/ib_close"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:src="@drawable/ic_close_24" />
+                    </RelativeLayout>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:id="@+id/v_sizePreviewer"
+                android:layout_width="200dp"
+                android:layout_height="400dp"
+                android:background="@drawable/a_bg"
+                android:elevation="5dp"
+                android:visibility="gone" />
+        </FrameLayout>
+
+    </FrameLayout>
+</layout>

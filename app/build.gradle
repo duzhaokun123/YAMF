@@ -1,0 +1,59 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'io.github.duzhaokun123.yamf'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "io.github.duzhaokun123.yamf"
+        minSdk 33
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        dataBinding = true
+        aidl = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    aaptOptions.additionalParameters '--allow-reserved-package-id', '--package-id', '0x57'
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.core:core-ktx:1.9.0'
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+
+    def shizuku_version = '12.2.0'
+    implementation "dev.rikka.shizuku:api:$shizuku_version"
+    implementation "dev.rikka.shizuku:provider:$shizuku_version"
+
+    implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:4.3'
+
+    compileOnly(project(':android-stub'))
+
+    implementation("com.github.kyuubiran:EzXHelper:1.0.3")
+    compileOnly("de.robv.android.xposed:api:82")
+}
