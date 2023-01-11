@@ -1,6 +1,11 @@
 package io.github.duzhaokun123.yamf.ui.main
 
 import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.core.view.MenuProvider
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
@@ -11,7 +16,12 @@ import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.ActivityMainBinding
 import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
 
-class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Config.NO_BACK, Config.LAYOUT_MATCH_HORI) {
+class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Config.NO_BACK, Config.LAYOUT_MATCH_HORI),
+    MenuProvider {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        addMenuProvider(this, this)
+    }
     @SuppressLint("SetTextI18n")
     override fun initData() {
         when(YAMFManagerHelper.buildTime) {
@@ -48,6 +58,20 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
                         .show()
                 }
             }
+        }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_main, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return when(menuItem.itemId) {
+            R.id.new_window -> {
+                YAMFManagerHelper.createWindow()
+                true
+            }
+            else -> false
         }
     }
 }

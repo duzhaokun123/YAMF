@@ -19,7 +19,7 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
                 if (taskId == 0) {
                     TipUtil.showToast("bad taskid 0")
                 } else {
-                    YAMFManager.createWindowLocal(200, (1 shl 10) or (1 shl 9) or DisplayManager.VIRTUAL_DISPLAY_FLAG_SECURE) {
+                    YAMFManager.createWindowLocal {
                         runCatching {
                             Instances.activityTaskManager.moveRootTaskToDisplay(taskId, it)
                         }.onFailure {  t ->

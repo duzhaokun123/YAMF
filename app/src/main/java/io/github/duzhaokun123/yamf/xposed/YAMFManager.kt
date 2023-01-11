@@ -58,8 +58,8 @@ class YAMFManager : IYAMFManager.Stub() {
             windowList.add(0, id)
         }
 
-        fun createWindowLocal(densityDpi: Int, flags: Int, onVirtualDisplayCreated: (id: Int) -> Unit) {
-            AppWindow(CommonContextWrapper.createAppCompatContext(systemContext), densityDpi, flags) { id ->
+        fun createWindowLocal(onVirtualDisplayCreated: (id: Int) -> Unit) {
+            AppWindow(CommonContextWrapper.createAppCompatContext(systemContext), config.densityDpi, config.flags) { id ->
                 addWindow(id)
                 onVirtualDisplayCreated(id)
             }
@@ -86,19 +86,10 @@ class YAMFManager : IYAMFManager.Stub() {
         return Process.myUid()
     }
 
-    override fun createWindow(densityDpi: Int, flags: Int, taskId: Int): Int {
+    override fun createWindow(): Int {
         var r = 0
         runMain {
-            createWindowLocal(densityDpi, flags) {
-                r = it
-                if (taskId == 0) return@createWindowLocal
-                runCatching {
-                    Instances.activityTaskManager.moveRootTaskToDisplay(taskId, it)
-                }.onFailure {  t ->
-                    if (t is Error) throw t
-                    TipUtil.showToast("can't move task $taskId")
-                }
-            }
+            createWindowLocal { r = it }
         }
         while (r == 0) {
             Thread.yield()

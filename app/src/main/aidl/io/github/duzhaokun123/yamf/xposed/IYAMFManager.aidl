@@ -9,10 +9,7 @@ interface IYAMFManager {
 
     int getUid();
 
-    /*
-    * taskId: 0 for no task to move
-    */
-    int createWindow(int densityDpi, int flags, int taskId);
+    int createWindow();
 
     long getBuildTime();
 
