@@ -5,4 +5,8 @@
         android:id="@+id/new_window"
         android:title="new window"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/channel"
+        android:title="telegram channel"
+        app:showAsAction="never" />
 </menu>

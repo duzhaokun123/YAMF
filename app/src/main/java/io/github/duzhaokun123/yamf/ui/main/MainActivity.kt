@@ -1,10 +1,12 @@
 package io.github.duzhaokun123.yamf.ui.main
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -69,6 +71,12 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
         return when(menuItem.itemId) {
             R.id.new_window -> {
                 YAMFManagerHelper.createWindow()
+                true
+            }
+            R.id.channel -> {
+                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                    data = "https://t.me/YAMF_channel".toUri()
+                })
                 true
             }
             else -> false
