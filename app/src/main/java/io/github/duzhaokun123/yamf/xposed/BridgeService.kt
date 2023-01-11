@@ -15,7 +15,7 @@ object BridgeService {
     private var appUid = 0
 
     fun register(pms: IPackageManager) {
-        log(TAG, "Initialize HMAService - Version ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})")
+        log(TAG, "Initialize YAMFService - Version ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})")
         val service = YAMFManager()
         appUid = pms.getPackageUid(BuildConfig.APPLICATION_ID, 0, 0)
         val appPackage = pms.getPackageInfo(BuildConfig.APPLICATION_ID, 0, 0)
