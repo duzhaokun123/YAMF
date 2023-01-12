@@ -8,4 +8,5 @@
     <string name="not_activated">not activated</string>
     <string name="need_reboot_message">Existing windows are fine\nBut ANY new window will make system crash</string>
     <string name="reboot">reboot</string>
+    <string name="settings">settings</string>
 </resources>

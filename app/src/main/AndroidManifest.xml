@@ -20,7 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".overlay.OverlayService" />
+        <activity android:name=".ui.SettingsActivity"
+            android:label="@string/settings"/>
 
         <meta-data
             android:name="xposedmodule"

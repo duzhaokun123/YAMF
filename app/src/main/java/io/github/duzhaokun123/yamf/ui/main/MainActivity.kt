@@ -17,6 +17,7 @@ import io.github.duzhaokun123.androidapptemplate.utils.getAttr
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.ActivityMainBinding
+import io.github.duzhaokun123.yamf.ui.SettingsActivity
 import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
 
 class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Config.NO_BACK, Config.LAYOUT_MATCH_HORI),
@@ -66,7 +67,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
 
     override fun initViews() {
         super.initViews()
-        LayoutInflater.from(this).inflate(R.layout.window_app, baseBinding.ll, true)
+//        LayoutInflater.from(this).inflate(R.layout.window_app, baseBinding.ll, true)
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -83,6 +84,10 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
                 startActivity(Intent(Intent.ACTION_VIEW).apply {
                     data = "https://t.me/YAMF_channel".toUri()
                 })
+                true
+            }
+            R.id.settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
                 true
             }
             else -> false

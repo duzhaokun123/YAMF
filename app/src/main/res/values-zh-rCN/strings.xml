@@ -8,4 +8,5 @@
     <string name="not_activated">未激活</string>
     <string name="need_reboot_message">已有的窗口不会出现问题\n但新建窗口将导致系统崩溃</string>
     <string name="reboot">重启</string>
+    <string name="settings">设置</string>
 </resources>

@@ -42,7 +42,6 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 
 - 好看的图标
 - 暂时隐藏小窗
-- 用户偏好设置
 - 侧边启动栏
 - 自动调整方向
 
