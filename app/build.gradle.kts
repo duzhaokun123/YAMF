@@ -33,6 +33,18 @@ android {
             "kotlin/**"
         ))
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file("../releaseKey.jks")
+            storePassword = System.getenv("REL_KEY")
+            keyAlias = "key0"
+            keyPassword = System.getenv("REL_KEY")
+            enableV1Signing = false
+            enableV2Signing = false
+            enableV3Signing = true
+            enableV4Signing = true
+        }
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -41,7 +53,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (System.getenv("REL_KEY") != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
+            sourceSets.getByName("main").java.srcDir(File("build/generated/ksp/release/kotlin"))
         }
         getByName("debug") {
             val minifyEnabled = localProperties.getProperty("minify.enabled", "false")
@@ -51,7 +68,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            sourceSets.getByName("main").java.srcDir(File("build/generated/ksp/debug/kotlin"))
+//            sourceSets.getByName("main").java.srcDir(File("build/generated/ksp/debug/kotlin"))
         }
     }
     compileOptions {
