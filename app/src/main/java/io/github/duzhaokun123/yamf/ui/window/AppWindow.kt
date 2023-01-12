@@ -1,7 +1,10 @@
 package io.github.duzhaokun123.yamf.ui.window
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.ActivityTaskManager
+import android.app.ITaskStackListener
+import android.content.ComponentName
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -20,19 +23,19 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
+import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
 import io.github.duzhaokun123.androidapptemplate.utils.getAttr
-import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
+import io.github.duzhaokun123.yamf.utils.RunMainThreadQueue
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
 @SuppressLint("ClickableViewAccessibility")
-class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisplayCreated: ((Int) -> Unit)) :
+class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtualDisplayCreated: ((Int) -> Unit)) :
     SurfaceHolder.Callback {
     companion object {
         const val TAG = "YAMF_AppWindow"
@@ -40,7 +43,9 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
 
     var binding: WindowAppBinding
     lateinit var virtualDisplay: VirtualDisplay
-    var taskInfoUpdateJob: Job
+    val taskStackListener = TaskStackListener()
+    val displayId: Int
+        get() = virtualDisplay.display.displayId
 
     init {
         binding = WindowAppBinding.inflate(LayoutInflater.from(context))
@@ -236,63 +241,15 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
             }
 
         }
+        Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
         onVirtualDisplayCreated(virtualDisplay.display.displayId)
         binding.surface.holder.addCallback(this)
-        taskInfoUpdateJob = runMain {
-            while (true) {
-                val task = getTopRootTask()
-                if (task != null) {
-                    val topActivity = task.topActivity ?: return@runMain
-                    val taskDescription = Instances.activityTaskManager.getTaskDescription(task.childTaskIds.last())
-                    val icon = taskDescription.icon
-                    if (icon == null) {
-                        binding.ivIcon.setImageDrawable(Instances.packageManager.getActivityIcon(topActivity))
-                    } else {
-                        binding.ivIcon.setImageBitmap(taskDescription.icon)
-                    }
-                    val label = taskDescription.label
-                    if (label == null) {
-                        binding.tvLabel.text = Instances.packageManager.getActivityInfo(topActivity, 0).loadLabel(Instances.packageManager)
-                    } else {
-                        binding.tvLabel.text = taskDescription.label
-                    }
-                    if (YAMFManager.config.coloredController) {
-                        val backgroundColor = taskDescription.backgroundColor
-                        binding.cvApp.setCardBackgroundColor(backgroundColor)
-
-                        val statusBarColor = taskDescription.statusBarColor
-                        binding.rlTop.setBackgroundColor(statusBarColor)
-                        val onStateBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(statusBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
-                            context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
-                        } else {
-                            context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
-                        }
-                        binding.tvLabel.setTextColor(onStateBar)
-                        binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
-
-                        val navigationBarColor = taskDescription.navigationBarColor
-                        binding.rlButton.setBackgroundColor(navigationBarColor)
-                        val onNavigationBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(navigationBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
-                            context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
-                        } else {
-                            context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
-                        }
-                        binding.ibBack.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                        binding.ibRotate.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                        binding.ibHome.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                        binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                        binding.ibResize.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                    }
-                }
-                delay(1000)
-            }
-        }
     }
 
     private fun onDestroy() {
+        Instances.activityTaskManager.unregisterTaskStackListener(taskStackListener)
         YAMFManager.removeWindow(virtualDisplay.display.displayId)
-        taskInfoUpdateJob.cancel()
         virtualDisplay.release()
         Instances.windowManager.removeView(binding.root)
     }
@@ -373,5 +330,176 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         virtualDisplay.surface = null
+    }
+
+    private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
+        RunMainThreadQueue.add {
+            if (taskInfo.isVisible.not()) {
+                delay(500) // fixme: 使用能直接确定可见性的方法
+            }
+            val topActivity = taskInfo.topActivity ?: return@add
+            val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId)
+            val icon = taskDescription.icon
+            if (icon == null) {
+                binding.ivIcon.setImageDrawable(Instances.packageManager.getActivityIcon(topActivity))
+            } else {
+                binding.ivIcon.setImageBitmap(taskDescription.icon)
+            }
+            val label = taskDescription.label
+            if (label == null) {
+                binding.tvLabel.text = Instances.packageManager.getActivityInfo(topActivity, 0).loadLabel(Instances.packageManager)
+            } else {
+                binding.tvLabel.text = taskDescription.label
+            }
+            if (YAMFManager.config.coloredController) {
+                val backgroundColor = taskDescription.backgroundColor
+                binding.cvApp.setCardBackgroundColor(backgroundColor)
+
+                val statusBarColor = taskDescription.statusBarColor
+                binding.rlTop.setBackgroundColor(statusBarColor)
+                val onStateBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(statusBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
+                    context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
+                } else {
+                    context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
+                }
+                binding.tvLabel.setTextColor(onStateBar)
+                binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
+
+                val navigationBarColor = taskDescription.navigationBarColor
+                binding.rlButton.setBackgroundColor(navigationBarColor)
+                val onNavigationBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(navigationBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
+                    context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
+                } else {
+                    context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
+                }
+                binding.ibBack.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                binding.ibRotate.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                binding.ibHome.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                binding.ibResize.imageTintList = ColorStateList.valueOf(onNavigationBar)
+            }
+        }
+    }
+
+    inner class TaskStackListener : ITaskStackListener.Stub() {
+        override fun onTaskStackChanged() {
+
+        }
+
+        override fun onActivityPinned(
+            packageName: String?,
+            userId: Int,
+            taskId: Int,
+            stackId: Int
+        ) {
+
+        }
+
+        override fun onActivityUnpinned() {
+
+        }
+
+        override fun onActivityRestartAttempt(
+            task: ActivityManager.RunningTaskInfo?,
+            homeTaskVisible: Boolean,
+            clearedTask: Boolean,
+            wasVisible: Boolean
+        ) {
+
+        }
+
+        override fun onActivityForcedResizable(packageName: String?, taskId: Int, reason: Int) {
+
+        }
+
+        override fun onActivityDismissingDockedTask() {
+
+        }
+
+        override fun onActivityLaunchOnSecondaryDisplayFailed(
+            taskInfo: ActivityManager.RunningTaskInfo?,
+            requestedDisplayId: Int
+        ) {
+
+        }
+
+        override fun onActivityLaunchOnSecondaryDisplayRerouted(
+            taskInfo: ActivityManager.RunningTaskInfo?,
+            requestedDisplayId: Int
+        ) {
+
+        }
+
+        override fun onTaskCreated(taskId: Int, componentName: ComponentName?) {
+            
+        }
+
+        override fun onTaskRemoved(taskId: Int) {
+
+        }
+
+        override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
+            if (taskInfo.getObject("displayId") == displayId) {
+                updateTask(taskInfo)
+            }
+        }
+
+        override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo) {
+            if (taskInfo.getObject("displayId") == displayId && taskInfo.isVisible) {
+                updateTask(taskInfo)
+            }
+        }
+
+        override fun onActivityRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {
+
+        }
+
+        override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {
+
+        }
+
+        override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?) {
+
+        }
+
+        override fun onTaskSnapshotChanged(taskId: Int, snapshot: android.window.TaskSnapshot?) {
+
+        }
+
+        override fun onBackPressedOnTaskRoot(taskInfo: ActivityManager.RunningTaskInfo?) {
+
+        }
+
+        override fun onTaskDisplayChanged(taskId: Int, newDisplayId: Int) {
+
+        }
+
+        override fun onRecentTaskListUpdated() {
+
+        }
+
+        override fun onRecentTaskListFrozenChanged(frozen: Boolean) {
+
+        }
+
+        override fun onTaskFocusChanged(taskId: Int, focused: Boolean) {
+
+        }
+
+        override fun onTaskRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {
+
+        }
+
+        override fun onActivityRotation(displayId: Int) {
+
+        }
+
+        override fun onTaskMovedToBack(taskInfo: ActivityManager.RunningTaskInfo) {
+
+        }
+
+        override fun onLockTaskModeChanged(mode: Int) {
+
+        }
     }
 }

@@ -70,7 +70,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
 
     override fun initViews() {
         super.initViews()
-//        LayoutInflater.from(this).inflate(R.layout.window_app, baseBinding.ll, true)
+        LayoutInflater.from(this).inflate(R.layout.window_app, baseBinding.ll, true)
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
