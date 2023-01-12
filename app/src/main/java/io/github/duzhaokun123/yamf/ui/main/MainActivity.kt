@@ -3,6 +3,7 @@ package io.github.duzhaokun123.yamf.ui.main
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -61,6 +62,11 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
                 }
             }
         }
+    }
+
+    override fun initViews() {
+        super.initViews()
+        LayoutInflater.from(this).inflate(R.layout.window_app, baseBinding.ll, true)
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

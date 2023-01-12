@@ -14,11 +14,12 @@
             android:padding="12dp"
             tools:ignore="UselessParent">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_app"
+                style="@style/Widget.Material3.CardView.Elevated"
                 android:layout_width="200dp"
                 android:layout_height="400dp"
-                app:cardBackgroundColor="@color/material_dynamic_primary95"
+                app:cardBackgroundColor="?colorPrimaryContainer"
                 app:cardCornerRadius="@dimen/app_card_radius"
                 app:cardElevation="4dp">
 
@@ -80,7 +81,7 @@
                             android:background="?android:attr/selectableItemBackground"
                             android:padding="4dp"
                             android:src="@drawable/ic_fullscreen_24"
-                            app:tint="?colorOnBackground" />
+                            android:tint="?colorOnPrimaryContainer"  />
 
                         <ImageButton
                             android:id="@+id/ib_resize"
@@ -145,7 +146,7 @@
                             android:tint="?colorOnPrimaryContainer" />
                     </RelativeLayout>
                 </RelativeLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <View
                 android:id="@+id/v_sizePreviewer"
