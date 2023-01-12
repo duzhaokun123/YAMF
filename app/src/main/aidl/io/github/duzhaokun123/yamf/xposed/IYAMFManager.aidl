@@ -16,4 +16,6 @@ interface IYAMFManager {
     String getConfigJson();
 
     void updateConfig(String newConfig);
+
+    int getOpenCount();
 }

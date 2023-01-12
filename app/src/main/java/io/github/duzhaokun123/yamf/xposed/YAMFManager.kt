@@ -24,6 +24,7 @@ class YAMFManager : IYAMFManager.Stub() {
         val windowList = mutableListOf<Int>()
         lateinit var config: Config
         val configFile = File("/data/system/yamf.json")
+        var openWindowCount = 0
 
         fun systemReady() {
             systemContext.registerReceiver(
@@ -45,6 +46,7 @@ class YAMFManager : IYAMFManager.Stub() {
 
         fun addWindow(id: Int) {
             windowList.add(0, id)
+            openWindowCount++
         }
 
         fun removeWindow(id: Int) {
@@ -70,9 +72,6 @@ class YAMFManager : IYAMFManager.Stub() {
         instance = this
         log(TAG, "YAMF service initialized")
     }
-
-    private val displayManager: DisplayManager by lazy { systemContext.getSystemService(DisplayManager::class.java) }
-    private val displayMap = mutableMapOf<Int, VirtualDisplay>()
 
     override fun getVersionName(): String {
         return BuildConfig.VERSION_NAME
@@ -110,5 +109,9 @@ class YAMFManager : IYAMFManager.Stub() {
         runMain {
             configFile.writeText(newConfig)
         }
+    }
+
+    override fun getOpenCount(): Int {
+        return openWindowCount
     }
 }

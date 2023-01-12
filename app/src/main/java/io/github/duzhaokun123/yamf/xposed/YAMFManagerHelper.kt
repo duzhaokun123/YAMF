@@ -56,6 +56,10 @@ object YAMFManagerHelper : IYAMFManager, DeathRecipient {
         getService()?.updateConfig(newConfig)
     }
 
+    override fun getOpenCount(): Int {
+        return getService()?.openCount ?: -1
+    }
+
     private fun getService(): IYAMFManager? {
         if (service != null) return service
         val pm = ServiceManager.getService("package")

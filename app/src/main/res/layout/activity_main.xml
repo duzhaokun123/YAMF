@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
@@ -10,6 +11,7 @@
         android:paddingHorizontal="@dimen/m3_appbar_expanded_title_margin_horizontal"
         android:paddingVertical="?dialogPreferredPadding"
         tools:ignore="PrivateResource">
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_status"
             style="@style/Widget.Material3.CardView.Elevated"
@@ -61,6 +63,35 @@
                     tools:text="1.2.3" />
 
             </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcv_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="?dialogPreferredPadding">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/DeviceInfoDialogLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/open_count" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_openCount"
+                    style="@style/DeviceInfoDialogValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0" />
+
+            </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </layout>

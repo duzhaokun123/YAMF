@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import com.google.android.material.color.MaterialColors
@@ -40,6 +41,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
                 baseBinding.mcvStatus.outlineSpotShadowColor = colorError
                 baseBinding.tvActive.setTextColor(colorOnError)
                 baseBinding.tvVersion.setTextColor(colorOnError)
+                baseBinding.mcvInfo.visibility = View.GONE
             }
             BuildConfig.BUILD_TIME -> {
                 baseBinding.ivIcon.setImageResource(R.drawable.ic_round_check_circle_24)
@@ -63,6 +65,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
                 }
             }
         }
+        baseBinding.tvOpenCount.text = YAMFManagerHelper.openCount.toString()
     }
 
     override fun initViews() {

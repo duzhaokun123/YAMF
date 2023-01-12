@@ -9,4 +9,5 @@
     <string name="need_reboot_message">Existing windows are fine\nBut new window may make system crash</string>
     <string name="reboot">reboot</string>
     <string name="settings">settings</string>
+    <string name="open_count">open count</string>
 </resources>
