@@ -3,6 +3,8 @@ package io.github.duzhaokun123.yamf.ui.window
 import android.annotation.SuppressLint
 import android.app.ActivityTaskManager
 import android.content.Context
+import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.hardware.display.VirtualDisplay
 import android.os.SystemClock
@@ -14,17 +16,18 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.color.MaterialColors
+import io.github.duzhaokun123.androidapptemplate.utils.getAttr
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
-import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
+import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
@@ -231,9 +234,31 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
                         binding.tvLabel.text = taskDescription.label
                     }
                     if (YAMFManager.config.coloredController) {
-                        binding.rlTop.setBackgroundColor(taskDescription.statusBarColor)
-                        binding.rlButton.setBackgroundColor(taskDescription.navigationBarColor)
-                        binding.cvApp.setCardBackgroundColor(taskDescription.backgroundColor)
+                        val backgroundColor = taskDescription.backgroundColor
+                        binding.cvApp.setCardBackgroundColor(backgroundColor)
+
+                        val statusBarColor = taskDescription.statusBarColor
+                        binding.rlTop.setBackgroundColor(statusBarColor)
+                        val onStateBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(statusBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
+                            context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
+                        } else {
+                            context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
+                        }
+                        binding.tvLabel.setTextColor(onStateBar)
+                        binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
+
+                        val navigationBarColor = taskDescription.navigationBarColor
+                        binding.rlButton.setBackgroundColor(navigationBarColor)
+                        val onNavigationBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(navigationBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
+                            context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
+                        } else {
+                            context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
+                        }
+                        binding.ibBack.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                        binding.ibRotate.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                        binding.ibInfo.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                        binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                        binding.ibResize.imageTintList = ColorStateList.valueOf(onNavigationBar)
                     }
                 }
                 delay(1000)
