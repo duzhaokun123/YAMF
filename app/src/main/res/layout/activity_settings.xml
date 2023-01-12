@@ -35,4 +35,10 @@
             android:layout_height="wrap_content"
             android:inputType="number" />
     </LinearLayout>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/s_coloerd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="coloredController" />
 </LinearLayout>

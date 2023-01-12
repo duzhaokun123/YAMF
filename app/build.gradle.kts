@@ -60,9 +60,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
-//        freeCompilerArgs = listOf(
-//            "-Xuse-k2"
-//        )
+        freeCompilerArgs = listOf(
+            "-Xuse-k2"
+        )
     }
     buildFeatures {
         dataBinding = true

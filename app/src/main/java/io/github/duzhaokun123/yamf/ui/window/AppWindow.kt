@@ -230,8 +230,11 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
                     } else {
                         binding.tvLabel.text = taskDescription.label
                     }
-
-//                    binding.llTop.setBackgroundColor(taskDescription.statusBarColor)
+                    if (YAMFManager.config.coloredController) {
+                        binding.rlTop.setBackgroundColor(taskDescription.statusBarColor)
+                        binding.rlButton.setBackgroundColor(taskDescription.navigationBarColor)
+                        binding.cvApp.setCardBackgroundColor(taskDescription.backgroundColor)
+                    }
                 }
                 delay(1000)
             }
