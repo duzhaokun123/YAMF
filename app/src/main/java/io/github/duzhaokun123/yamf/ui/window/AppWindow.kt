@@ -177,6 +177,30 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
             }
             Instances.inputManager.injectInputEvent(up, 0)
         }
+        binding.ibHome.setOnClickListener {
+            val down = KeyEvent(
+                SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                KeyEvent.ACTION_DOWN,
+                KeyEvent.KEYCODE_HOME,
+                0
+            ).apply {
+                source = InputDevice.SOURCE_KEYBOARD
+                this.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
+            }
+            Instances.inputManager.injectInputEvent(down, 0)
+            val up = KeyEvent(
+                SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                KeyEvent.ACTION_UP,
+                KeyEvent.KEYCODE_HOME,
+                0
+            ).apply {
+                source = InputDevice.SOURCE_KEYBOARD
+                this.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
+            }
+            Instances.inputManager.injectInputEvent(up, 0)
+        }
         binding.ibRotate.setOnClickListener {
             val cardHeight = binding.cvApp.height
             val surfaceWidth = binding.surface.width
@@ -256,7 +280,7 @@ class AppWindow(context: Context, val densityDpi: Int, flags: Int, onVirtualDisp
                         }
                         binding.ibBack.imageTintList = ColorStateList.valueOf(onNavigationBar)
                         binding.ibRotate.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                        binding.ibInfo.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                        binding.ibHome.imageTintList = ColorStateList.valueOf(onNavigationBar)
                         binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
                         binding.ibResize.imageTintList = ColorStateList.valueOf(onNavigationBar)
                     }
