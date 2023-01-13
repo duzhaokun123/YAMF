@@ -56,8 +56,12 @@ object YAMFManagerHelper : IYAMFManager, DeathRecipient {
         getService()?.updateConfig(newConfig)
     }
 
-    override fun getOpenCount(): Int {
-        return getService()?.openCount ?: -1
+    override fun registerOpenCountListener(iOpenCountListener: IOpenCountListener) {
+        getService()?.registerOpenCountListener(iOpenCountListener)
+    }
+
+    override fun unregisterOpenCountListener(iOpenCountListener: IOpenCountListener) {
+        getService()?.unregisterOpenCountListener(iOpenCountListener)
     }
 
     private fun getService(): IYAMFManager? {

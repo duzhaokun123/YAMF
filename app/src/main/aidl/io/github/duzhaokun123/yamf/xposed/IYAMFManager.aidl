@@ -1,6 +1,7 @@
 package io.github.duzhaokun123.yamf.xposed;
 
 import android.view.Surface;
+import io.github.duzhaokun123.yamf.xposed.IOpenCountListener;
 
 interface IYAMFManager {
     String getVersionName();
@@ -17,5 +18,7 @@ interface IYAMFManager {
 
     void updateConfig(String newConfig);
 
-    int getOpenCount();
+    void registerOpenCountListener(IOpenCountListener iOpenCountListener);
+
+    void unregisterOpenCountListener(IOpenCountListener iOpenCountListener);
 }

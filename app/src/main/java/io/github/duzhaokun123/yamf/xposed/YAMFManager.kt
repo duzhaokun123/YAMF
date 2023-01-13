@@ -2,16 +2,14 @@ package io.github.duzhaokun123.yamf.xposed
 
 import android.content.Context
 import android.content.IntentFilter
-import android.hardware.display.DisplayManager
-import android.hardware.display.VirtualDisplay
 import android.os.Process
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.model.Config
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
+import io.github.duzhaokun123.yamf.utils.gson
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
-import io.github.duzhaokun123.yamf.utils.gson
 import io.github.qauxv.ui.CommonContextWrapper
 import java.io.File
 
@@ -25,6 +23,7 @@ class YAMFManager : IYAMFManager.Stub() {
         lateinit var config: Config
         val configFile = File("/data/system/yamf.json")
         var openWindowCount = 0
+        val iOpenCountListenerSet = mutableSetOf<IOpenCountListener>()
 
         fun systemReady() {
             systemContext.registerReceiver(
@@ -47,6 +46,7 @@ class YAMFManager : IYAMFManager.Stub() {
         fun addWindow(id: Int) {
             windowList.add(0, id)
             openWindowCount++
+            iOpenCountListenerSet.forEach { it.onUpdate(openWindowCount) }
         }
 
         fun removeWindow(id: Int) {
@@ -111,7 +111,12 @@ class YAMFManager : IYAMFManager.Stub() {
         }
     }
 
-    override fun getOpenCount(): Int {
-        return openWindowCount
+    override fun registerOpenCountListener(iOpenCountListener: IOpenCountListener) {
+        iOpenCountListenerSet.add(iOpenCountListener)
+        iOpenCountListener.onUpdate(openWindowCount)
+    }
+
+    override fun unregisterOpenCountListener(iOpenCountListener: IOpenCountListener?) {
+        iOpenCountListenerSet.remove(iOpenCountListener)
     }
 }

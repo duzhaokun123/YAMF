@@ -15,17 +15,28 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
 import io.github.duzhaokun123.androidapptemplate.utils.TipUtil
 import io.github.duzhaokun123.androidapptemplate.utils.getAttr
+import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.ActivityMainBinding
 import io.github.duzhaokun123.yamf.ui.SettingsActivity
+import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
 import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
 
 class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Config.NO_BACK, Config.LAYOUT_MATCH_HORI),
     MenuProvider {
+    private val openCountListener = object : IOpenCountListener.Stub() {
+        override fun onUpdate(count: Int) {
+            runMain {
+                baseBinding.tvOpenCount.text = count.toString()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addMenuProvider(this, this)
+        YAMFManagerHelper.registerOpenCountListener(openCountListener)
     }
     @SuppressLint("SetTextI18n")
     override fun initData() {
@@ -65,7 +76,6 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
                 }
             }
         }
-        baseBinding.tvOpenCount.text = YAMFManagerHelper.openCount.toString()
     }
 
     override fun initViews() {
@@ -95,5 +105,10 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
             }
             else -> false
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        YAMFManagerHelper.unregisterOpenCountListener(openCountListener)
     }
 }
