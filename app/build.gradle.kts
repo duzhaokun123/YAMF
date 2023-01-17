@@ -28,10 +28,12 @@ android {
         buildConfigField("long", "BUILD_TIME", buildTime.toString())
     }
     packagingOptions {
-        resources.excludes.addAll( arrayOf(
-            "META-INF/**",
-            "kotlin/**"
-        ))
+        resources.excludes.addAll(
+            arrayOf(
+                "META-INF/**",
+                "kotlin/**"
+            )
+        )
     }
     signingConfigs {
         create("release") {
@@ -92,34 +94,30 @@ android {
 }
 
 dependencies {
-    implementation ("androidx.core:core-ktx:1.9.0")
-    implementation ("androidx.appcompat:appcompat:1.5.1")
-    implementation ("com.google.android.material:material:1.7.0")
-    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation ("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.activity:activity-ktx:1.6.1")
+    implementation("androidx.fragment:fragment-ktx:1.5.5")
+    implementation("androidx.appcompat:appcompat:1.6.0")
+    implementation("com.google.android.material:material:1.7.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     //kotlinx-coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
-
     compileOnly(project(":android-stub"))
 
+    //never upgrade until new extension function
     implementation("com.github.kyuubiran:EzXHelper:1.0.3")
     compileOnly("de.robv.android.xposed:api:82")
 
-    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     //lifecycle
     val lifecycleVersion = "2.5.1"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
-
-    //nav
-    val navVersion = "2.5.2"
-    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
 }
 
 val optimizeReleaseRes = task("optimizeReleaseRes").doLast {

@@ -26,7 +26,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 手动调整方向         |      ✅       |                ✅                 |
 | 自动调整方向         |   ❌(TODO)    |                ✅                 |
 | open api       |   ❌(或许会有)    |                ✅                 |
-| 无要关心保活         | ✅(因为注入了系统进程) |                ❌                 |
+| 无需关心保活         | ✅(因为注入了系统进程) |                ❌                 |
 
 ~~这个项目是我花三天时间肝出来的~~
 
