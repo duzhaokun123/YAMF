@@ -17,29 +17,29 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_app"
                 style="@style/Widget.Material3.CardView.Elevated"
-                android:layout_width="200dp"
-                android:layout_height="400dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:cardBackgroundColor="?colorPrimaryContainer"
                 app:cardCornerRadius="@dimen/app_card_radius"
                 app:cardElevation="4dp">
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
                     <TextureView
                         android:id="@+id/textureView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_above="@id/rl_button"
+                        android:layout_width="200dp"
+                        android:layout_height="300dp"
                         android:layout_below="@id/rl_top" />
 
                     <RelativeLayout
                         android:id="@+id/rl_button"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentBottom="true">
+                        android:layout_below="@id/textureView"
+                        android:layout_alignEnd="@id/textureView"
+                        android:layout_alignParentStart="true">
 
                         <ImageButton
                             android:id="@+id/ib_back"
@@ -81,14 +81,13 @@
                             android:background="?android:attr/selectableItemBackground"
                             android:padding="4dp"
                             android:src="@drawable/ic_fullscreen_24"
-                            android:tint="?colorOnPrimaryContainer"  />
+                            android:tint="?colorOnPrimaryContainer" />
 
                         <ImageButton
                             android:id="@+id/ib_resize"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_alignParentEnd="true"
-                            android:layout_alignParentBottom="true"
                             android:background="@null"
                             android:src="@drawable/vd_vector"
                             android:tint="?colorOnPrimaryContainer" />
@@ -96,8 +95,9 @@
 
                     <RelativeLayout
                         android:id="@+id/rl_top"
-                        android:layout_width="match_parent"
-                        android:layout_height="28dp">
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:layout_alignEnd="@id/textureView">
 
                         <ImageView
                             android:id="@+id/iv_secure"
@@ -148,13 +148,23 @@
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <View
+            <RelativeLayout
                 android:id="@+id/v_sizePreviewer"
                 android:layout_width="200dp"
-                android:layout_height="400dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="28dp"
                 android:background="@drawable/a_bg"
                 android:elevation="5dp"
-                android:visibility="gone" />
+                android:visibility="invisible">
+
+                <TextView
+                    android:id="@+id/tv_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="?colorPrimaryContainer"
+                    android:textColor="?colorOnPrimaryContainer" />
+            </RelativeLayout>
         </FrameLayout>
 
     </FrameLayout>

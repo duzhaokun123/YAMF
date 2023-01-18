@@ -110,10 +110,11 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                             val targetHeight = beginHeight + offsetY.toInt()
                             if (targetHeight > 0)
                                 height = targetHeight
+                            binding.tvSize.text = "${targetWidth}x$targetHeight"
                         }
                     }
                     MotionEvent.ACTION_UP -> {
-                        binding.cvApp.updateLayoutParams {
+                        binding.textureView.updateLayoutParams {
                             val targetWidth = beginWidth + offsetX.toInt()
                             if (targetWidth > 0)
                                 width = targetWidth
@@ -121,7 +122,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                             if (targetHeight > 0)
                                 height = targetHeight
                         }
-                        binding.vSizePreviewer.visibility = View.GONE
+                        binding.vSizePreviewer.visibility = View.INVISIBLE
                     }
                 }
                 return true
@@ -539,16 +540,15 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
      */
     fun rotate(rotation: Int) {
         if (rotation == 1 || rotation == 3) {
-            val cardHeight = binding.cvApp.height
             val surfaceWidth = binding.textureView.width
             val surfaceHeight = binding.textureView.height
             binding.vSizePreviewer.updateLayoutParams {
                 width = surfaceHeight
-                height = surfaceWidth + cardHeight - surfaceHeight
+                height = surfaceWidth
             }
-            binding.cvApp.updateLayoutParams {
+            binding.textureView.updateLayoutParams {
                 width = surfaceHeight
-                height = surfaceWidth + cardHeight - surfaceHeight
+                height = surfaceWidth
             }
         }
     }

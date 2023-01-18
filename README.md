@@ -21,6 +21,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 从通知启动小窗        |   ❌(不会支持)    |                ✅                 |
 | 从最近任务启动小窗      |      ✅       |                ✅                 |
 | 暂时隐藏小窗         |   ❌(TODO)    |                ✅                 |
+| 挂起小窗           |   ❌(或许会有)    |                ✅                 |
 | 记住位置           |   ❌(不会支持)    |                ✅                 |
 | 侧边启动栏          |   ❌(TODO)    |                ✅                 |
 | 手动调整方向         |      ✅       |                ✅                 |
