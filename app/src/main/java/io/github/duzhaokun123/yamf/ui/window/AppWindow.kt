@@ -8,6 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Matrix
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
 import android.hardware.display.VirtualDisplay
@@ -23,6 +24,7 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import com.github.kyuubiran.ezxhelper.utils.argTypes
@@ -122,6 +124,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                             if (targetHeight > 0)
                                 height = targetHeight
                         }
+                        binding.vSupporter.layoutParams = FrameLayout.LayoutParams(binding.vSizePreviewer.layoutParams)
                         binding.vSizePreviewer.visibility = View.INVISIBLE
                     }
                 }
@@ -190,7 +193,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             }
             Instances.inputManager.injectInputEvent(up, 0)
         }
-        binding.ibHome.setOnClickListener {
+        binding.ibBack.setOnLongClickListener {
             val down = KeyEvent(
                 SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(),
@@ -213,6 +216,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 this.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
             }
             Instances.inputManager.injectInputEvent(up, 0)
+            true
         }
         binding.ibRotate.setOnClickListener {
             rotate(Surface.ROTATION_90)
@@ -222,14 +226,6 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             TipUtil.showToast("rotateLock: $rotateLock")
             true
         }
-//        binding.ibInfo.setOnClickListener {
-//            MaterialAlertDialogBuilder(context)
-//                .setTitle("info")
-//                .setMessage("${getTopRootTask()}\n$virtualDisplay")
-//                .show()
-//                .findViewById<TextView>(android.R.id.message)
-//                ?.setTextIsSelectable(true)
-//        }
         binding.ibClose.setOnClickListener {
             onDestroy()
         }
@@ -242,7 +238,6 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             }?.onSuccess {
                 binding.ibClose.callOnClick()
             }
-
         }
         Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
@@ -377,7 +372,6 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 }
                 binding.ibBack.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibRotate.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                binding.ibHome.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibResize.imageTintList = ColorStateList.valueOf(onNavigationBar)
             }
@@ -550,6 +544,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 width = surfaceHeight
                 height = surfaceWidth
             }
+            binding.vSupporter.layoutParams = FrameLayout.LayoutParams(binding.vSizePreviewer.layoutParams)
         }
     }
 }
