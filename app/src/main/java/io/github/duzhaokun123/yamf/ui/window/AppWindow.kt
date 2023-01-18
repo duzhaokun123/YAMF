@@ -9,14 +9,18 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PixelFormat
+import android.graphics.SurfaceTexture
 import android.hardware.display.VirtualDisplay
 import android.os.SystemClock
+import android.util.Log
 import android.view.Gravity
+import android.view.IRotationWatcher
 import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.SurfaceHolder
+import android.view.Surface
+import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
 import androidx.core.graphics.ColorUtils
@@ -27,6 +31,7 @@ import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
 import io.github.duzhaokun123.androidapptemplate.utils.getAttr
+import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
 import io.github.duzhaokun123.yamf.utils.RunMainThreadQueue
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
@@ -36,7 +41,7 @@ import kotlinx.coroutines.delay
 
 @SuppressLint("ClickableViewAccessibility")
 class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtualDisplayCreated: ((Int) -> Unit)) :
-    SurfaceHolder.Callback {
+    TextureView.SurfaceTextureListener {
     companion object {
         const val TAG = "YAMF_AppWindow"
     }
@@ -44,8 +49,10 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
     var binding: WindowAppBinding
     lateinit var virtualDisplay: VirtualDisplay
     val taskStackListener = TaskStackListener()
+    val rotationWatcher = RotationWatcher()
     val displayId: Int
         get() = virtualDisplay.display.displayId
+    var rotateLock = false
 
     init {
         binding = WindowAppBinding.inflate(LayoutInflater.from(context))
@@ -120,7 +127,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 return true
             }
         })
-        binding.surface.setOnTouchListener { _, event ->
+        binding.textureView.setOnTouchListener { _, event ->
             val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
             val pointerProperties: Array<MotionEvent.PointerProperties?> =
                 arrayOfNulls(event.pointerCount)
@@ -207,17 +214,12 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             Instances.inputManager.injectInputEvent(up, 0)
         }
         binding.ibRotate.setOnClickListener {
-            val cardHeight = binding.cvApp.height
-            val surfaceWidth = binding.surface.width
-            val surfaceHeight = binding.surface.height
-            binding.vSizePreviewer.updateLayoutParams {
-                width = surfaceHeight
-                height = surfaceWidth + cardHeight - surfaceHeight
-            }
-            binding.cvApp.updateLayoutParams {
-                width = surfaceHeight
-                height = surfaceWidth + cardHeight - surfaceHeight
-            }
+            rotate(Surface.ROTATION_90)
+        }
+        binding.ibRotate.setOnLongClickListener {
+            rotateLock = rotateLock.not()
+            TipUtil.showToast("rotateLock: $rotateLock")
+            true
         }
 //        binding.ibInfo.setOnClickListener {
 //            MaterialAlertDialogBuilder(context)
@@ -244,10 +246,22 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
         Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
         onVirtualDisplayCreated(virtualDisplay.display.displayId)
-        binding.surface.holder.addCallback(this)
+        binding.textureView.surfaceTextureListener = this
+        var failCount = 0
+        fun watchRotation() {
+            runCatching {
+                Instances.iWindowManager.watchRotation(rotationWatcher, displayId)
+            }.onFailure {
+                failCount++
+                Log.d(TAG, "watchRotation: fail $failCount")
+                watchRotation()
+            }
+        }
+        watchRotation()
     }
 
     private fun onDestroy() {
+        Instances.iWindowManager.removeRotationWatcher(rotationWatcher)
         Instances.activityTaskManager.unregisterTaskStackListener(taskStackListener)
         YAMFManager.removeWindow(virtualDisplay.display.displayId)
         virtualDisplay.release()
@@ -318,18 +332,6 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             }
             return true
         }
-    }
-
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        virtualDisplay.surface = holder.surface
-    }
-
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        virtualDisplay.resize(width, height, densityDpi)
-    }
-
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-        virtualDisplay.surface = null
     }
 
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
@@ -500,6 +502,54 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
 
         override fun onLockTaskModeChanged(mode: Int) {
 
+        }
+    }
+
+    inner class RotationWatcher : IRotationWatcher.Stub() {
+        override fun onRotationChanged(rotation: Int) {
+            runMain {
+                if (rotateLock.not())
+                    rotate(rotation)
+            }
+        }
+    }
+
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+        virtualDisplay.surface = Surface(surface)
+        virtualDisplay.resize(width, height, densityDpi)
+    }
+
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
+        virtualDisplay.resize(width, height, densityDpi)
+    }
+
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+        runCatching {
+            virtualDisplay.surface = null
+        }
+        return true
+    }
+
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+
+    }
+
+    /**
+     * 进行一个 rotation 度的旋转 而不是旋转到
+     */
+    fun rotate(rotation: Int) {
+        if (rotation == 1 || rotation == 3) {
+            val cardHeight = binding.cvApp.height
+            val surfaceWidth = binding.textureView.width
+            val surfaceHeight = binding.textureView.height
+            binding.vSizePreviewer.updateLayoutParams {
+                width = surfaceHeight
+                height = surfaceWidth + cardHeight - surfaceHeight
+            }
+            binding.cvApp.updateLayoutParams {
+                width = surfaceHeight
+                height = surfaceWidth + cardHeight - surfaceHeight
+            }
         }
     }
 }

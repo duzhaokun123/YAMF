@@ -7,6 +7,7 @@ import android.os.Process
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
 import io.github.duzhaokun123.yamf.BuildConfig
+import io.github.duzhaokun123.yamf.xposed.utils.log
 
 object BridgeService {
 

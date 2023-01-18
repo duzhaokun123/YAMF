@@ -13,6 +13,7 @@ import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.duzhaokun123.yamf.xposed.hook.HookLauncher
+import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.util.Initiator
 
 private const val TAG = "YAMF_XposedInit"

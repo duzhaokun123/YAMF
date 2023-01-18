@@ -24,11 +24,11 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 记住位置           |   ❌(不会支持)    |                ✅                 |
 | 侧边启动栏          |   ❌(TODO)    |                ✅                 |
 | 手动调整方向         |      ✅       |                ✅                 |
-| 自动调整方向         |   ❌(TODO)    |                ✅                 |
+| 自动调整方向         |      ✅       |                ✅                 |
 | open api       |   ❌(或许会有)    |                ✅                 |
 | 无需关心保活         | ✅(因为注入了系统进程) |                ❌                 |
-
-~~这个项目是我花三天时间肝出来的~~
+| 高刷新率           |      ❌       |                ❌                 |
+| HDR            |      ❌       |                ❌                 |
 
 ## 已知问题
 
@@ -44,7 +44,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 - 好看的图标
 - 暂时隐藏小窗
 - 侧边启动栏
-- 自动调整方向
+- 缩放
 
 ## Thanks
 

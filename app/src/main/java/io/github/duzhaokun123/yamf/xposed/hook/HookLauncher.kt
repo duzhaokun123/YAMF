@@ -22,7 +22,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.xposed.OpenInYAMFBroadcastReceiver
-import io.github.duzhaokun123.yamf.xposed.log
+import io.github.duzhaokun123.yamf.xposed.utils.log
 
 
 class HookLauncher : IXposedHookLoadPackage {

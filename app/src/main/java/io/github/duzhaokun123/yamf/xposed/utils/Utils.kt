@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yamf.xposed
+package io.github.duzhaokun123.yamf.xposed.utils
 
 import de.robv.android.xposed.XposedBridge
 

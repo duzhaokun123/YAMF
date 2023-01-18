@@ -3,6 +3,7 @@ package io.github.duzhaokun123.yamf.ui.main
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -25,6 +26,10 @@ import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
 
 class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Config.NO_BACK, Config.LAYOUT_MATCH_HORI),
     MenuProvider {
+    companion object {
+        const val TAG = "YAMF_MainActivity"
+    }
+
     private val openCountListener = object : IOpenCountListener.Stub() {
         override fun onUpdate(count: Int) {
             runMain {
@@ -40,7 +45,9 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
     }
     @SuppressLint("SetTextI18n")
     override fun initData() {
-        when(YAMFManagerHelper.buildTime) {
+        val buildTime = YAMFManagerHelper.buildTime
+        Log.d(TAG, "buildtime: $buildTime ${BuildConfig.BUILD_TIME}")
+        when(buildTime) {
             0L -> {
                 baseBinding.ivIcon.setImageResource(R.drawable.ic_error_outline_24)
                 baseBinding.tvActive.setText(R.string.not_activated)
