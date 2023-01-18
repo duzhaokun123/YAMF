@@ -27,8 +27,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <TextureView
-                        android:id="@+id/textureView"
+                    <SurfaceView
+                        android:id="@+id/surface"
                         android:layout_width="200dp"
                         android:layout_height="300dp"
                         android:layout_below="@id/rl_top" />
@@ -37,8 +37,8 @@
                         android:id="@+id/rl_button"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:layout_below="@id/textureView"
-                        android:layout_alignEnd="@id/textureView"
+                        android:layout_below="@id/surface"
+                        android:layout_alignEnd="@id/surface"
                         android:layout_alignParentStart="true">
 
                         <ImageButton
@@ -86,7 +86,7 @@
                         android:id="@+id/rl_top"
                         android:layout_width="wrap_content"
                         android:layout_height="28dp"
-                        android:layout_alignEnd="@id/textureView">
+                        android:layout_alignEnd="@id/surface">
 
                         <ImageView
                             android:id="@+id/iv_secure"

@@ -41,7 +41,6 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 - 某些应用在某些尺寸下缩放异常
 - 仅支持 Android 13 (api 33) 因为我只有这样的设备可以测试
     - 欢迎任何人向旧版本移植
-- 不应该频繁缩放 那个缩放缩放实现应该有问题
 
 ## TODO
 
