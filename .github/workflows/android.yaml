@@ -16,13 +16,25 @@ jobs:
           distribution: 'temurin'
           java-version: 17
           cache: 'gradle'
-      - name: Cache gradle build
-        uses: actions/cache@v3
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3.2.3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            !~/.gradle/caches/build-cache-*
+          key: gradle-deps-core-${{ hashFiles('**/build.gradle.kts') }}
+          restore-keys: |
+            gradle-deps
+      - name: Cache Gradle Build
+        uses: actions/cache@v3.2.3
         with:
           path: |
             ~/.gradle/caches/build-cache-*
-          key: gradle-builds-${{ github.sha }}
-          restore-keys: gradle-builds
+            ~/.gradle/buildOutputCleanup/cache.properties
+          key: gradle-builds-core-${{ github.sha }}
+          restore-keys: |
+            gradle-builds
       - name: Build with Gradle
         env:
           REL_KEY: ${{ secrets.REL_KEY }}
