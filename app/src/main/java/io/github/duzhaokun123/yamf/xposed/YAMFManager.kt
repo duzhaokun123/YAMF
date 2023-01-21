@@ -47,7 +47,15 @@ class YAMFManager : IYAMFManager.Stub() {
         fun addWindow(id: Int) {
             windowList.add(0, id)
             openWindowCount++
-            iOpenCountListenerSet.forEach { it.onUpdate(openWindowCount) }
+            val toRemove = mutableSetOf<IOpenCountListener>()
+            iOpenCountListenerSet.forEach {
+                runCatching {
+                    it.onUpdate(openWindowCount)
+                }.onFailure { _ ->
+                    toRemove.add(it)
+                }
+            }
+            iOpenCountListenerSet.removeAll(toRemove)
         }
 
         fun removeWindow(id: Int) {
