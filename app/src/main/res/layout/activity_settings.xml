@@ -40,5 +40,9 @@
         android:id="@+id/s_coloerd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="coloredController" />
+        android:text="coloredController" /> <com.google.android.material.materialswitch.MaterialSwitch
+    android:id="@+id/s_start"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="start activity if move task failed" />
 </LinearLayout>

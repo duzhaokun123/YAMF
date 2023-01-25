@@ -1,5 +1,7 @@
 package io.github.duzhaokun123.yamf.xposed.utils
 
+import android.app.ActivityManager
+import android.app.IActivityManager
 import android.app.IActivityTaskManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -22,6 +24,9 @@ object Instances {
     lateinit var activityTaskManager: IActivityTaskManager
         private set
     lateinit var packageManager: PackageManager
+        private set
+    lateinit var activityManager: ActivityManager
+        private set
 
     fun init(context: Context) {
         windowManager = context.getSystemService(WindowManager::class.java)
@@ -30,5 +35,6 @@ object Instances {
         displayManager = context.getSystemService(DisplayManager::class.java)
         activityTaskManager = IActivityTaskManager.Stub.asInterface(ServiceManager.getService("activity_task"))
         packageManager = context.packageManager
+        activityManager = context.getSystemService(ActivityManager::class.java)
     }
 }

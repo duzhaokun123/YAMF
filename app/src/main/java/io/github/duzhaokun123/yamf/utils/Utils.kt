@@ -16,3 +16,7 @@ fun Context.getActivity(): Activity? {
 }
 
 val gson by lazy { Gson() }
+
+fun runShell(vararg cmd: String) {
+    Runtime.getRuntime().exec(cmd)
+}

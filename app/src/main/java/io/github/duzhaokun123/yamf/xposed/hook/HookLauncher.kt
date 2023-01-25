@@ -6,6 +6,7 @@ import android.app.AndroidAppHelper
 import android.app.Application
 import android.app.PendingIntent
 import android.app.RemoteAction
+import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -51,11 +52,15 @@ class HookLauncher : IXposedHookLoadPackage {
                 val task = XposedHelpers.callMethod(taskView, "getTask")
                 val key = XposedHelpers.getObjectField(task, "key")
                 val taskId = XposedHelpers.getIntField(key, "id")
+                val topComponent = XposedHelpers.callMethod(itemInfo, "getTargetComponent") as ComponentName
+                val userId = XposedHelpers.getIntField(key, "userId")
 
                 val class_RemoteActionShortcut = XposedHelpers.findClass("com.android.launcher3.popup.RemoteActionShortcut", classLoader)
                 val intent = Intent(OpenInYAMFBroadcastReceiver.ACTION_OPEN_IN_YAMF).apply {
                     setPackage("android")
                     putExtra(OpenInYAMFBroadcastReceiver.EXTRA_TASK_ID, taskId)
+                    putExtra(OpenInYAMFBroadcastReceiver.EXTRA_COMPONENT_NAME, topComponent)
+                    putExtra(OpenInYAMFBroadcastReceiver.EXTRA_USER_ID, userId)
                 }
                 val action = RemoteAction(
                     Icon.createWithResource(getUserContext(), R.drawable.ic_picture_in_picture_alt_24),

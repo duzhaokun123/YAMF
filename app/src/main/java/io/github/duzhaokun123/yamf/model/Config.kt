@@ -10,5 +10,7 @@ data class Config(
     @SerializedName("flags")
     var flags: Int = (1 shl 10) or (1 shl 9) or DisplayManager.VIRTUAL_DISPLAY_FLAG_SECURE,
     @SerializedName("coloredController")
-    var coloredController: Boolean = false
+    var coloredController: Boolean = false,
+    @SerializedName("tryStartActivity")
+    var tryStartActivity: Boolean = false
 )

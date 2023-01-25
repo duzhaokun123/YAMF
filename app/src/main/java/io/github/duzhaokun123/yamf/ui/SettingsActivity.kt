@@ -14,6 +14,7 @@ class SettingsActivity: AppCompatActivity() {
     lateinit var etDensityDpi: EditText
     lateinit var etFlags: EditText
     lateinit var sColored: MaterialSwitch
+    lateinit var sStart: MaterialSwitch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,10 +23,12 @@ class SettingsActivity: AppCompatActivity() {
         etDensityDpi = findViewById(R.id.et_densityDpi)
         etFlags = findViewById(R.id.et_flags)
         sColored = findViewById(R.id.s_coloerd)
+        sStart = findViewById(R.id.s_start)
 
         etDensityDpi.setText(config.densityDpi.toString())
         etFlags.setText(config.flags.toString())
         sColored.isChecked = config.coloredController
+        sStart.isChecked = config.tryStartActivity
     }
 
     override fun onDestroy() {
@@ -33,6 +36,7 @@ class SettingsActivity: AppCompatActivity() {
         config.densityDpi = etDensityDpi.text.toString().toIntOrNull() ?: config.densityDpi
         config.flags = etFlags.text.toString().toIntOrNull() ?: config.flags
         config.coloredController = sColored.isChecked
+        config.tryStartActivity = sStart.isChecked
         YAMFManagerHelper.updateConfig(gson.toJson(config))
     }
 }
