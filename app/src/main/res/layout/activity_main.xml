@@ -93,5 +93,31 @@
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+        <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/window_app" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="click: back\nlong click: home"
+                android:drawableLeft="@drawable/ic_arrow_back_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="click: rotate\nlong click: lock/unlock auto rotaote"
+                android:drawableLeft="@drawable/ic_screen_rotation_alt_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="click: fullscreen"
+                android:drawableLeft="@drawable/ic_fullscreen_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
     </LinearLayout>
 </layout>
