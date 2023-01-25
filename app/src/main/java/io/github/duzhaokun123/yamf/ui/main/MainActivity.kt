@@ -24,7 +24,7 @@ import io.github.duzhaokun123.yamf.ui.SettingsActivity
 import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
 import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
 
-class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Config.NO_BACK, Config.LAYOUT_MATCH_HORI),
+class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class.java, Config.NO_BACK, Config.LAYOUT_MATCH_HORI),
     MenuProvider {
     companion object {
         const val TAG = "YAMF_MainActivity"
@@ -39,6 +39,8 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main, Co
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ActivityMainBinding.inflate(LayoutInflater.from(this))
+
         super.onCreate(savedInstanceState)
         addMenuProvider(this, this)
         YAMFManagerHelper.registerOpenCountListener(openCountListener)

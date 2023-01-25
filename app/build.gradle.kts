@@ -84,7 +84,7 @@ android {
         )
     }
     buildFeatures {
-        dataBinding = true
+        viewBinding = true
         aidl = true
     }
     lint {
@@ -118,6 +118,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
+
+    //ViewBindingUtil
+    implementation("com.github.matsudamper:ViewBindingUtil:0.1")
 }
 
 val optimizeReleaseRes = task("optimizeReleaseRes").doLast {

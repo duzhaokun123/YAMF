@@ -1,167 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:padding="12dp"
+        tools:ignore="UselessParent">
 
-        <FrameLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_app"
+            style="@style/Widget.Material3.CardView.Elevated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:padding="12dp"
-            tools:ignore="UselessParent">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cv_app"
-                style="@style/Widget.Material3.CardView.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="?colorPrimaryContainer"
-                app:cardCornerRadius="@dimen/app_card_radius"
-                app:cardElevation="4dp">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <SurfaceView
-                        android:id="@+id/surface"
-                        android:layout_width="200dp"
-                        android:layout_height="300dp"
-                        android:layout_below="@id/rl_top" />
-
-                    <RelativeLayout
-                        android:id="@+id/rl_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_below="@id/surface"
-                        android:layout_alignEnd="@id/surface"
-                        android:layout_alignParentStart="true">
-
-                        <ImageButton
-                            android:id="@+id/ib_back"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:padding="4dp"
-                            android:src="@drawable/ic_arrow_back_24"
-                            android:tint="?colorOnPrimaryContainer" />
-
-                        <ImageButton
-                            android:id="@+id/ib_rotate"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginStart="4dp"
-                            android:layout_toEndOf="@id/ib_back"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:padding="4dp"
-                            android:src="@drawable/ic_screen_rotation_alt_24"
-                            android:tint="?colorOnPrimaryContainer" />
-
-                        <ImageButton
-                            android:id="@+id/ib_fullscreen"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginStart="4dp"
-                            android:layout_toEndOf="@id/ib_rotate"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:padding="4dp"
-                            android:src="@drawable/ic_fullscreen_24"
-                            android:tint="?colorOnPrimaryContainer" />
-
-                        <ImageButton
-                            android:id="@+id/ib_resize"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_alignParentEnd="true"
-                            android:background="@null"
-                            android:src="@drawable/vd_vector"
-                            android:tint="?colorOnPrimaryContainer" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/rl_top"
-                        android:layout_width="wrap_content"
-                        android:layout_height="28dp"
-                        android:layout_alignEnd="@id/surface">
-
-                        <ImageView
-                            android:id="@+id/iv_secure"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="2dp"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:src="@drawable/ic_security_24"
-                            android:visibility="gone" />
-
-                        <ImageView
-                            android:id="@+id/iv_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="2dp"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_toEndOf="@id/iv_secure"
-                            android:src="@drawable/ic_android_black_24dp" />
-
-                        <TextView
-                            android:id="@+id/tv_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="2dp"
-                            android:layout_toStartOf="@id/ib_close"
-                            android:layout_toEndOf="@id/iv_icon"
-                            android:maxLines="1"
-                            android:text="name"
-                            android:textAppearance="?textAppearanceTitleSmall" />
-
-                        <ImageButton
-                            android:id="@+id/ib_close"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:src="@drawable/ic_close_24"
-                            android:tint="?colorOnPrimaryContainer" />
-                    </RelativeLayout>
-                </RelativeLayout>
-            </com.google.android.material.card.MaterialCardView>
+            app:cardBackgroundColor="?colorPrimaryContainer"
+            app:cardCornerRadius="@dimen/app_card_radius"
+            app:cardElevation="4dp">
 
             <RelativeLayout
-                android:id="@+id/v_sizePreviewer"
-                android:layout_width="200dp"
-                android:layout_height="300dp"
-                android:layout_marginTop="28dp"
-                android:background="@drawable/a_bg"
-                android:elevation="5dp"
-                android:visibility="invisible">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_size"
+                <SurfaceView
+                    android:id="@+id/surface"
+                    android:layout_width="200dp"
+                    android:layout_height="300dp"
+                    android:layout_below="@id/rl_top" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="?colorPrimaryContainer"
-                    android:textColor="?colorOnPrimaryContainer" />
+                    android:layout_height="30dp"
+                    android:layout_below="@id/surface"
+                    android:layout_alignEnd="@id/surface"
+                    android:layout_alignParentStart="true">
+
+                    <ImageButton
+                        android:id="@+id/ib_back"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_arrow_back_24"
+                        android:tint="?colorOnPrimaryContainer" />
+
+                    <ImageButton
+                        android:id="@+id/ib_rotate"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_toEndOf="@id/ib_back"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_screen_rotation_alt_24"
+                        android:tint="?colorOnPrimaryContainer" />
+
+                    <ImageButton
+                        android:id="@+id/ib_fullscreen"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_toEndOf="@id/ib_rotate"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_fullscreen_24"
+                        android:tint="?colorOnPrimaryContainer" />
+
+                    <ImageButton
+                        android:id="@+id/ib_resize"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:background="@null"
+                        android:src="@drawable/vd_vector"
+                        android:tint="?colorOnPrimaryContainer" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_alignEnd="@id/surface">
+
+                    <ImageView
+                        android:id="@+id/iv_secure"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:src="@drawable/ic_security_24"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/iv_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:layout_toEndOf="@id/iv_secure"
+                        android:src="@drawable/ic_android_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/tv_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="2dp"
+                        android:layout_toStartOf="@id/ib_close"
+                        android:layout_toEndOf="@id/iv_icon"
+                        android:maxLines="1"
+                        android:text="name"
+                        android:textAppearance="?textAppearanceTitleSmall" />
+
+                    <ImageButton
+                        android:id="@+id/ib_close"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:src="@drawable/ic_close_24"
+                        android:tint="?colorOnPrimaryContainer" />
+                </RelativeLayout>
             </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-<!--            这东西必须撑着才不会变小 离谱-->
-            <View
-                android:id="@+id/v_supporter"
-                android:layout_marginTop="28dp"
-                android:layout_width="200dp"
-                android:layout_height="300dp" />
-        </FrameLayout>
+        <RelativeLayout
+            android:id="@+id/v_sizePreviewer"
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/a_bg"
+            android:elevation="5dp"
+            android:visibility="invisible">
 
+            <TextView
+                android:id="@+id/tv_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="?colorPrimaryContainer"
+                android:textColor="?colorOnPrimaryContainer" />
+        </RelativeLayout>
+
+        <!--            这东西必须撑着才不会变小 离谱-->
+        <View
+            android:id="@+id/v_supporter"
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="28dp" />
     </FrameLayout>
-</layout>
+
+</FrameLayout>

@@ -1,123 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/m3_appbar_expanded_title_margin_horizontal"
+    android:paddingVertical="?dialogPreferredPadding"
+    tools:ignore="PrivateResource">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcv_status"
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:outlineAmbientShadowColor="?colorPrimary"
+        android:outlineSpotShadowColor="?colorPrimary"
+        android:stateListAnimator="@null"
+        app:cardBackgroundColor="?colorPrimary"
+        app:cardElevation="6dp"
+        app:cardPreventCornerOverlap="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="?dialogPreferredPadding">
+
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_round_check_circle_24"
+                app:tint="?colorOnPrimary"
+                tools:ignore="ContentDescription" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_toEndOf="@id/iv_icon"
+                android:fontFamily="sans-serif-medium"
+                android:textAppearance="?textAppearanceTitleMedium"
+                android:textColor="?colorOnPrimary"
+                android:textSize="16sp"
+                tools:text="Magisk: activated" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_active"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="2dp"
+                android:layout_toEndOf="@id/iv_icon"
+                android:textAppearance="?textAppearanceBodyMedium"
+                android:textColor="?colorOnPrimary"
+                tools:text="1.2.3" />
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcv_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="?dialogPreferredPadding">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceInfoDialogLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/open_count" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_openCount"
+                style="@style/DeviceInfoDialogValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-1" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
-        android:id="@+id/ll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/m3_appbar_expanded_title_margin_horizontal"
-        android:paddingVertical="?dialogPreferredPadding"
-        tools:ignore="PrivateResource">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcv_status"
-            style="@style/Widget.Material3.CardView.Elevated"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:outlineAmbientShadowColor="?colorPrimary"
-            android:outlineSpotShadowColor="?colorPrimary"
-            android:stateListAnimator="@null"
-            app:cardBackgroundColor="?colorPrimary"
-            app:cardElevation="6dp"
-            app:cardPreventCornerOverlap="false">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="?dialogPreferredPadding">
-
-                <ImageView
-                    android:id="@+id/iv_icon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_round_check_circle_24"
-                    app:tint="?colorOnPrimary"
-                    tools:ignore="ContentDescription" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_active"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_toEndOf="@id/iv_icon"
-                    android:fontFamily="sans-serif-medium"
-                    android:textAppearance="?textAppearanceTitleMedium"
-                    android:textColor="?colorOnPrimary"
-                    android:textSize="16sp"
-                    tools:text="Magisk: activated" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_active"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_toEndOf="@id/iv_icon"
-                    android:textAppearance="?textAppearanceBodyMedium"
-                    android:textColor="?colorOnPrimary"
-                    tools:text="1.2.3" />
-
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcv_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="?dialogPreferredPadding">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceInfoDialogLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/open_count" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_openCount"
-                    style="@style/DeviceInfoDialogValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="-1" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-        <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
         <include layout="@layout/window_app" />
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <TextView
-                android:text="click: back\nlong click: home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_arrow_back_24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:text="click: back\nlong click: home" />
+
             <TextView
-                android:text="click: rotate\nlong click: lock/unlock auto rotaote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_screen_rotation_alt_24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:text="click: rotate\nlong click: lock/unlock auto rotaote" />
+
             <TextView
-                android:text="click: fullscreen"
-                android:drawableLeft="@drawable/ic_fullscreen_24"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_fullscreen_24"
+                android:text="click: fullscreen" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_close_24"
+                android:text="click: close" />
         </LinearLayout>
     </LinearLayout>
-    </LinearLayout>
-</layout>
+</LinearLayout>

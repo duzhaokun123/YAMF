@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.core.view.WindowInsetsCompat
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.viewbinding.ViewBinding
+import net.matsudamper.viewbindingutil.ViewBindingUtil
 
-abstract class BaseFragment<BaseBinding : ViewDataBinding>(@LayoutRes val layoutId: Int) : Fragment() {
+abstract class BaseFragment<BaseBinding : ViewBinding>(private val baseBindingClass: Class<BaseBinding>) : Fragment() {
     val className by lazy { this::class.simpleName }
 
     lateinit var baseBinding: BaseBinding
@@ -30,7 +29,7 @@ abstract class BaseFragment<BaseBinding : ViewDataBinding>(@LayoutRes val layout
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        baseBinding = DataBindingUtil.inflate(layoutInflater, layoutId, null, false)
+        baseBinding = ViewBindingUtil.inflate(layoutInflater, baseBindingClass)
         findViews()
         initViews()
         initEvents()

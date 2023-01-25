@@ -1,6 +1,5 @@
 package io.github.duzhaokun123.androidapptemplate.bases
 
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -8,23 +7,26 @@ import android.view.WindowManager
 import android.widget.RelativeLayout
 import androidx.activity.viewModels
 import androidx.annotation.CallSuper
-import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.*
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.viewbinding.ViewBinding
 import io.github.duzhaokun123.androidapptemplate.utils.TipUtil
 import io.github.duzhaokun123.androidapptemplate.utils.maxSystemBarsDisplayCutout
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.ActivityBaseRoot2Binding
+import net.matsudamper.viewbindingutil.ViewBindingUtil
 
-abstract class BaseActivity<BaseBinding : ViewDataBinding>(
-    @LayoutRes val layoutId: Int, vararg val configs: Config, @StyleRes val themeId: Int = R.style.Theme_YAMF
+abstract class BaseActivity<BaseBinding : ViewBinding>(
+    private val baseBindingClass: Class<BaseBinding>, vararg val configs: Config, @StyleRes val themeId: Int = R.style.Theme_YAMF
 ) : AppCompatActivity() {
     enum class Config {
         NO_TOOL_BAR,
@@ -55,12 +57,10 @@ abstract class BaseActivity<BaseBinding : ViewDataBinding>(
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.attributes.layoutInDisplayCutoutMode =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
-            else
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
 
-        rootBinding = DataBindingUtil.setContentView(this, R.layout.activity_base_root_2)
+        rootBinding = ViewBindingUtil.inflate(layoutInflater)
+        setContentView(rootBinding.root)
         if (Config.NO_TOOL_BAR in configs) rootBinding.rootTb.visibility = View.GONE
         if (Config.LAYOUT_NO_TOOL_BAR in configs)
             rootBinding.rootFl.updateLayoutParams<RelativeLayout.LayoutParams> {
@@ -75,7 +75,7 @@ abstract class BaseActivity<BaseBinding : ViewDataBinding>(
             insets
         }
 
-        baseBinding = DataBindingUtil.inflate(layoutInflater, layoutId, rootBinding.rootFl, true)
+        baseBinding = ViewBindingUtil.inflate(layoutInflater, rootBinding.rootFl, true, baseBindingClass)
 
         findViews()
         setSupportActionBar(initActionBar())

@@ -63,6 +63,8 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 
 [QAuxiliary](https://github.com/cinit/QAuxiliary)
 
+[ViewBindingUtil](https://github.com/matsudamper/ViewBindingUtil)
+
 [gson](https://github.com/google/gson)
 
 [xposed](https://forum.xda-developers.com/xposed)
