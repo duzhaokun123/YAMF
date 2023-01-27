@@ -6,6 +6,7 @@ import android.os.Process
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.model.Config
+import io.github.duzhaokun123.yamf.ui.window.AppListWindow
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
 import io.github.duzhaokun123.yamf.utils.gson
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
@@ -127,5 +128,11 @@ class YAMFManager : IYAMFManager.Stub() {
 
     override fun unregisterOpenCountListener(iOpenCountListener: IOpenCountListener?) {
         iOpenCountListenerSet.remove(iOpenCountListener)
+    }
+
+    override fun openAppList() {
+        runMain {
+            AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), 0)
+        }
     }
 }

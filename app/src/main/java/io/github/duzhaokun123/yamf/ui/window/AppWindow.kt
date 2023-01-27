@@ -73,10 +73,6 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
         binding.root.let { layout ->
             layout.setOnTouchListener(MoveOnTouchListener())
             Instances.windowManager.addView(layout, params)
-//            OverlayService.windowMap.values.forEach { it2 ->
-//                if (it2 != it)
-//                    it2.isTop = false
-//            }
         }
         binding.ibResize.setOnTouchListener(object : View.OnTouchListener {
             var beginX = 0F
@@ -226,6 +222,10 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
         binding.ibClose.setOnClickListener {
             onDestroy()
         }
+        binding.ibClose.setOnLongClickListener {
+            AppListWindow(context, displayId)
+            true
+        }
         binding.ibFullscreen.setOnClickListener {
             getTopRootTask()?.runCatching {
                 Instances.activityTaskManager.moveRootTaskToDisplay(taskId, 0)
@@ -335,7 +335,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             }
             val topActivity = taskInfo.topActivity ?: return@add
             val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId)
-            val icon = taskDescription.icon
+            val icon = runCatching { taskDescription.icon }.getOrNull()
             if (icon == null) {
                 binding.ivIcon.setImageDrawable(Instances.packageManager.getActivityIcon(topActivity))
             } else {

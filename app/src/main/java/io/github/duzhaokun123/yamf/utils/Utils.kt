@@ -1,13 +1,18 @@
 package io.github.duzhaokun123.yamf.utils
 
 import android.app.Activity
+import android.app.ActivityOptions
+import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
+import android.os.Bundle
+import android.os.UserHandle
+import com.github.kyuubiran.ezxhelper.utils.argTypes
+import com.github.kyuubiran.ezxhelper.utils.args
+import com.github.kyuubiran.ezxhelper.utils.invokeMethod
+import com.github.kyuubiran.ezxhelper.utils.newInstance
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 fun Context.getActivity(): Activity? {
     if (this is Activity) return this
@@ -17,6 +22,24 @@ fun Context.getActivity(): Activity? {
 
 val gson by lazy { Gson() }
 
-fun runShell(vararg cmd: String) {
-    Runtime.getRuntime().exec(cmd)
+fun startActivity(context: Context, componentName: ComponentName, userId: Int, displayId: Int) {
+    context.invokeMethod(
+        "startActivityAsUser",
+        args(
+            Intent().apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                component = componentName
+                `package` = component!!.packageName
+                action = Intent.ACTION_VIEW
+            },
+            ActivityOptions.makeBasic().apply {
+                launchDisplayId = displayId
+                this.invokeMethod("setCallerDisplayId", args(displayId), argTypes(Integer.TYPE))
+            }.toBundle(),
+            UserHandle::class.java.newInstance(
+                args(userId),
+                argTypes(Integer.TYPE)
+            )
+        ), argTypes(Intent::class.java, Bundle::class.java, UserHandle::class.java)
+    )
 }

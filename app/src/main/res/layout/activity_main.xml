@@ -126,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_close_24"
-                android:text="click: close" />
+                android:text="click: close\nlong click app list" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

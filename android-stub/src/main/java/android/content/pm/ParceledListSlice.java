@@ -3,24 +3,20 @@ package android.content.pm;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * see <a href="https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/content/pm/ParceledListSlice.java">source</a>
  */
-public class ParceledListSlice implements Parcelable {
+public class ParceledListSlice<T> implements Parcelable {
+
+    public List<T> getList() {
+        return null;
+    }
     protected ParceledListSlice(Parcel in) {
     }
 
-    public static final Creator<ParceledListSlice> CREATOR = new Creator<ParceledListSlice>() {
-        @Override
-        public ParceledListSlice createFromParcel(Parcel in) {
-            return new ParceledListSlice(in);
-        }
-
-        @Override
-        public ParceledListSlice[] newArray(int size) {
-            return new ParceledListSlice[size];
-        }
-    };
+    public static final Creator<ParceledListSlice<?>> CREATOR = null;
 
     @Override
     public int describeContents() {

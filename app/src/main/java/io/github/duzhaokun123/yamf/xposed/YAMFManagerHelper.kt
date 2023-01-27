@@ -64,6 +64,10 @@ object YAMFManagerHelper : IYAMFManager, DeathRecipient {
         getService()?.unregisterOpenCountListener(iOpenCountListener)
     }
 
+    override fun openAppList() {
+        getService()?.openAppList()
+    }
+
     private fun getService(): IYAMFManager? {
         if (service != null) return service
         val pm = ServiceManager.getService("package")

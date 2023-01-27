@@ -103,6 +103,10 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                 })
                 true
             }
+            R.id.open_app_list -> {
+                YAMFManagerHelper.openAppList()
+                true
+            }
             R.id.settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
                 true

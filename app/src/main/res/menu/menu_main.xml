@@ -11,6 +11,10 @@
         android:title="new window"
         app:showAsAction="never" />
     <item
+        android:id="@+id/open_app_list"
+        android:title="open app list"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/channel"
         android:title="telegram channel"
         app:showAsAction="never" />

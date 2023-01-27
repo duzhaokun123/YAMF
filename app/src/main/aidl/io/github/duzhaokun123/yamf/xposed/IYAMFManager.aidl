@@ -21,4 +21,6 @@ interface IYAMFManager {
     void registerOpenCountListener(IOpenCountListener iOpenCountListener);
 
     void unregisterOpenCountListener(IOpenCountListener iOpenCountListener);
+
+    void openAppList();
 }

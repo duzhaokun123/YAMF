@@ -1,16 +1,16 @@
 package io.github.duzhaokun123.yamf.xposed.utils
 
 import android.app.ActivityManager
-import android.app.IActivityManager
 import android.app.IActivityTaskManager
 import android.content.Context
+import android.content.pm.IPackageManager
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
 import android.hardware.input.IInputManager
 import android.os.ServiceManager
+import android.os.UserManager
 import android.view.IWindowManager
 import android.view.WindowManager
-import androidx.core.content.getSystemService
 
 object Instances {
     lateinit var windowManager: WindowManager
@@ -27,6 +27,10 @@ object Instances {
         private set
     lateinit var activityManager: ActivityManager
         private set
+    lateinit var userManager: UserManager
+        private set
+    lateinit var iPackageManager: IPackageManager
+        private set
 
     fun init(context: Context) {
         windowManager = context.getSystemService(WindowManager::class.java)
@@ -36,5 +40,7 @@ object Instances {
         activityTaskManager = IActivityTaskManager.Stub.asInterface(ServiceManager.getService("activity_task"))
         packageManager = context.packageManager
         activityManager = context.getSystemService(ActivityManager::class.java)
+        userManager = context.getSystemService(UserManager::class.java)
+        iPackageManager = IPackageManager.Stub.asInterface(ServiceManager.getService("package"))
     }
 }
