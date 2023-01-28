@@ -111,6 +111,18 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                 startActivity(Intent(this, SettingsActivity::class.java))
                 true
             }
+            R.id.github -> {
+                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                    data = "https://github.com/duzhaokun123/YAMF".toUri()
+                })
+                true
+            }
+            R.id.donate -> {
+                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                    data = "https://duzhaokun123.github.io/donate.html".toUri()
+                })
+                true
+            }
             else -> false
         }
     }

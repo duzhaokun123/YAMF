@@ -18,4 +18,12 @@
         android:id="@+id/channel"
         android:title="telegram channel"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/github"
+        android:title="github"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/donate"
+        android:title="donate"
+        app:showAsAction="never" />
 </menu>
