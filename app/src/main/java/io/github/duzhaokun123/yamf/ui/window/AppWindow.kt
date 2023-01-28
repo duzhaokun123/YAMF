@@ -334,7 +334,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 delay(500) // fixme: 使用能直接确定可见性的方法
             }
             val topActivity = taskInfo.topActivity ?: return@add
-            val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId)
+            val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
             val icon = runCatching { taskDescription.icon }.getOrNull()
             if (icon == null) {
                 binding.ivIcon.setImageDrawable(Instances.packageManager.getActivityIcon(topActivity))
