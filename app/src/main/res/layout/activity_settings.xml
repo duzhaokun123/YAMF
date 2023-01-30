@@ -21,6 +21,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_flags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -29,8 +30,9 @@
             android:layout_height="wrap_content"
             android:text="flags" />
 
-        <EditText
-            android:id="@+id/et_flags"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_flags"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number" />
@@ -40,9 +42,11 @@
         android:id="@+id/s_coloerd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="coloredController" /> <com.google.android.material.materialswitch.MaterialSwitch
-    android:id="@+id/s_start"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="start activity if move task failed" />
+        android:text="coloredController" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/s_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start activity if move task failed" />
 </LinearLayout>

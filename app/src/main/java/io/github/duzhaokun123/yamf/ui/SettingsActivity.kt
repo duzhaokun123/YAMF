@@ -1,42 +1,74 @@
 package io.github.duzhaokun123.yamf.ui
 
-import android.os.Bundle
-import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.materialswitch.MaterialSwitch
-import io.github.duzhaokun123.yamf.R
-import io.github.duzhaokun123.yamf.model.Config
+import android.content.Intent
+import androidx.core.net.toUri
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
+import io.github.duzhaokun123.yamf.databinding.ActivitySettingsBinding
 import io.github.duzhaokun123.yamf.utils.gson
 import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
+import io.github.duzhaokun123.yamf.model.Config as YAMFConfig
 
-class SettingsActivity: AppCompatActivity() {
-    lateinit var config: Config
-    lateinit var etDensityDpi: EditText
-    lateinit var etFlags: EditText
-    lateinit var sColored: MaterialSwitch
-    lateinit var sStart: MaterialSwitch
+class SettingsActivity :
+    BaseActivity<ActivitySettingsBinding>(ActivitySettingsBinding::class.java) {
+    companion object {
+        val flags = listOf(
+            "VIRTUAL_DISPLAY_FLAG_PUBLIC",                          // 1 << 0
+            "VIRTUAL_DISPLAY_FLAG_PRESENTATION",                    // 1 << 1
+            "VIRTUAL_DISPLAY_FLAG_SECURE",                          // 1 << 2
+            "VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY",                // 1 << 3
+            "VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR",                     // 1 << 4
+            "VIRTUAL_DISPLAY_FLAG_CAN_SHOW_WITH_INSECURE_KEYGUARD", // 1 << 5
+            "VIRTUAL_DISPLAY_FLAG_SUPPORTS_TOUCH",                  // 1 << 6
+            "VIRTUAL_DISPLAY_FLAG_ROTATES_WITH_CONTENT",            // 1 << 7
+            "VIRTUAL_DISPLAY_FLAG_DESTROY_CONTENT_ON_REMOVAL",      // 1 << 8
+            "VIRTUAL_DISPLAY_FLAG_SHOULD_SHOW_SYSTEM_DECORATIONS",  // 1 << 9
+            "VIRTUAL_DISPLAY_FLAG_TRUSTED",                         // 1 << 10
+            "VIRTUAL_DISPLAY_FLAG_OWN_DISPLAY_GROUP",               // 1 << 11
+            "VIRTUAL_DISPLAY_FLAG_ALWAYS_UNLOCKED",                 // 1 << 12
+            "VIRTUAL_DISPLAY_FLAG_TOUCH_FEEDBACK_DISABLED",         // 1 << 13
+        )
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-        config = gson.fromJson(YAMFManagerHelper.configJson, Config::class.java)
-        etDensityDpi = findViewById(R.id.et_densityDpi)
-        etFlags = findViewById(R.id.et_flags)
-        sColored = findViewById(R.id.s_coloerd)
-        sStart = findViewById(R.id.s_start)
+    lateinit var config: YAMFConfig
 
-        etDensityDpi.setText(config.densityDpi.toString())
-        etFlags.setText(config.flags.toString())
-        sColored.isChecked = config.coloredController
-        sStart.isChecked = config.tryStartActivity
+    override fun initData() {
+        super.initData()
+        config = gson.fromJson(YAMFManagerHelper.configJson, YAMFConfig::class.java)
+        baseBinding.etDensityDpi.setText(config.densityDpi.toString())
+        baseBinding.btnFlags.text = config.flags.toString()
+        baseBinding.sColoerd.isChecked = config.coloredController
+        baseBinding.sStart.isChecked = config.tryStartActivity
+
+        baseBinding.btnFlags.setOnClickListener {
+            val checks = BooleanArray(flags.size) { i ->
+                config.flags and (1 shl i) != 0
+            }
+            MaterialAlertDialogBuilder(this)
+                .setMultiChoiceItems(flags.toTypedArray(), checks) { _, i, c ->
+                    checks[i] = c
+                    baseBinding.btnFlags.text = checks.foldIndexed(0) { i, f, b ->
+                        if (b)
+                            f + (1 shl i)
+                        else
+                            f
+                    }.toString()
+                }
+                .setPositiveButton("about") { _, _ ->
+                    startActivity(Intent(Intent.ACTION_VIEW).apply {
+                        data = "https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/hardware/display/DisplayManager.java".toUri()
+                    })
+                }
+                .show()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        config.densityDpi = etDensityDpi.text.toString().toIntOrNull() ?: config.densityDpi
-        config.flags = etFlags.text.toString().toIntOrNull() ?: config.flags
-        config.coloredController = sColored.isChecked
-        config.tryStartActivity = sStart.isChecked
+        config.densityDpi = baseBinding.etDensityDpi.text.toString().toIntOrNull() ?: config.densityDpi
+        config.flags = baseBinding.btnFlags.text.toString().toIntOrNull() ?: config.flags
+        config.coloredController = baseBinding.sColoerd.isChecked
+        config.tryStartActivity = baseBinding.sStart.isChecked
         YAMFManagerHelper.updateConfig(gson.toJson(config))
     }
 }

@@ -8,7 +8,13 @@ data class Config(
     @SerializedName("densityDpi")
     var densityDpi: Int = 200,
     @SerializedName("flags")
-    var flags: Int = (1 shl 10) or (1 shl 9) or DisplayManager.VIRTUAL_DISPLAY_FLAG_SECURE,
+    /*
+     * VIRTUAL_DISPLAY_FLAG_SECURE                          1 << 2
+     * VIRTUAL_DISPLAY_FLAG_ROTATES_WITH_CONTENT            1 << 7
+     * VIRTUAL_DISPLAY_FLAG_SHOULD_SHOW_SYSTEM_DECORATIONS  1 << 9
+     * VIRTUAL_DISPLAY_FLAG_TRUSTED                         1 << 10
+     */
+    var flags: Int = 1668,
     @SerializedName("coloredController")
     var coloredController: Boolean = false,
     @SerializedName("tryStartActivity")
