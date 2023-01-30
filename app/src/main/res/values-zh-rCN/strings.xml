@@ -10,4 +10,12 @@
     <string name="reboot">重启</string>
     <string name="settings">设置</string>
     <string name="open_count">开窗计数</string>
+    <string name="new_window">开窗</string>
+    <string name="open_app_list">打开应用列表</string>
+    <string name="telegram_channel">Telegram 频道</string>
+    <string name="donate">捐赠</string>
+    <string name="back_desc">点击: 返回\n长按: 主页</string>
+    <string name="rotate_desc">点击: 转屏\n长按: 锁定/解锁 自动转屏</string>
+    <string name="fullscreen_desc">点击: 全屏\n长按: 挂起, 双击恢复</string>
+    <string name="close_desc">点击: 关闭\n长按: 应用列表</string>
 </resources>

@@ -10,4 +10,12 @@
     <string name="reboot">reboot</string>
     <string name="settings">settings</string>
     <string name="open_count">open count</string>
+    <string name="new_window">new window</string>
+    <string name="open_app_list">open app list</string>
+    <string name="telegram_channel">Telegram channel</string>
+    <string name="donate">donate</string>
+    <string name="back_desc">click: back\nlong click: home</string>
+    <string name="rotate_desc">click: rotate\nlong click: lock/unlock auto rotaote</string>
+    <string name="fullscreen_desc">click: fullscreen\nlong click: hang up, double click to resume</string>
+    <string name="close_desc">click: close\nlong click: app list</string>
 </resources>
