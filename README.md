@@ -46,6 +46,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 
 - 好看的图标
 - 侧边启动栏
+- RtL 支持
 
 ## 捐赠
 

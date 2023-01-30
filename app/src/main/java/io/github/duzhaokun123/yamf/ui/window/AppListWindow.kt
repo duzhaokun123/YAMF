@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
@@ -30,6 +31,7 @@ class AppListWindow(val context: Context, val displayId: Int) {
     val users = mutableMapOf<Int, String>()
     var userId = 0
     var apps = emptyList<PackageInfo>()
+    var showApps = emptyList<PackageInfo>()
 
     init {
         val params = WindowManager.LayoutParams(
@@ -68,6 +70,12 @@ class AppListWindow(val context: Context, val displayId: Int) {
         onSelectUser(0)
         binding.rv.layoutManager = GridLayoutManager(context, 5)
         binding.rv.adapter = Adapter()
+
+        binding.etSearch.doOnTextChanged { text, _, _, _ ->
+            text?:return@doOnTextChanged
+            showApps = apps.filter { text in it.packageName || Instances.packageManager.getApplicationLabel(Instances.packageManager.getApplicationInfo(it.packageName, 0)).contains(text, true) }
+            binding.rv.adapter = binding.rv.adapter
+        }
     }
 
     private fun onSelectUser(userId: Int) {
@@ -76,6 +84,8 @@ class AppListWindow(val context: Context, val displayId: Int) {
         apps = (Instances.iPackageManager.getInstalledPackages((PackageManager.GET_META_DATA).toLong(), userId).list as List<PackageInfo>)
             .filter { it.applicationInfo != null && it.applicationInfo.uid / 100000 == userId }
             .filter { Instances.packageManager.getLaunchIntentForPackage(it.packageName) != null }
+        showApps = apps
+        binding.etSearch.text.clear()
         binding.rv.adapter = binding.rv.adapter
     }
 
@@ -85,7 +95,7 @@ class AppListWindow(val context: Context, val displayId: Int) {
 
     inner class Adapter : BaseSimpleAdapter<ItemAppBinding>(context, ItemAppBinding::class.java) {
         override fun initViews(baseBinding: ItemAppBinding, position: Int) {
-            val packageInfo = apps[position]
+            val packageInfo = showApps[position]
             baseBinding.ll.setOnClickListener {
                 startActivity(context, Instances.packageManager.getLaunchIntentForPackage(packageInfo.packageName)!!.component!!, userId, displayId)
                 close()
@@ -93,11 +103,11 @@ class AppListWindow(val context: Context, val displayId: Int) {
         }
 
         override fun initData(baseBinding: ItemAppBinding, position: Int) {
-            val packageInfo = apps[position]
+            val packageInfo = showApps[position]
             baseBinding.ivIcon.setImageDrawable(Instances.packageManager.getApplicationIcon(packageInfo.packageName))
             baseBinding.tvLabel.text = Instances.packageManager.getApplicationLabel(Instances.packageManager.getApplicationInfo(packageInfo.packageName, 0))
         }
 
-        override fun getItemCount() = apps.size
+        override fun getItemCount() = showApps.size
     }
 }

@@ -548,7 +548,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 width = virtualDisplay.display.width
                 height = virtualDisplay.display.height
             }
-            binding.vSizePreviewer.updateLayoutParams {
+            binding.vSupporter.updateLayoutParams {
                 width = virtualDisplay.display.width
                 height = virtualDisplay.display.height
             }
