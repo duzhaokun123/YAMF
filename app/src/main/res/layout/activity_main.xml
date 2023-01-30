@@ -120,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_fullscreen_24"
-                android:text="click: fullscreen" />
+                android:text="click: fullscreen\nlong click: hang up, double click to resume" />
 
             <TextView
                 android:layout_width="wrap_content"

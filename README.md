@@ -21,7 +21,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 重写其他应用的通知以在小窗中打开 |    ❌(不会支持)    |                ✅                 |
 | 从最近任务启动小窗        |       ✅       |                ✅                 |
 | 暂时隐藏小窗           | ❌(移到边上看不见就好了) |                ✅                 |
-| 挂起小窗             |    ❌(不会支持)    |                ✅                 |
+| 挂起小窗             |       ✅       |                ✅                 |
 | 记住位置             |    ❌(不会支持)    |                ✅                 |
 | 侧边启动栏            |    ❌(TODO)    |                ✅                 |
 | 手动调整方向           |       ✅       |                ✅                 |
@@ -30,7 +30,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 调整大小 (resize)    |       ✅       |                ✅                 |            
 | open api         |    ❌(或许会有)    |                ✅                 |
 | 无需关心保活           | ✅(因为注入了系统进程)  |                ❌                 |
-| 高刷新率             |       ❌       |                ❌                 |
+| 高刷新率             |       ❓       |                ❓                 |
 | HDR              |       ❌       |                ❌                 |
 
 ## 已知问题

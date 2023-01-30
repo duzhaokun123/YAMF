@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <SurfaceView
+                <TextureView
                     android:id="@+id/surface"
                     android:layout_width="200dp"
                     android:layout_height="300dp"
@@ -142,7 +142,7 @@
             android:layout_marginTop="28dp"
             android:background="@drawable/a_bg"
             android:elevation="5dp"
-            android:visibility="invisible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_size"

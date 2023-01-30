@@ -8,7 +8,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Matrix
 import android.graphics.PixelFormat
+import android.graphics.SurfaceTexture
 import android.hardware.display.VirtualDisplay
 import android.os.SystemClock
 import android.util.Log
@@ -19,7 +21,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.Surface
-import android.view.SurfaceHolder
+import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -41,7 +43,7 @@ import kotlinx.coroutines.delay
 
 @SuppressLint("ClickableViewAccessibility")
 class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtualDisplayCreated: ((Int) -> Unit)) :
-    SurfaceHolder.Callback {
+    TextureView.SurfaceTextureListener {
     companion object {
         const val TAG = "YAMF_AppWindow"
     }
@@ -50,8 +52,12 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
     lateinit var virtualDisplay: VirtualDisplay
     val taskStackListener = TaskStackListener()
     val rotationWatcher = RotationWatcher()
+    val surfaceOnTouchListener = SurfaceOnTouchListener()
     var displayId = -1
     var rotateLock = false
+    var isMini = false
+    var halfWidth = 0
+    var halfHeight = 0
 
     init {
         binding = WindowAppBinding.inflate(LayoutInflater.from(context))
@@ -118,50 +124,13 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                                 height = targetHeight
                         }
                         binding.vSupporter.layoutParams = FrameLayout.LayoutParams(binding.vSizePreviewer.layoutParams)
-                        binding.vSizePreviewer.visibility = View.INVISIBLE
+                        binding.vSizePreviewer.visibility = View.GONE
                     }
                 }
                 return true
             }
         })
-        binding.surface.setOnTouchListener { _, event ->
-            val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
-            val pointerProperties: Array<MotionEvent.PointerProperties?> =
-                arrayOfNulls(event.pointerCount)
-            for (i in 0 until event.pointerCount) {
-                val oldCoords = MotionEvent.PointerCoords()
-                val pointerProperty = MotionEvent.PointerProperties()
-                event.getPointerCoords(i, oldCoords)
-                event.getPointerProperties(i, pointerProperty)
-                pointerCoords[i] = oldCoords
-                pointerCoords[i]!!.apply {
-                    x = oldCoords.x
-                    y = oldCoords.y
-                }
-                pointerProperties[i] = pointerProperty
-            }
-
-            val newEvent = MotionEvent.obtain(
-                event.downTime,
-                event.eventTime,
-                event.action,
-                event.pointerCount,
-                pointerProperties,
-                pointerCoords,
-                event.metaState,
-                event.buttonState,
-                event.xPrecision,
-                event.yPrecision,
-                event.deviceId,
-                event.edgeFlags,
-                event.source,
-                event.flags
-            )
-            newEvent.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
-            Instances.inputManager.injectInputEvent(newEvent, 0)
-            newEvent.recycle()
-            true
-        }
+        binding.surface.setOnTouchListener(surfaceOnTouchListener)
         binding.ibBack.setOnClickListener {
             val down = KeyEvent(
                 SystemClock.uptimeMillis(),
@@ -236,11 +205,15 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 binding.ibClose.callOnClick()
             }
         }
+        binding.ibFullscreen.setOnLongClickListener {
+            changeMini()
+            true
+        }
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
         displayId = virtualDisplay.display.displayId
         Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
         onVirtualDisplayCreated(virtualDisplay.display.displayId)
-        binding.surface.holder.addCallback(this)
+        binding.surface.surfaceTextureListener = this
         var failCount = 0
         fun watchRotation() {
             runCatching {
@@ -283,6 +256,8 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
         private var offsetX = 0f
         private var offsetY = 0f
 
+        private var lastUp = 0L
+
         @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             when (event.action) {
@@ -321,6 +296,13 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 MotionEvent.ACTION_UP -> {
                     if (YAMFManager.isTop(virtualDisplay.display.displayId).not()) {
                         moveToTop()
+                    }
+
+                    if (isMini) {
+                        if (System.currentTimeMillis() - lastUp < 500) {
+                            changeMini()
+                        }
+                        lastUp = System.currentTimeMillis()
                     }
                 }
             }
@@ -526,15 +508,107 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
         }
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        virtualDisplay.surface = holder.surface
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+        if (isMini.not()) {
+            virtualDisplay.resize(width, height, densityDpi)
+            surface.setDefaultBufferSize(width, height)
+            halfWidth = width % 2
+            halfHeight = height % 2
+        } else {
+            virtualDisplay.resize(width * 2 + halfWidth, height * 2 + halfHeight, densityDpi)
+            surface.setDefaultBufferSize(width * 2 + halfWidth, height * 2 + halfHeight)
+        }
+        virtualDisplay.surface = Surface(surface)
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        virtualDisplay.resize(width, height, densityDpi)
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
+        if (isMini.not()) {
+            virtualDisplay.resize(width, height, densityDpi)
+            surface.setDefaultBufferSize(width, height)
+            halfWidth = width % 2
+            halfHeight = height % 2
+        } else {
+            virtualDisplay.resize(width * 2 + halfWidth, height * 2 + halfHeight, densityDpi)
+            surface.setDefaultBufferSize(width * 2 + halfWidth, height * 2 + halfHeight)
+        }
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-        virtualDisplay.surface = null
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+        return true
+    }
+
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+
+    }
+
+    private fun changeMini() {
+        if (isMini) {
+            isMini = false
+            binding.surface.updateLayoutParams {
+                width = virtualDisplay.display.width
+                height = virtualDisplay.display.height
+            }
+            binding.vSizePreviewer.updateLayoutParams {
+                width = virtualDisplay.display.width
+                height = virtualDisplay.display.height
+            }
+            binding.rlTop.visibility = View.VISIBLE
+            binding.rlButton.visibility = View.VISIBLE
+            binding.surface.setOnTouchListener(surfaceOnTouchListener)
+        } else {
+            isMini = true
+            binding.surface.updateLayoutParams {
+                width = virtualDisplay.display.width / 2
+                height = virtualDisplay.display.height / 2
+            }
+            binding.vSupporter.updateLayoutParams {
+                width = virtualDisplay.display.width / 2
+                height = virtualDisplay.display.height / 2
+            }
+            binding.rlTop.visibility = View.GONE
+            binding.rlButton.visibility = View.GONE
+            binding.surface.setOnTouchListener(null)
+        }
+    }
+
+    inner class SurfaceOnTouchListener : View.OnTouchListener {
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+            val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
+            val pointerProperties: Array<MotionEvent.PointerProperties?> =
+                arrayOfNulls(event.pointerCount)
+            for (i in 0 until event.pointerCount) {
+                val oldCoords = MotionEvent.PointerCoords()
+                val pointerProperty = MotionEvent.PointerProperties()
+                event.getPointerCoords(i, oldCoords)
+                event.getPointerProperties(i, pointerProperty)
+                pointerCoords[i] = oldCoords
+                pointerCoords[i]!!.apply {
+                    x = oldCoords.x
+                    y = oldCoords.y
+                }
+                pointerProperties[i] = pointerProperty
+            }
+
+            val newEvent = MotionEvent.obtain(
+                event.downTime,
+                event.eventTime,
+                event.action,
+                event.pointerCount,
+                pointerProperties,
+                pointerCoords,
+                event.metaState,
+                event.buttonState,
+                event.xPrecision,
+                event.yPrecision,
+                event.deviceId,
+                event.edgeFlags,
+                event.source,
+                event.flags
+            )
+            newEvent.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
+            Instances.inputManager.injectInputEvent(newEvent, 0)
+            newEvent.recycle()
+            return true
+        }
     }
 }
