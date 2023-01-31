@@ -18,7 +18,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 支持 FLAG_SECURE   |       ✅       |                ❌                 |
 | 系统级叠加层           |       ✅       |                ❌                 |
 | 多实例的应用支持         |       ✅       |                ❌                 |
-| 重写其他应用的通知以在小窗中打开 |    ❌(不会支持)    |                ✅                 |
+| 重写其他应用的通知以在小窗中打开 |    ❌(或许会有)    |                ✅                 |
 | 从最近任务启动小窗        |       ✅       |                ✅                 |
 | 暂时隐藏小窗           | ❌(移到边上看不见就好了) |                ✅                 |
 | 挂起小窗             |       ✅       |                ✅                 |
@@ -60,7 +60,7 @@ https://duzhaokun123.github.io/donate.html
 
 [EzXHelper](https://github.com/KyuubiRan/EzXHelper)
 
-[Hide-My-ApplistH](https://github.com/Dr-TSNG/Hide-My-Applist)
+[Hide-My-Applist](https://github.com/Dr-TSNG/Hide-My-Applist)
 
 [LSPosed](https://github.com/LSPosed/LSPosed)
 

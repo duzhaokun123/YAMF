@@ -1,7 +1,6 @@
 package io.github.duzhaokun123.yamf.model
 
 
-import android.hardware.display.DisplayManager
 import com.google.gson.annotations.SerializedName
 
 data class Config(

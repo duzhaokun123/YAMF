@@ -494,6 +494,9 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
      */
     fun rotate(rotation: Int) {
         if (rotation == 1 || rotation == 3) {
+            val t = halfHeight
+            halfHeight = halfWidth
+            halfWidth = t
             val surfaceWidth = binding.surface.width
             val surfaceHeight = binding.surface.height
             binding.vSizePreviewer.updateLayoutParams {
