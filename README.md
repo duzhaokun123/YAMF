@@ -33,14 +33,16 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 高刷新率             |                     ❓                     |                ❓                 |
 | HDR              |                     ❌                     |                ❌                 |
 
+## 下载
+
+https://github.com/Xposed-Modules-Repo/io.github.duzhaokun123.yamf
+
 ## 已知问题
 
 - 模块与注入的版本不同时系统会崩溃
     - 常见 xposed 模块问题
 - 某些应用似乎无法在小窗中启动
 - 某些应用在某些尺寸下缩放异常
-- 仅支持 Android 13 (api 33) 因为我只有这样的设备可以测试
-    - 欢迎任何人向旧版本移植
 
 ## TODO
 
