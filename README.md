@@ -56,6 +56,12 @@ https://duzhaokun123.github.io/donate.html
 
 ## Thanks
 
+### 贡献者
+
+[Nitsuya](https://github.com/Nitsuya)
+
+### 库
+
 [AOSP](https://source.android.com/)
 
 [EzXHelper](https://github.com/KyuubiRan/EzXHelper)
