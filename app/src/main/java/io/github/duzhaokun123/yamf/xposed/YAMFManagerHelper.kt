@@ -68,6 +68,10 @@ object YAMFManagerHelper : IYAMFManager, DeathRecipient {
         getService()?.openAppList()
     }
 
+    override fun currentToWindow() {
+        getService()?.currentToWindow()
+    }
+
     private fun getService(): IYAMFManager? {
         if (service != null) return service
         val pm = ServiceManager.getService("package")

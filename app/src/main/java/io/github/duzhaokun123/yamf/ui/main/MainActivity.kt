@@ -130,6 +130,10 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                 })
                 true
             }
+            R.id.current_to_window -> {
+                YAMFManagerHelper.currentToWindow()
+                true
+            }
             else -> false
         }
     }

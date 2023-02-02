@@ -1,6 +1,7 @@
 package io.github.duzhaokun123.yamf.xposed
 
 import android.annotation.SuppressLint
+import android.app.ActivityTaskManager
 import android.content.Context
 import android.content.IntentFilter
 import android.os.Process
@@ -10,9 +11,11 @@ import io.github.duzhaokun123.yamf.model.Config
 import io.github.duzhaokun123.yamf.ui.window.AppListWindow
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
 import io.github.duzhaokun123.yamf.utils.gson
+import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.log
+import io.github.duzhaokun123.yamf.xposed.utils.moveToDisplay
 import io.github.qauxv.ui.CommonContextWrapper
 import java.io.File
 
@@ -143,5 +146,24 @@ class YAMFManager : IYAMFManager.Stub() {
         runMain {
             AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), 0)
         }
+    }
+
+    override fun currentToWindow() {
+        runMain {
+            val task = getTopRootTask() ?: return@runMain
+            createWindowLocal {
+                runCatching {
+                    Instances.activityTaskManager.moveRootTaskToDisplay(task.taskId, it)
+                }
+            }
+        }
+    }
+
+    private fun getTopRootTask(): ActivityTaskManager.RootTaskInfo? {
+        Instances.activityTaskManager.getAllRootTaskInfosOnDisplay(0).forEach { task ->
+            if (task.visible)
+                return task
+        }
+        return null
     }
 }
