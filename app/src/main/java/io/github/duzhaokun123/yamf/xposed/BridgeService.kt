@@ -11,7 +11,7 @@ import io.github.duzhaokun123.yamf.xposed.utils.log
 
 object BridgeService {
 
-    private const val TAG = "YAMF-Bridge"
+    private const val TAG = "YAMF_Bridge"
 
     private var appUid = 0
 
