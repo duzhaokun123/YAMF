@@ -1,5 +1,6 @@
 package io.github.duzhaokun123.yamf.xposed
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.IntentFilter
 import android.os.Process
@@ -19,7 +20,9 @@ import java.io.File
 class YAMFManager : IYAMFManager.Stub() {
     companion object {
         const val TAG = "YAMFManager"
+        @SuppressLint("StaticFieldLeak")
         var instance: YAMFManager? = null
+        @SuppressLint("StaticFieldLeak")
         lateinit var systemContext: Context
         val windowList = mutableListOf<Int>()
         lateinit var config: Config
@@ -27,6 +30,7 @@ class YAMFManager : IYAMFManager.Stub() {
         var openWindowCount = 0
         val iOpenCountListenerSet = mutableSetOf<IOpenCountListener>()
 
+        @SuppressLint("UnspecifiedRegisterReceiverFlag")
         fun systemReady() {
             systemContext.registerReceiver(
                 OpenInYAMFBroadcastReceiver, IntentFilter(
@@ -71,6 +75,7 @@ class YAMFManager : IYAMFManager.Stub() {
         }
 
         fun createWindowLocal(onVirtualDisplayCreated: (id: Int) -> Unit) {
+            Instances.iStatusBarService.collapsePanels()
             AppWindow(CommonContextWrapper.createAppCompatContext(systemContext), config.densityDpi, config.flags) { id ->
                 addWindow(id)
                 onVirtualDisplayCreated(id)
@@ -95,10 +100,14 @@ class YAMFManager : IYAMFManager.Stub() {
         return Process.myUid()
     }
 
-    override fun createWindow(): Int {
+    override fun createWindow(appList: Boolean): Int {
         var r = 0
         runMain {
-            createWindowLocal { r = it }
+            createWindowLocal {
+                if (appList)
+                    AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), it)
+                r = it
+            }
         }
         while (r == 0) {
             Thread.yield()

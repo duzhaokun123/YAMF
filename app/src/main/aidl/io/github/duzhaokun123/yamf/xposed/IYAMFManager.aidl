@@ -10,7 +10,7 @@ interface IYAMFManager {
 
     int getUid();
 
-    int createWindow();
+    int createWindow(boolean appList);
 
     long getBuildTime();
 

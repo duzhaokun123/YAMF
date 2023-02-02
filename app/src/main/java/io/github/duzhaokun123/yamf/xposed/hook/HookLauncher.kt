@@ -64,7 +64,7 @@ class HookLauncher : IXposedHookLoadPackage {
                 }
                 val action = RemoteAction(
                     Icon.createWithResource(getUserContext(), R.drawable.ic_picture_in_picture_alt_24),
-                    "Open with YAMF",
+                    getUserContext().getString(R.string.open_with_yamf),
                     "",
                     PendingIntent.getBroadcast(
                         AndroidAppHelper.currentApplication(),

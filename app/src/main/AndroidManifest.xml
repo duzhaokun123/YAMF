@@ -20,8 +20,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SettingsActivity"
-            android:label="@string/settings"/>
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/settings" />
+
+        <service
+            android:name=".services.QSTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_picture_in_picture_alt_24"
+            android:label="@string/new_window"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="xposedmodule"

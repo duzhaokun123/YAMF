@@ -101,7 +101,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when(menuItem.itemId) {
             R.id.new_window -> {
-                YAMFManagerHelper.createWindow()
+                YAMFManagerHelper.createWindow(false)
                 true
             }
             R.id.channel -> {

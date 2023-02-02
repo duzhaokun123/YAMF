@@ -20,4 +20,5 @@
     <string name="close_desc">点击: 关闭\n长按: 应用列表</string>
     <string name="xposeddescription">为类原生系统设计的小窗</string>
     <string name="info_system_version">系统版本</string>
+    <string name="open_with_yamf">使用 YAMF 打开</string>
 </resources>

@@ -11,6 +11,7 @@ import android.os.ServiceManager
 import android.os.UserManager
 import android.view.IWindowManager
 import android.view.WindowManager
+import com.android.internal.statusbar.IStatusBarService
 
 object Instances {
     lateinit var windowManager: WindowManager
@@ -31,6 +32,8 @@ object Instances {
         private set
     lateinit var iPackageManager: IPackageManager
         private set
+    lateinit var iStatusBarService: IStatusBarService
+        private set
 
     fun init(context: Context) {
         windowManager = context.getSystemService(WindowManager::class.java)
@@ -42,5 +45,6 @@ object Instances {
         activityManager = context.getSystemService(ActivityManager::class.java)
         userManager = context.getSystemService(UserManager::class.java)
         iPackageManager = IPackageManager.Stub.asInterface(ServiceManager.getService("package"))
+        iStatusBarService = IStatusBarService.Stub.asInterface(ServiceManager.getService("statusbar"))
     }
 }

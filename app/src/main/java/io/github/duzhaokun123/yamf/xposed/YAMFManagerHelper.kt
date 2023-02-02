@@ -40,8 +40,8 @@ object YAMFManagerHelper : IYAMFManager, DeathRecipient {
 
     override fun getUid() = getService()?.uid ?: -1
 
-    override fun createWindow(): Int {
-        return getService()?.createWindow() ?: 0
+    override fun createWindow(appList: Boolean): Int {
+        return getService()?.createWindow(appList) ?: 0
     }
 
     override fun getBuildTime(): Long {
