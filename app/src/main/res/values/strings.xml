@@ -18,4 +18,5 @@
     <string name="rotate_desc">click: rotate\nlong click: lock/unlock auto rotaote</string>
     <string name="fullscreen_desc">click: fullscreen\nlong click: hang up, double click to resume</string>
     <string name="close_desc">click: close\nlong click: app list</string>
+    <string name="xposeddescription">free window for AOSP-like systems</string>
 </resources>

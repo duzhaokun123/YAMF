@@ -28,7 +28,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="YAMF" />
+            android:value="@string/xposeddescription" />
         <meta-data
             android:name="xposedminversion"
             android:value="93" />
