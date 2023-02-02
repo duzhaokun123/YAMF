@@ -108,25 +108,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/back_desc"
-                app:drawableStartCompat="@drawable/ic_arrow_back_24" />
+                app:drawableStartCompat="@drawable/ic_arrow_back_24"
+                app:drawableTint="?colorOnBackground" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/rotate_desc"
-                app:drawableStartCompat="@drawable/ic_screen_rotation_alt_24" />
+                app:drawableStartCompat="@drawable/ic_screen_rotation_alt_24"
+                app:drawableTint="?colorOnBackground" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fullscreen_desc"
-                app:drawableStartCompat="@drawable/ic_fullscreen_24" />
+                app:drawableStartCompat="@drawable/ic_fullscreen_24"
+                app:drawableTint="?colorOnBackground" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/close_desc"
-                app:drawableStartCompat="@drawable/ic_close_24" />
+                app:drawableStartCompat="@drawable/ic_close_24"
+                app:drawableTint="?colorOnBackground" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
