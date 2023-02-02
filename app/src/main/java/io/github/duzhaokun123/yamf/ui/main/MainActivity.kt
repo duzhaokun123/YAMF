@@ -2,6 +2,7 @@ package io.github.duzhaokun123.yamf.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import io.github.duzhaokun123.yamf.databinding.ActivityMainBinding
 import io.github.duzhaokun123.yamf.ui.SettingsActivity
 import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
 import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
+
 
 class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class.java, Config.NO_BACK, Config.LAYOUT_MATCH_HORI),
     MenuProvider {
@@ -84,6 +86,11 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                         .show()
                 }
             }
+        }
+        if (Build.VERSION.PREVIEW_SDK_INT != 0) {
+            baseBinding.systemVersion.text = "${Build.VERSION.CODENAME} Preview (API ${Build.VERSION.SDK_INT})"
+        } else {
+            baseBinding.systemVersion.text = "${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})"
         }
     }
 

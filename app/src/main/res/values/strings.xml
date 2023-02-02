@@ -19,4 +19,5 @@
     <string name="fullscreen_desc">click: fullscreen\nlong click: hang up, double click to resume</string>
     <string name="close_desc">click: close\nlong click: app list</string>
     <string name="xposeddescription">free window for AOSP-like systems</string>
+    <string name="info_system_version">System version</string>
 </resources>

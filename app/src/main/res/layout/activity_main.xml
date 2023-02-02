@@ -88,6 +88,18 @@
                 android:layout_height="wrap_content"
                 android:text="-1" />
 
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceInfoDialogLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/info_system_version" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/system_version"
+                style="@style/DeviceInfoDialogValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
