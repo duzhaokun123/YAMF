@@ -2,38 +2,62 @@ package android.content.pm;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.UserHandle;
 
+import androidx.annotation.RequiresApi;
 
-/**
- * <a href="https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/content/pm/UserInfo.java">see</a>
- */
-public class UserInfo implements Parcelable {
+public class UserInfo {
+
+    public static final int FLAG_MANAGED_PROFILE = 0x00000020;
+
     public int id;
     public String name;
+    public int flags;
+    public int serialNumber;
 
-    public String toFullString() {
-        return null;
-    }
+    @RequiresApi(30)
+    public String userType;
 
     public boolean isPrimary() {
-        return false;
+        throw new RuntimeException("STUB");
+    }
+
+    public boolean isAdmin() {
+        throw new RuntimeException("STUB");
+    }
+
+    public boolean isGuest() {
+        throw new RuntimeException("STUB");
+    }
+
+    public boolean isRestricted() {
+        throw new RuntimeException("STUB");
     }
 
     public boolean isProfile() {
-        return false;
+        throw new RuntimeException("STUB");
     }
 
-    protected UserInfo(Parcel in) {
+    public boolean isManagedProfile() {
+        throw new RuntimeException("STUB");
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public boolean isEnabled() {
+        throw new RuntimeException("STUB");
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public UserHandle getUserHandle() {
+        throw new RuntimeException("STUB");
     }
 
-    public static final Creator<UserInfo> CREATOR = null;
+    public static final Parcelable.Creator<UserInfo> CREATOR = new Parcelable.Creator<UserInfo>() {
+
+        public UserInfo createFromParcel(Parcel in) {
+            throw new UnsupportedOperationException();
+        }
+
+        public UserInfo[] newArray(int size) {
+            throw new UnsupportedOperationException();
+        }
+    };
 }

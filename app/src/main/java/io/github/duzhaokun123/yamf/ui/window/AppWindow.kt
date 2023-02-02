@@ -8,10 +8,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.Matrix
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
 import android.hardware.display.VirtualDisplay
+import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 import android.view.Gravity
@@ -25,6 +25,7 @@ import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.window.TaskSnapshot
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import com.github.kyuubiran.ezxhelper.utils.argTypes
@@ -39,6 +40,7 @@ import io.github.duzhaokun123.yamf.utils.RunMainThreadQueue
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
+import io.github.duzhaokun123.yamf.xposed.utils.log
 import kotlinx.coroutines.delay
 
 @SuppressLint("ClickableViewAccessibility")
@@ -140,7 +142,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 0
             ).apply {
                 source = InputDevice.SOURCE_KEYBOARD
-                this.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
+                this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
             }
             Instances.inputManager.injectInputEvent(down, 0)
             val up = KeyEvent(
@@ -151,7 +153,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 0
             ).apply {
                 source = InputDevice.SOURCE_KEYBOARD
-                this.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
+                this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
             }
             Instances.inputManager.injectInputEvent(up, 0)
         }
@@ -164,7 +166,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 0
             ).apply {
                 source = InputDevice.SOURCE_KEYBOARD
-                this.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
+                this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
             }
             Instances.inputManager.injectInputEvent(down, 0)
             val up = KeyEvent(
@@ -175,7 +177,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 0
             ).apply {
                 source = InputDevice.SOURCE_KEYBOARD
-                this.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
+                this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
             }
             Instances.inputManager.injectInputEvent(up, 0)
             true
@@ -212,7 +214,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
         displayId = virtualDisplay.display.displayId
         Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
-        onVirtualDisplayCreated(virtualDisplay.display.displayId)
+        onVirtualDisplayCreated(displayId)
         binding.surface.surfaceTextureListener = this
         var failCount = 0
         fun watchRotation() {
@@ -230,13 +232,13 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
     private fun onDestroy() {
         Instances.iWindowManager.removeRotationWatcher(rotationWatcher)
         Instances.activityTaskManager.unregisterTaskStackListener(taskStackListener)
-        YAMFManager.removeWindow(virtualDisplay.display.displayId)
+        YAMFManager.removeWindow(displayId)
         virtualDisplay.release()
         Instances.windowManager.removeView(binding.root)
     }
 
     private fun getTopRootTask(): ActivityTaskManager.RootTaskInfo? {
-        Instances.activityTaskManager.getAllRootTaskInfosOnDisplay(virtualDisplay.display.displayId).forEach { task ->
+        Instances.activityTaskManager.getAllRootTaskInfosOnDisplay(displayId).forEach { task ->
             if (task.visible)
                 return task
         }
@@ -246,7 +248,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
     private fun moveToTop() {
         Instances.windowManager.removeView(binding.root)
         Instances.windowManager.addView(binding.root, binding.root.layoutParams)
-        YAMFManager.moveToTop(virtualDisplay.display.displayId)
+        YAMFManager.moveToTop(displayId)
     }
 
     inner class MoveOnTouchListener : View.OnTouchListener {
@@ -294,7 +296,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                     Instances.windowManager.updateViewLayout(v, params)
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (YAMFManager.isTop(virtualDisplay.display.displayId).not()) {
+                    if (YAMFManager.isTop(displayId).not()) {
                         moveToTop()
                     }
 
@@ -312,7 +314,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
 
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
         RunMainThreadQueue.add {
-            if (taskInfo.isVisible.not()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2 && taskInfo.isVisible.not()) {
                 delay(500) // fixme: 使用能直接确定可见性的方法
             }
             val topActivity = taskInfo.topActivity ?: return@add
@@ -329,7 +331,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             } else {
                 binding.tvLabel.text = taskDescription.label
             }
-            if (YAMFManager.config.coloredController) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && YAMFManager.config.coloredController) {
                 val backgroundColor = taskDescription.backgroundColor
                 binding.cvApp.setCardBackgroundColor(backgroundColor)
 
@@ -359,125 +361,42 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
     }
 
     inner class TaskStackListener : ITaskStackListener.Stub() {
-        override fun onTaskStackChanged() {
-
-        }
-
-        override fun onActivityPinned(
-            packageName: String?,
-            userId: Int,
-            taskId: Int,
-            stackId: Int
-        ) {
-
-        }
-
-        override fun onActivityUnpinned() {
-
-        }
-
-        override fun onActivityRestartAttempt(
-            task: ActivityManager.RunningTaskInfo?,
-            homeTaskVisible: Boolean,
-            clearedTask: Boolean,
-            wasVisible: Boolean
-        ) {
-
-        }
-
-        override fun onActivityForcedResizable(packageName: String?, taskId: Int, reason: Int) {
-
-        }
-
-        override fun onActivityDismissingDockedTask() {
-
-        }
-
-        override fun onActivityLaunchOnSecondaryDisplayFailed(
-            taskInfo: ActivityManager.RunningTaskInfo?,
-            requestedDisplayId: Int
-        ) {
-
-        }
-
-        override fun onActivityLaunchOnSecondaryDisplayRerouted(
-            taskInfo: ActivityManager.RunningTaskInfo?,
-            requestedDisplayId: Int
-        ) {
-
-        }
-
-        override fun onTaskCreated(taskId: Int, componentName: ComponentName?) {
-            
-        }
-
-        override fun onTaskRemoved(taskId: Int) {
-
-        }
-
+        override fun onTaskStackChanged() {}
+        override fun onActivityPinned(packageName: String?, userId: Int, taskId: Int, stackId: Int) {}
+        override fun onActivityUnpinned() {}
+        override fun onActivityRestartAttempt(task: ActivityManager.RunningTaskInfo?, homeTaskVisible: Boolean, clearedTask: Boolean, wasVisible: Boolean) {}
+        override fun onActivityForcedResizable(packageName: String?, taskId: Int, reason: Int) {}
+        override fun onActivityDismissingDockedTask() {}
+        override fun onActivityLaunchOnSecondaryDisplayFailed(taskInfo: ActivityManager.RunningTaskInfo?, requestedDisplayId: Int) {}
+        override fun onActivityLaunchOnSecondaryDisplayRerouted(taskInfo: ActivityManager.RunningTaskInfo?, requestedDisplayId: Int) {}
+        override fun onTaskCreated(taskId: Int, componentName: ComponentName?) {}
+        override fun onTaskRemoved(taskId: Int) {}
         override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
             if (taskInfo.getObject("displayId") == displayId) {
                 updateTask(taskInfo)
             }
         }
-
         override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo) {
-            if (taskInfo.getObject("displayId") == displayId && taskInfo.isVisible) {
+            if (taskInfo.getObject("displayId") == displayId) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2 && !taskInfo.isVisible){
+                    return
+                }
                 updateTask(taskInfo)
             }
         }
-
-        override fun onActivityRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {
-
-        }
-
-        override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {
-
-        }
-
-        override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?) {
-
-        }
-
-        override fun onTaskSnapshotChanged(taskId: Int, snapshot: android.window.TaskSnapshot?) {
-
-        }
-
-        override fun onBackPressedOnTaskRoot(taskInfo: ActivityManager.RunningTaskInfo?) {
-
-        }
-
-        override fun onTaskDisplayChanged(taskId: Int, newDisplayId: Int) {
-
-        }
-
-        override fun onRecentTaskListUpdated() {
-
-        }
-
-        override fun onRecentTaskListFrozenChanged(frozen: Boolean) {
-
-        }
-
-        override fun onTaskFocusChanged(taskId: Int, focused: Boolean) {
-
-        }
-
-        override fun onTaskRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {
-
-        }
-
-        override fun onActivityRotation(displayId: Int) {
-
-        }
-
-        override fun onTaskMovedToBack(taskInfo: ActivityManager.RunningTaskInfo) {
-
-        }
-
-        override fun onLockTaskModeChanged(mode: Int) {
-
-        }
+        override fun onActivityRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {}
+        override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {}
+        override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?) {}
+        override fun onTaskSnapshotChanged(taskId: Int, snapshot: TaskSnapshot?) {}
+        override fun onBackPressedOnTaskRoot(taskInfo: ActivityManager.RunningTaskInfo?) {}
+        override fun onTaskDisplayChanged(taskId: Int, newDisplayId: Int) {}
+        override fun onRecentTaskListUpdated() {}
+        override fun onRecentTaskListFrozenChanged(frozen: Boolean) {}
+        override fun onTaskFocusChanged(taskId: Int, focused: Boolean) {}
+        override fun onTaskRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {}
+        override fun onActivityRotation(displayId: Int) {}
+        override fun onTaskMovedToBack(taskInfo: ActivityManager.RunningTaskInfo?) {}
+        override fun onLockTaskModeChanged(mode: Int) {}
     }
 
     inner class RotationWatcher : IRotationWatcher.Stub() {
@@ -608,7 +527,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 event.source,
                 event.flags
             )
-            newEvent.invokeMethod("setDisplayId", args(virtualDisplay.display.displayId), argTypes(Integer.TYPE))
+            newEvent.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
             Instances.inputManager.injectInputEvent(newEvent, 0)
             newEvent.recycle()
             return true

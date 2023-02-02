@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.UserInfo
 import android.graphics.PixelFormat
+import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -81,7 +82,14 @@ class AppListWindow(val context: Context, val displayId: Int) {
     private fun onSelectUser(userId: Int) {
         this.userId = userId
         binding.btnUser.text = users[userId]
-        apps = (Instances.iPackageManager.getInstalledPackages((PackageManager.GET_META_DATA).toLong(), userId).list as List<PackageInfo>)
+
+        val installedPackages = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Instances.iPackageManager.getInstalledPackages((PackageManager.GET_META_DATA).toLong(), userId)
+        } else {
+            Instances.iPackageManager.getInstalledPackages((PackageManager.GET_META_DATA), userId)
+        }.list as List<PackageInfo>
+
+        apps = installedPackages
             .filter { it.applicationInfo != null && it.applicationInfo.uid / 100000 == userId }
             .filter { Instances.packageManager.getLaunchIntentForPackage(it.packageName) != null }
         showApps = apps

@@ -4,14 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class TaskSnapshot implements Parcelable {
-    protected TaskSnapshot(Parcel in) {}
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {}
-
-    @Override
-    public int describeContents() {
-        return 0;
+    protected TaskSnapshot(Parcel in) {
     }
 
     public static final Creator<TaskSnapshot> CREATOR = new Creator<TaskSnapshot>() {
@@ -25,4 +18,13 @@ public class TaskSnapshot implements Parcelable {
             return new TaskSnapshot[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+    }
 }

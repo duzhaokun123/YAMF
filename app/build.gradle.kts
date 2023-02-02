@@ -8,6 +8,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-android")
+    id("dev.rikka.tools.refine") version "3.1.1"
 }
 
 android {
@@ -18,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "io.github.duzhaokun123.yamf"
-        minSdk = 33
+        minSdk = 31
         targetSdk = 33
         versionCode = 1
         versionName = "$baseVersionName-git.$gitHash"
@@ -106,6 +107,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     compileOnly(project(":android-stub"))
+    compileOnly("dev.rikka.hidden:stub:3.4.3")
 
     //never upgrade until new extension function
     implementation("com.github.kyuubiran:EzXHelper:1.0.3")

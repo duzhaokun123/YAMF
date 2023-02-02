@@ -2,8 +2,10 @@ package io.github.duzhaokun123.yamf.xposed
 
 import android.content.pm.IPackageManager
 import android.os.Binder
+import android.os.Build
 import android.os.Parcel
 import android.os.Process
+import androidx.core.os.BuildCompat
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
 import io.github.duzhaokun123.yamf.BuildConfig
@@ -18,8 +20,16 @@ object BridgeService {
     fun register(pms: IPackageManager) {
         log(TAG, "Initialize YAMFService - Version ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})")
         val service = YAMFManager()
-        appUid = pms.getPackageUid(BuildConfig.APPLICATION_ID, 0, 0)
-        val appPackage = pms.getPackageInfo(BuildConfig.APPLICATION_ID, 0, 0)
+        appUid = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pms.getPackageUid(BuildConfig.APPLICATION_ID, 0L, 0);
+        } else {
+            pms.getPackageUid(BuildConfig.APPLICATION_ID, 0, 0);
+        }
+//        val appPackage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            pms.getPackageInfo(BuildConfig.APPLICATION_ID, 0L, 0)
+//        } else {
+//            pms.getPackageInfo(BuildConfig.APPLICATION_ID, 0, 0)
+//        }
 //        if (!Utils.verifyAppSignature(appPackage.applicationInfo.sourceDir)) {
 //            logE(TAG, "Fatal: App signature mismatch")
 //            return
