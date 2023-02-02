@@ -1,7 +1,7 @@
 # YAMF
 
 [![GitHub license](https://img.shields.io/github/license/duzhaokun123/YAMF?style=flat-square)](https://github.com/duzhaokun123/YAFM/blob/main/LICENSE)
-![Android SDK min 33](https://img.shields.io/badge/Android%20SDK-%3E%3D%2033-brightgreen?style=flat-square&logo=android)
+![Android SDK min 31](https://img.shields.io/badge/Android%20SDK-%3E%3D%2031-brightgreen?style=flat-square&logo=android)
 ![Android SDK target 33](https://img.shields.io/badge/Android%20SDK-target%2033-brightgreen?style=flat-square&logo=android)
 ![Xposed Module](https://img.shields.io/badge/Xposed-Module-blue?style=flat-square)
 [![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram&style=flat-square)](https://t.me/YAMF_channel)
