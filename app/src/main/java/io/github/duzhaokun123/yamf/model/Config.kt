@@ -16,6 +16,11 @@ data class Config(
     var flags: Int = 1668,
     @SerializedName("coloredController")
     var coloredController: Boolean = false,
-    @SerializedName("tryStartActivity")
-    var tryStartActivity: Boolean = false
+    @SerializedName("windowfy")
+    /*
+     * 0: move task only
+     * 1: start activity only
+     * 2: move task, failback to start activity
+     */
+    var windowfy: Int = 0
 )

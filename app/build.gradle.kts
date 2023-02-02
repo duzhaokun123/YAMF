@@ -99,7 +99,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.6.1")
     implementation("androidx.fragment:fragment-ktx:1.5.5")
     implementation("androidx.appcompat:appcompat:1.6.0")
-    implementation("com.google.android.material:material:1.7.0")
+    implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     //kotlinx-coroutines
@@ -123,6 +123,11 @@ dependencies {
 
     //ViewBindingUtil
     implementation("com.github.matsudamper:ViewBindingUtil:0.1")
+//
+//    // rikka hidden api
+//    val rikkaHidden = "3.4.0"
+//    implementation("dev.rikka.hidden:compat:$rikkaHidden")
+//    compileOnly("dev.rikka.hidden:stub:$rikkaHidden")
 }
 
 val optimizeReleaseRes = task("optimizeReleaseRes").doLast {

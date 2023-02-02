@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
@@ -21,29 +22,48 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
         when(intent.action) {
             ACTION_OPEN_IN_YAMF -> {
                 val taskId = intent.getIntExtra(EXTRA_TASK_ID, 0)
+                val componentName = intent.getParcelableExtra(EXTRA_COMPONENT_NAME, ComponentName::class.java) ?: return
+                val userId = intent.getIntExtra(EXTRA_USER_ID, 0)
+
                 if (taskId == 0) {
                     TipUtil.showToast("bad taskid 0")
                 } else {
                     YAMFManager.createWindowLocal { displayId ->
-                        runCatching {
-                            Instances.activityTaskManager.moveRootTaskToDisplay(taskId, displayId)
-                        }.onFailure { t ->
-                            if (t is Error) throw t
-                            TipUtil.showToast("can't move task $taskId")
-                            if (YAMFManager.config.tryStartActivity) {
-                                TipUtil.showToast("try start activity")
+                        when (YAMFManager.config.windowfy) {
+                            0 -> {
+                                runCatching {
+                                    moveTask(taskId, displayId)
+                                }.onException {
+                                    TipUtil.showToast("can't move task $taskId")
+                                }
+                            }
+                            1 -> {
+                                runCatching {
+                                    startActivity(context, componentName, userId, displayId)
+                                }.onException {
+                                    TipUtil.showToast("can't start activity $componentName")
+                                }
+                            }
+                            2 -> {
+                                runCatching {
+                                    moveTask(taskId, displayId)
+                                }.onException {
+                                    TipUtil.showToast("can't move task $taskId")
                                     runCatching {
-                                        startActivity(context, intent.getParcelableExtra(EXTRA_COMPONENT_NAME, ComponentName::class.java)!!, intent.getIntExtra(EXTRA_USER_ID, 0), displayId )
-                                    }.onFailure {
-                                        Log.e(TAG, "onReceive: start activity", it)
-                                        TipUtil.showToast("can't start activity ${intent.getParcelableExtra(
-                                            EXTRA_COMPONENT_NAME, ComponentName::class.java)}")
+                                        startActivity(context, componentName, userId, displayId)
+                                    }.onException {
+                                        TipUtil.showToast("can't start activity $componentName")
                                     }
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun moveTask(taskId: Int, displayId: Int) {
+        Instances.activityTaskManager.moveRootTaskToDisplay(taskId, displayId)
     }
 }

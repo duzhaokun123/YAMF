@@ -1,6 +1,7 @@
 package io.github.duzhaokun123.yamf.ui
 
 import android.content.Intent
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
@@ -38,7 +39,7 @@ class SettingsActivity :
         baseBinding.etDensityDpi.setText(config.densityDpi.toString())
         baseBinding.btnFlags.text = config.flags.toString()
         baseBinding.sColoerd.isChecked = config.coloredController
-        baseBinding.sStart.isChecked = config.tryStartActivity
+        baseBinding.btnWindowsfy.text = config.windowfy.toString()
 
         baseBinding.btnFlags.setOnClickListener {
             val checks = BooleanArray(flags.size) { i ->
@@ -61,6 +62,16 @@ class SettingsActivity :
                 }
                 .show()
         }
+        baseBinding.btnWindowsfy.setOnClickListener {
+            PopupMenu(this, baseBinding.btnWindowsfy).apply {
+                listOf("0", "1", "2").forEach { i ->
+                    menu.add(i).setOnMenuItemClickListener {
+                        baseBinding.btnWindowsfy.text = i
+                        true
+                    }
+                }
+            }.show()
+        }
     }
 
     override fun onDestroy() {
@@ -68,7 +79,7 @@ class SettingsActivity :
         config.densityDpi = baseBinding.etDensityDpi.text.toString().toIntOrNull() ?: config.densityDpi
         config.flags = baseBinding.btnFlags.text.toString().toIntOrNull() ?: config.flags
         config.coloredController = baseBinding.sColoerd.isChecked
-        config.tryStartActivity = baseBinding.sStart.isChecked
+        config.windowfy = baseBinding.btnWindowsfy.text.toString().toIntOrNull() ?: config.windowfy
         YAMFManagerHelper.updateConfig(gson.toJson(config))
     }
 }

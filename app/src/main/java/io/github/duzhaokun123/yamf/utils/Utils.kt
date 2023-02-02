@@ -13,6 +13,7 @@ import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.newInstance
 import com.google.gson.Gson
+import java.lang.Error
 
 fun Context.getActivity(): Activity? {
     if (this is Activity) return this
@@ -43,3 +44,9 @@ fun startActivity(context: Context, componentName: ComponentName, userId: Int, d
         ), argTypes(Intent::class.java, Bundle::class.java, UserHandle::class.java)
     )
 }
+
+inline fun <T> Result<T>.onException(action: (exception: Exception) -> Unit): Result<T> =
+    this.onFailure { t ->
+        if (t is Error) throw t
+        action(t as Exception)
+    }
