@@ -21,10 +21,13 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.Surface
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import android.window.TaskSnapshot
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
@@ -35,6 +38,7 @@ import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
 import io.github.duzhaokun123.androidapptemplate.utils.getAttr
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
+import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
 import io.github.duzhaokun123.yamf.utils.RunMainThreadQueue
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
@@ -45,7 +49,7 @@ import kotlinx.coroutines.delay
 
 @SuppressLint("ClickableViewAccessibility")
 class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtualDisplayCreated: ((Int) -> Unit)) :
-    TextureView.SurfaceTextureListener {
+    TextureView.SurfaceTextureListener, SurfaceHolder.Callback {
     companion object {
         const val TAG = "YAMF_AppWindow"
     }
@@ -60,9 +64,19 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
     var isMini = false
     var halfWidth = 0
     var halfHeight = 0
+    lateinit var surfaceView: View
 
     init {
+        when(YAMFManager.config.surfaceView) {
+            0 -> surfaceView = TextureView(context)
+            1 -> surfaceView = SurfaceView(context)
+        }
         binding = WindowAppBinding.inflate(LayoutInflater.from(context))
+        binding.rlCardRoot.addView(surfaceView.apply {
+            id = R.id.surface
+        }, RelativeLayout.LayoutParams(binding.vSizePreviewer.layoutParams).apply {
+            addRule(RelativeLayout.BELOW, R.id.rl_top)
+        })
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -117,7 +131,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                         }
                     }
                     MotionEvent.ACTION_UP -> {
-                        binding.surface.updateLayoutParams {
+                        surfaceView.updateLayoutParams {
                             val targetWidth = beginWidth + offsetX.toInt()
                             if (targetWidth > 0)
                                 width = targetWidth
@@ -132,7 +146,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
                 return true
             }
         })
-        binding.surface.setOnTouchListener(surfaceOnTouchListener)
+        surfaceView.setOnTouchListener(surfaceOnTouchListener)
         binding.ibBack.setOnClickListener {
             val down = KeyEvent(
                 SystemClock.uptimeMillis(),
@@ -215,7 +229,8 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
         displayId = virtualDisplay.display.displayId
         Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
         onVirtualDisplayCreated(displayId)
-        binding.surface.surfaceTextureListener = this
+        (surfaceView as? TextureView)?.surfaceTextureListener = this
+        (surfaceView as? SurfaceView)?.holder?.addCallback(this)
         var failCount = 0
         fun watchRotation() {
             runCatching {
@@ -416,13 +431,13 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             val t = halfHeight
             halfHeight = halfWidth
             halfWidth = t
-            val surfaceWidth = binding.surface.width
-            val surfaceHeight = binding.surface.height
+            val surfaceWidth = surfaceView.width
+            val surfaceHeight = surfaceView.height
             binding.vSizePreviewer.updateLayoutParams {
                 width = surfaceHeight
                 height = surfaceWidth
             }
-            binding.surface.updateLayoutParams {
+            surfaceView.updateLayoutParams {
                 width = surfaceHeight
                 height = surfaceWidth
             }
@@ -464,9 +479,13 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
     }
 
     private fun changeMini() {
+        if (surfaceView is SurfaceView) {
+            TipUtil.showToast("can't scale SurfaceView")
+            return
+        }
         if (isMini) {
             isMini = false
-            binding.surface.updateLayoutParams {
+            surfaceView.updateLayoutParams {
                 width = virtualDisplay.display.width
                 height = virtualDisplay.display.height
             }
@@ -476,10 +495,10 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             }
             binding.rlTop.visibility = View.VISIBLE
             binding.rlButton.visibility = View.VISIBLE
-            binding.surface.setOnTouchListener(surfaceOnTouchListener)
+            surfaceView.setOnTouchListener(surfaceOnTouchListener)
         } else {
             isMini = true
-            binding.surface.updateLayoutParams {
+            surfaceView.updateLayoutParams {
                 width = virtualDisplay.display.width / 2
                 height = virtualDisplay.display.height / 2
             }
@@ -489,7 +508,7 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             }
             binding.rlTop.visibility = View.GONE
             binding.rlButton.visibility = View.GONE
-            binding.surface.setOnTouchListener(null)
+            surfaceView.setOnTouchListener(null)
         }
     }
 
@@ -532,5 +551,17 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
             newEvent.recycle()
             return true
         }
+    }
+
+    override fun surfaceCreated(holder: SurfaceHolder) {
+        virtualDisplay.surface = holder.surface
+    }
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        virtualDisplay.resize(width, height, densityDpi)
+    }
+
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
+        virtualDisplay.surface = null
     }
 }

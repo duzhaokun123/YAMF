@@ -2,6 +2,7 @@ package io.github.duzhaokun123.yamf.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import com.google.android.material.color.MaterialColors
@@ -46,6 +49,18 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
         super.onCreate(savedInstanceState)
         addMenuProvider(this, this)
         YAMFManagerHelper.registerOpenCountListener(openCountListener)
+    }
+
+    override fun initViews() {
+        super.initViews()
+        baseBinding.ll.findViewById<RelativeLayout>(R.id.rl_cardRoot).addView(
+            View(this).apply { setBackgroundColor(Color.BLACK)
+                id = R.id.surface
+                             },
+            RelativeLayout.LayoutParams(baseBinding.ll.findViewById<View>(R.id.v_sizePreviewer).layoutParams).apply {
+                addRule(RelativeLayout.BELOW, R.id.rl_top)
+            }
+        )
     }
     @SuppressLint("SetTextI18n")
     override fun initData() {

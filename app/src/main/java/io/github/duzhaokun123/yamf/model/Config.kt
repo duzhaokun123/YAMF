@@ -22,5 +22,11 @@ data class Config(
      * 1: start activity only
      * 2: move task, failback to start activity
      */
-    var windowfy: Int = 0
+    var windowfy: Int = 0,
+    @SerializedName("surfaceView")
+    /*
+     * 0: TextureView
+     * 1: SurfaceView
+     */
+    var surfaceView: Int = 0
 )

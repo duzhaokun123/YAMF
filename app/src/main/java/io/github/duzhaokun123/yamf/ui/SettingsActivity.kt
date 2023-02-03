@@ -40,6 +40,7 @@ class SettingsActivity :
         baseBinding.btnFlags.text = config.flags.toString()
         baseBinding.sColoerd.isChecked = config.coloredController
         baseBinding.btnWindowsfy.text = config.windowfy.toString()
+        baseBinding.btnSurface.text = config.surfaceView.toString()
 
         baseBinding.btnFlags.setOnClickListener {
             val checks = BooleanArray(flags.size) { i ->
@@ -72,6 +73,16 @@ class SettingsActivity :
                 }
             }.show()
         }
+        baseBinding.btnSurface.setOnClickListener {
+            PopupMenu(this, baseBinding.btnSurface).apply {
+                listOf("0", "1").forEach { i ->
+                    menu.add(i).setOnMenuItemClickListener {
+                        baseBinding.btnSurface.text = i
+                        true
+                    }
+                }
+            }.show()
+        }
     }
 
     override fun onDestroy() {
@@ -80,6 +91,7 @@ class SettingsActivity :
         config.flags = baseBinding.btnFlags.text.toString().toIntOrNull() ?: config.flags
         config.coloredController = baseBinding.sColoerd.isChecked
         config.windowfy = baseBinding.btnWindowsfy.text.toString().toIntOrNull() ?: config.windowfy
+        config.surfaceView = baseBinding.btnSurface.text.toString().toIntOrNull() ?: config.surfaceView
         YAMFManagerHelper.updateConfig(gson.toJson(config))
     }
 }

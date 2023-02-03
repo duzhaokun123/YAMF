@@ -22,14 +22,15 @@
             app:cardElevation="4dp">
 
             <RelativeLayout
+                android:id="@+id/rl_cardRoot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <TextureView
-                    android:id="@+id/surface"
-                    android:layout_width="200dp"
-                    android:layout_height="300dp"
-                    android:layout_below="@id/rl_top" />
+<!--                <TextureView-->
+<!--                    android:id="@+id/surface"-->
+<!--                    android:layout_width="200dp"-->
+<!--                    android:layout_height="300dp"-->
+<!--                    android:layout_below="@id/rl_top" />-->
 
                 <RelativeLayout
                     android:id="@+id/rl_button"
