@@ -21,4 +21,5 @@
     <string name="xposeddescription">free window for AOSP-like systems</string>
     <string name="info_system_version">System version</string>
     <string name="open_with_yamf">Open with YAMF</string>
+    <string name="enter_window">enter window</string>
 </resources>
