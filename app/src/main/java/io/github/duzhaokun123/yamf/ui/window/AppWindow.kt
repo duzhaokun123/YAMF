@@ -41,6 +41,7 @@ import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
 import io.github.duzhaokun123.yamf.utils.RunMainThreadQueue
+import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
@@ -48,13 +49,13 @@ import io.github.duzhaokun123.yamf.xposed.utils.log
 import kotlinx.coroutines.delay
 
 @SuppressLint("ClickableViewAccessibility")
-class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtualDisplayCreated: ((Int) -> Unit)) :
+class AppWindow(val context: Context, private val densityDpi: Int, private val flags: Int, private val onVirtualDisplayCreated: ((Int) -> Unit)) :
     TextureView.SurfaceTextureListener, SurfaceHolder.Callback {
     companion object {
         const val TAG = "YAMF_AppWindow"
     }
 
-    var binding: WindowAppBinding
+    lateinit var binding: WindowAppBinding
     lateinit var virtualDisplay: VirtualDisplay
     val taskStackListener = TaskStackListener()
     val rotationWatcher = RotationWatcher()
@@ -67,11 +68,21 @@ class AppWindow(val context: Context, val densityDpi: Int, flags: Int, onVirtual
     lateinit var surfaceView: View
 
     init {
+        runCatching {
+            binding = WindowAppBinding.inflate(LayoutInflater.from(context))
+        }.onException { e ->
+            Log.e(TAG, "init: new window failed may you forget reboot", e)
+            TipUtil.showToast("new window failed\nmay you forget reboot")
+        }.onSuccess {
+            doInit()
+        }
+    }
+
+    fun doInit() {
         when(YAMFManager.config.surfaceView) {
             0 -> surfaceView = TextureView(context)
             1 -> surfaceView = SurfaceView(context)
         }
-        binding = WindowAppBinding.inflate(LayoutInflater.from(context))
         binding.rlCardRoot.addView(surfaceView.apply {
             id = R.id.surface
         }, RelativeLayout.LayoutParams(binding.vSizePreviewer.layoutParams).apply {
