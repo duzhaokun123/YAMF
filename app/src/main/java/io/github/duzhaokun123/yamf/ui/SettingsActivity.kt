@@ -41,6 +41,7 @@ class SettingsActivity :
         baseBinding.sColoerd.isChecked = config.coloredController
         baseBinding.btnWindowsfy.text = config.windowfy.toString()
         baseBinding.btnSurface.text = config.surfaceView.toString()
+        baseBinding.sBackHome.isChecked = config.recentsBackHome
 
         baseBinding.btnFlags.setOnClickListener {
             val checks = BooleanArray(flags.size) { i ->
@@ -92,6 +93,7 @@ class SettingsActivity :
         config.coloredController = baseBinding.sColoerd.isChecked
         config.windowfy = baseBinding.btnWindowsfy.text.toString().toIntOrNull() ?: config.windowfy
         config.surfaceView = baseBinding.btnSurface.text.toString().toIntOrNull() ?: config.surfaceView
+        config.recentsBackHome = baseBinding.sBackHome.isChecked
         YAMFManagerHelper.updateConfig(gson.toJson(config))
     }
 }

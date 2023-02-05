@@ -28,5 +28,7 @@ data class Config(
      * 0: TextureView
      * 1: SurfaceView
      */
-    var surfaceView: Int = 0
+    var surfaceView: Int = 0,
+    @SerializedName("recentsBackHome")
+    var recentsBackHome: Boolean = false
 )

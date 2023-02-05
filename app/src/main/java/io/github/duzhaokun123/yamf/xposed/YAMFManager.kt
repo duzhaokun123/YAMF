@@ -103,19 +103,13 @@ class YAMFManager : IYAMFManager.Stub() {
         return Process.myUid()
     }
 
-    override fun createWindow(appList: Boolean): Int {
-        var r = 0
+    override fun createWindow(appList: Boolean) {
         runMain {
             createWindowLocal {
                 if (appList)
                     AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), it)
-                r = it
             }
         }
-        while (r == 0) {
-            Thread.yield()
-        }
-        return r
     }
 
     override fun getBuildTime(): Long {

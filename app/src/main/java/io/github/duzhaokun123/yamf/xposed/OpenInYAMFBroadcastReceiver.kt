@@ -5,7 +5,13 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.SystemClock
 import android.util.Log
+import android.view.InputDevice
+import android.view.KeyEvent
+import com.github.kyuubiran.ezxhelper.utils.argTypes
+import com.github.kyuubiran.ezxhelper.utils.args
+import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
@@ -33,6 +39,31 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
                     YAMFManager.createWindowLocal { displayId ->
                         moveToDisplay(context, taskId, componentName, userId, displayId)
                     }
+                }
+
+                if (YAMFManager.config.recentsBackHome) {
+                    val down = KeyEvent(
+                        SystemClock.uptimeMillis(),
+                        SystemClock.uptimeMillis(),
+                        KeyEvent.ACTION_DOWN,
+                        KeyEvent.KEYCODE_HOME,
+                        0
+                    ).apply {
+                        source = InputDevice.SOURCE_KEYBOARD
+                        this.invokeMethod("setDisplayId", args(0), argTypes(Integer.TYPE))
+                    }
+                    Instances.inputManager.injectInputEvent(down, 0)
+                    val up = KeyEvent(
+                        SystemClock.uptimeMillis(),
+                        SystemClock.uptimeMillis(),
+                        KeyEvent.ACTION_UP,
+                        KeyEvent.KEYCODE_HOME,
+                        0
+                    ).apply {
+                        source = InputDevice.SOURCE_KEYBOARD
+                        this.invokeMethod("setDisplayId", args(0), argTypes(Integer.TYPE))
+                    }
+                    Instances.inputManager.injectInputEvent(up, 0)
                 }
             }
         }
