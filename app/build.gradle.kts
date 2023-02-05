@@ -22,7 +22,7 @@ android {
         minSdk = 31
         targetSdk = 33
         versionCode = 2
-        versionName = "$baseVersionName-git.$gitHash"
+        versionName = "$baseVersionName-git.$gitHash${if (isDirty) "-dirty" else ""}"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -169,4 +169,15 @@ val gitHash: String
             out.toString().trim()
         else
             "(error)"
+    }
+
+val isDirty: Boolean
+    get() {
+        val out = ByteArrayOutputStream()
+        exec {
+            commandLine("git", "diff", "--stat")
+            standardOutput = out
+            isIgnoreExitValue = true
+        }
+        return out.size() != 0
     }
