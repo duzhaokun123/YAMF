@@ -6,6 +6,6 @@ import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
 class QSNewWindowService : TileService() {
     override fun onClick() {
         super.onClick()
-        YAMFManagerHelper.createWindow(true)
+        YAMFManagerHelper.openAppList()
     }
 }

@@ -9,10 +9,12 @@ import android.util.Log
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.model.Config
+import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.ui.window.AppListWindow
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
 import io.github.duzhaokun123.yamf.utils.gson
 import io.github.duzhaokun123.yamf.utils.onException
+import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.log
@@ -78,11 +80,11 @@ class YAMFManager : IYAMFManager.Stub() {
             windowList.add(0, id)
         }
 
-        fun createWindowLocal(onVirtualDisplayCreated: (id: Int) -> Unit) {
+        fun createWindowLocal(startCmd: StartCmd?) {
             Instances.iStatusBarService.collapsePanels()
-            AppWindow(CommonContextWrapper.createAppCompatContext(systemContext), config.densityDpi, config.flags) { id ->
-                addWindow(id)
-                onVirtualDisplayCreated(id)
+            AppWindow(CommonContextWrapper.createAppCompatContext(systemContext), config.densityDpi, config.flags) { displayId ->
+                addWindow(displayId)
+                startCmd?.startAuto(displayId)
             }
         }
     }
@@ -104,12 +106,9 @@ class YAMFManager : IYAMFManager.Stub() {
         return Process.myUid()
     }
 
-    override fun createWindow(appList: Boolean) {
+    override fun createWindow() {
         runMain {
-            createWindowLocal {
-                if (appList)
-                    AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), it)
-            }
+            createWindowLocal(null)
         }
     }
 
@@ -140,18 +139,15 @@ class YAMFManager : IYAMFManager.Stub() {
 
     override fun openAppList() {
         runMain {
-            AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), 0)
+            Instances.iStatusBarService.collapsePanels()
+            AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), null)
         }
     }
 
     override fun currentToWindow() {
         runMain {
             val task = getTopRootTask() ?: return@runMain
-            createWindowLocal {
-                runCatching {
-                    Instances.activityTaskManager.moveRootTaskToDisplay(task.taskId, it)
-                }
-            }
+            createWindowLocal(StartCmd(taskId = task.taskId))
         }
     }
 

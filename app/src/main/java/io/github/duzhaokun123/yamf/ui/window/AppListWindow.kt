@@ -19,11 +19,13 @@ import com.github.kyuubiran.ezxhelper.utils.invokeMethodAs
 import io.github.duzhaokun123.androidapptemplate.bases.BaseSimpleAdapter
 import io.github.duzhaokun123.yamf.databinding.ItemAppBinding
 import io.github.duzhaokun123.yamf.databinding.WindowAppListBinding
+import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.utils.startActivity
+import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 
 @SuppressLint("ClickableViewAccessibility")
-class AppListWindow(val context: Context, val displayId: Int) {
+class AppListWindow(val context: Context, val displayId: Int? = null) {
     companion object {
         const val TAG = "YAMF_AppListWindow"
     }
@@ -105,7 +107,10 @@ class AppListWindow(val context: Context, val displayId: Int) {
         override fun initViews(baseBinding: ItemAppBinding, position: Int) {
             val packageInfo = showApps[position]
             baseBinding.ll.setOnClickListener {
-                startActivity(context, Instances.packageManager.getLaunchIntentForPackage(packageInfo.packageName)!!.component!!, userId, displayId)
+                if (displayId == null)
+                    YAMFManager.createWindowLocal(StartCmd(Instances.packageManager.getLaunchIntentForPackage(packageInfo.packageName)!!.component!!, userId))
+                else
+                    startActivity(context, Instances.packageManager.getLaunchIntentForPackage(packageInfo.packageName)!!.component!!, userId, displayId)
                 close()
             }
         }

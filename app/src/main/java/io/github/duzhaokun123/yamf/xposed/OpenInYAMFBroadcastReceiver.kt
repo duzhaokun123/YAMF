@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
+import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
@@ -36,9 +37,7 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
                 if (taskId == 0) {
                     TipUtil.showToast("bad taskid 0")
                 } else {
-                    YAMFManager.createWindowLocal { displayId ->
-                        moveToDisplay(context, taskId, componentName, userId, displayId)
-                    }
+                    YAMFManager.createWindowLocal(StartCmd(componentName, userId, taskId))
                 }
 
                 if (YAMFManager.config.recentsBackHome) {
