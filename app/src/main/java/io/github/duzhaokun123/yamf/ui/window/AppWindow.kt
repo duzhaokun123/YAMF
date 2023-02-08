@@ -38,6 +38,7 @@ import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
 import io.github.duzhaokun123.androidapptemplate.utils.getAttr
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
+import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
 import io.github.duzhaokun123.yamf.utils.RunMainThreadQueue
@@ -45,7 +46,6 @@ import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
-import io.github.duzhaokun123.yamf.xposed.utils.log
 import kotlinx.coroutines.delay
 
 @SuppressLint("ClickableViewAccessibility")
@@ -356,6 +356,9 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 binding.tvLabel.text = Instances.packageManager.getActivityInfo(topActivity, 0).loadLabel(Instances.packageManager)
             } else {
                 binding.tvLabel.text = taskDescription.label
+            }
+            if (BuildConfig.DEBUG) {
+                binding.tvLabel.text = "(${taskInfo.taskId}-$displayId) ${binding.tvLabel.text}"
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && YAMFManager.config.coloredController) {
                 val backgroundColor = taskDescription.backgroundColor

@@ -107,6 +107,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
         } else {
             baseBinding.systemVersion.text = "${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})"
         }
+        baseBinding.tvBuildType.text = BuildConfig.BUILD_TYPE
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

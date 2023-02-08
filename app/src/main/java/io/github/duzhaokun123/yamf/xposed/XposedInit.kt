@@ -12,6 +12,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.xposed.hook.HookLauncher
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.util.Initiator
@@ -26,8 +27,9 @@ class XposedInit : IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
          if (lpparam.packageName == "android") {
-             EzXHelperInit.initHandleLoadPackage(lpparam)
              log(TAG, "xposed init")
+             log(TAG, "buildtype?: ${BuildConfig.BUILD_TYPE}")
+             EzXHelperInit.initHandleLoadPackage(lpparam)
              Initiator.init(lpparam.classLoader)
              var serviceManagerHook: XC_MethodHook.Unhook? = null
              serviceManagerHook = findMethod("android.os.ServiceManager") {

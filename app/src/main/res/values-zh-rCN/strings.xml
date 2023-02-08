@@ -22,4 +22,5 @@
     <string name="info_system_version">系统版本</string>
     <string name="open_with_yamf">使用 YAMF 打开</string>
     <string name="enter_window">进窗</string>
+    <string name="build_type">构建类型</string>
 </resources>

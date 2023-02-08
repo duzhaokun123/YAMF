@@ -71,6 +71,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = if (System.getenv("REL_KEY") != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
 //            sourceSets.getByName("main").java.srcDir(File("build/generated/ksp/debug/kotlin"))
         }
     }
@@ -123,11 +128,6 @@ dependencies {
 
     //ViewBindingUtil
     implementation("com.github.matsudamper:ViewBindingUtil:0.1")
-//
-//    // rikka hidden api
-//    val rikkaHidden = "3.4.0"
-//    implementation("dev.rikka.hidden:compat:$rikkaHidden")
-//    compileOnly("dev.rikka.hidden:stub:$rikkaHidden")
 }
 
 val optimizeReleaseRes = task("optimizeReleaseRes").doLast {

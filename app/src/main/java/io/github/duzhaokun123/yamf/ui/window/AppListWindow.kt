@@ -42,8 +42,7 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
     init {
         runCatching {
             binding =  WindowAppListBinding.inflate(LayoutInflater.from(context))
-        }.onException {
-            Log.e(TAG, "init: new app list failed may you forget reboot", e)
+        }.onException { e ->
             TipUtil.showToast("new app list failed\nmay you forget reboot")
         }.onSuccess {
             doInit()

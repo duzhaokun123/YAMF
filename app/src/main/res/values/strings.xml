@@ -22,4 +22,5 @@
     <string name="info_system_version">System version</string>
     <string name="open_with_yamf">Open with YAMF</string>
     <string name="enter_window">enter window</string>
+    <string name="build_type">build type</string>
 </resources>

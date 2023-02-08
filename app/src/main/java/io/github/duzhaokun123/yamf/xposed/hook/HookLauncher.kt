@@ -64,7 +64,7 @@ class HookLauncher : IXposedHookLoadPackage {
                 }
                 val action = RemoteAction(
                     Icon.createWithResource(getUserContext(), R.drawable.ic_picture_in_picture_alt_24),
-                    getUserContext().getString(R.string.open_with_yamf),
+                    getUserContext().getString(R.string.open_with_yamf) + if (BuildConfig.DEBUG) " ($taskId)" else "",
                     "",
                     PendingIntent.getBroadcast(
                         AndroidAppHelper.currentApplication(),
