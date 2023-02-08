@@ -5,6 +5,7 @@ import android.app.ActivityTaskManager
 import android.content.Context
 import android.content.IntentFilter
 import android.os.Process
+import android.util.Log
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.model.Config
@@ -124,6 +125,7 @@ class YAMFManager : IYAMFManager.Stub() {
         config = gson.fromJson(newConfig, Config::class.java)
         runMain {
             configFile.writeText(newConfig)
+            Log.d(TAG, "updateConfig: $config")
         }
     }
 
