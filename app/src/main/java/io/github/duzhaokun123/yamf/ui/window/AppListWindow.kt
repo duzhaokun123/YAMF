@@ -7,16 +7,17 @@ import android.content.pm.PackageManager
 import android.content.pm.UserInfo
 import android.graphics.PixelFormat
 import android.os.Build
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.widget.doOnTextChanged
-import androidx.recyclerview.widget.GridLayoutManager
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAs
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import io.github.duzhaokun123.androidapptemplate.bases.BaseSimpleAdapter
 import io.github.duzhaokun123.yamf.databinding.ItemAppBinding
 import io.github.duzhaokun123.yamf.databinding.WindowAppListBinding
@@ -83,7 +84,10 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
             }.show()
         }
         onSelectUser(0)
-        binding.rv.layoutManager = GridLayoutManager(context, 5)
+        binding.rv.layoutManager = FlexboxLayoutManager(context).apply {
+            flexDirection = FlexDirection.ROW
+            justifyContent = JustifyContent.FLEX_START
+        }
         binding.rv.adapter = Adapter()
 
         binding.etSearch.doOnTextChanged { text, _, _, _ ->

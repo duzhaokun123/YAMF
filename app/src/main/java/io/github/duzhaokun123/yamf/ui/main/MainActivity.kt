@@ -15,11 +15,14 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
 import io.github.duzhaokun123.androidapptemplate.utils.TipUtil
 import io.github.duzhaokun123.androidapptemplate.utils.getAttr
+import io.github.duzhaokun123.androidapptemplate.utils.maxSystemBarsDisplayCutout
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
@@ -29,7 +32,7 @@ import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
 import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
 
 
-class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class.java, Config.NO_BACK, Config.LAYOUT_MATCH_HORI),
+class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class.java, Config.NO_BACK),
     MenuProvider {
     companion object {
         const val TAG = "YAMF_MainActivity"

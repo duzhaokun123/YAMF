@@ -28,6 +28,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 自动调整方向           |                     ✅                     |                ✅                 |
 | 缩放 (scale)       |                  ❌(不会支持)                  |                ✅                 |
 | 调整大小 (resize)    |                     ✅                     |                ✅                 |            
+| 快速设置磁贴           |                     ✅                     |                ✅                 |
 | open api         |                  ❌(或许会有)                  |                ✅                 |
 | 无需关心保活           |               ✅(因为注入了系统进程)                |                ❌                 |
 | 高刷新率             |                     ❓                     |                ❓                 |
@@ -67,6 +68,8 @@ https://duzhaokun123.github.io/donate.html
 [AOSP](https://source.android.com/)
 
 [EzXHelper](https://github.com/KyuubiRan/EzXHelper)
+
+[FlexboxLayout](https://github.com/google/flexbox-layout)
 
 [Hide-My-Applist](https://github.com/Dr-TSNG/Hide-My-Applist)
 

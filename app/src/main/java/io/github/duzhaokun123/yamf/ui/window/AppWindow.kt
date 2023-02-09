@@ -25,6 +25,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
+import android.view.WindowLayoutParamsHidden
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
@@ -102,6 +103,8 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             gravity = Gravity.START or Gravity.TOP
             x = 0
             y = 0
+//            this as WindowLayoutParamsHidden
+//            privateFlags = privateFlags or WindowLayoutParamsHidden.PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY
         }
         binding.root.let { layout ->
             layout.setOnTouchListener(MoveOnTouchListener())

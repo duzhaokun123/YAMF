@@ -8,7 +8,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-android")
-    id("dev.rikka.tools.refine") version "3.1.1"
+    id("dev.rikka.tools.refine") version "4.1.0"
 }
 
 android {
@@ -103,7 +103,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.activity:activity-ktx:1.6.1")
     implementation("androidx.fragment:fragment-ktx:1.5.5")
-    implementation("androidx.appcompat:appcompat:1.6.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
@@ -128,6 +128,9 @@ dependencies {
 
     //ViewBindingUtil
     implementation("com.github.matsudamper:ViewBindingUtil:0.1")
+
+    //FlexboxLayout
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
 }
 
 val optimizeReleaseRes = task("optimizeReleaseRes").doLast {

@@ -1,6 +1,5 @@
 plugins {
     id("com.android.library")
-    id("dev.rikka.tools.refine") version "3.1.1"
 }
 
 android {
@@ -31,6 +30,8 @@ android {
 }
 
 dependencies {
+    annotationProcessor("dev.rikka.tools.refine:annotation-processor:4.1.0")
+    compileOnly("dev.rikka.tools.refine:annotation:4.1.0")
     compileOnly("androidx.annotation:annotation:1.5.0")
     compileOnly("dev.rikka.hidden:stub:3.4.3")
 }
