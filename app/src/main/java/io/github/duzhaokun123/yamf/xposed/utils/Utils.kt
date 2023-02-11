@@ -1,5 +1,6 @@
 package io.github.duzhaokun123.yamf.xposed.utils
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import de.robv.android.xposed.XposedBridge
@@ -20,7 +21,7 @@ fun moveToDisplay(context: Context, taskId: Int, componentName: ComponentName, u
     when (YAMFManager.config.windowfy) {
         0 -> {
             runCatching {
-                Instances.activityTaskManager.moveRootTaskToDisplay(taskId, displayId)
+                moveTask(taskId, displayId)
             }.onException {
                 TipUtil.showToast("can't move task $taskId")
             }
@@ -34,7 +35,7 @@ fun moveToDisplay(context: Context, taskId: Int, componentName: ComponentName, u
         }
         2 -> {
             runCatching {
-                Instances.activityTaskManager.moveRootTaskToDisplay(taskId, displayId)
+                moveTask(taskId, displayId)
             }.onException {
                 TipUtil.showToast("can't move task $taskId")
                 runCatching {
@@ -45,4 +46,10 @@ fun moveToDisplay(context: Context, taskId: Int, componentName: ComponentName, u
             }
         }
     }
+}
+
+@SuppressLint("MissingPermission")
+fun moveTask(taskId: Int, displayId: Int) {
+    Instances.activityTaskManager.moveRootTaskToDisplay(taskId, displayId)
+    Instances.activityManager.moveTaskToFront(taskId, 0)
 }

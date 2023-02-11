@@ -28,7 +28,7 @@ class XposedInit : IXposedHookZygoteInit, IXposedHookLoadPackage {
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
          if (lpparam.packageName == "android") {
              log(TAG, "xposed init")
-             log(TAG, "buildtype?: ${BuildConfig.BUILD_TYPE}")
+             log(TAG, "buildtype: ${BuildConfig.BUILD_TYPE}")
              EzXHelperInit.initHandleLoadPackage(lpparam)
              Initiator.init(lpparam.classLoader)
              var serviceManagerHook: XC_MethodHook.Unhook? = null

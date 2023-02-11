@@ -85,9 +85,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
-        freeCompilerArgs = listOf(
-            "-Xuse-k2"
-        )
+        useK2 = true
     }
     buildFeatures {
         viewBinding = true
