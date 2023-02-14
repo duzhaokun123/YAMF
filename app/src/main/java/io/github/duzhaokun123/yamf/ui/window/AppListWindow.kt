@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.content.pm.UserInfo
 import android.graphics.PixelFormat
 import android.os.Build
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -23,6 +24,7 @@ import io.github.duzhaokun123.yamf.databinding.ItemAppBinding
 import io.github.duzhaokun123.yamf.databinding.WindowAppListBinding
 import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.utils.onException
+import io.github.duzhaokun123.yamf.utils.resetAdapter
 import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
@@ -44,6 +46,7 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
         runCatching {
             binding =  WindowAppListBinding.inflate(LayoutInflater.from(context))
         }.onException { e ->
+            Log.e(TAG, "new app list failed: ", e)
             TipUtil.showToast("new app list failed\nmay you forget reboot")
         }.onSuccess {
             doInit()
@@ -93,7 +96,7 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
         binding.etSearch.doOnTextChanged { text, _, _, _ ->
             text?:return@doOnTextChanged
             showApps = apps.filter { text in it.packageName || Instances.packageManager.getApplicationLabel(Instances.packageManager.getApplicationInfo(it.packageName, 0)).contains(text, true) }
-            binding.rv.adapter = binding.rv.adapter
+            binding.rv.resetAdapter()
         }
     }
 
@@ -112,7 +115,7 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
             .filter { Instances.packageManager.getLaunchIntentForPackage(it.packageName) != null }
         showApps = apps
         binding.etSearch.text.clear()
-        binding.rv.adapter = binding.rv.adapter
+        binding.rv.resetAdapter()
     }
 
     private fun close() {

@@ -5,7 +5,6 @@ import android.os.Parcel
 import android.os.RemoteException
 import android.os.ServiceManager
 import android.util.Log
-import android.view.Surface
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy

@@ -4,7 +4,6 @@ import android.content.ComponentName
 import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
-import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.moveTask
 import io.github.duzhaokun123.yamf.xposed.utils.moveToDisplay

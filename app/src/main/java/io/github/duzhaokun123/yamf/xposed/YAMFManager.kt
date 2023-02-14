@@ -13,12 +13,9 @@ import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.ui.window.AppListWindow
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
 import io.github.duzhaokun123.yamf.utils.gson
-import io.github.duzhaokun123.yamf.utils.onException
-import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.log
-import io.github.duzhaokun123.yamf.xposed.utils.moveToDisplay
 import io.github.qauxv.ui.CommonContextWrapper
 import java.io.File
 

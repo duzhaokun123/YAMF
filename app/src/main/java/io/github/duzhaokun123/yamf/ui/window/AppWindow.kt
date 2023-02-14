@@ -37,7 +37,6 @@ import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
 import io.github.duzhaokun123.androidapptemplate.utils.getAttr
-import io.github.duzhaokun123.androidapptemplate.utils.runIO
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
@@ -48,7 +47,6 @@ import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import kotlinx.coroutines.delay
-import java.io.File
 
 @SuppressLint("ClickableViewAccessibility")
 class AppWindow(val context: Context, private val densityDpi: Int, private val flags: Int, private val onVirtualDisplayCreated: ((Int) -> Unit)) :

@@ -1,6 +1,5 @@
 package io.github.duzhaokun123.yamf.utils
 
-import android.util.Log
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import kotlinx.coroutines.CoroutineScope
 import java.util.LinkedList

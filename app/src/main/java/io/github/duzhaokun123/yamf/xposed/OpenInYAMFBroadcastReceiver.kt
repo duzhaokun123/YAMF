@@ -4,20 +4,15 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.SystemClock
-import android.util.Log
 import android.view.InputDevice
 import android.view.KeyEvent
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import io.github.duzhaokun123.yamf.model.StartCmd
-import io.github.duzhaokun123.yamf.utils.onException
-import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
-import io.github.duzhaokun123.yamf.xposed.utils.moveToDisplay
 
 object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
     const val TAG = "YAMF_BR"

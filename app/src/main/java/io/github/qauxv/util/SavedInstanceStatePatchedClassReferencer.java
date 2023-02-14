@@ -41,16 +41,14 @@ public class SavedInstanceStatePatchedClassReferencer extends ClassLoader {
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         try {
             return mBootstrap.loadClass(name);
-        } catch (ClassNotFoundException ignored) {
-        }
+        } catch (ClassNotFoundException ignored) {}
         if (mHostReferencer != null) {
             try {
                 //start: overloaded
                 if ("androidx.lifecycle.ReportFragment".equals(name)) {
                     return mHostReferencer.loadClass(name);
                 }
-            } catch (ClassNotFoundException ignored) {
-            }
+            } catch (ClassNotFoundException ignored) {}
         }
         //with ClassNotFoundException
         return mBaseReferencer.loadClass(name);

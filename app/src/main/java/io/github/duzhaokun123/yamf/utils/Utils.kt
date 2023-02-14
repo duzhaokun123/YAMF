@@ -8,6 +8,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
 import android.os.UserHandle
+import androidx.recyclerview.widget.RecyclerView
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
@@ -50,3 +51,7 @@ inline fun <T> Result<T>.onException(action: (exception: Exception) -> Unit): Re
         if (t is Error) throw t
         action(t as Exception)
     }
+
+fun RecyclerView.resetAdapter() {
+    this.adapter = adapter
+}
