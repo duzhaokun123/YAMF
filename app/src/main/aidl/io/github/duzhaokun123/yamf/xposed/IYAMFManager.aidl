@@ -25,4 +25,6 @@ interface IYAMFManager {
     void openAppList();
 
     void currentToWindow();
+
+    void resetAllWindow();
 }

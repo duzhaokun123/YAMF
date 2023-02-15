@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.ActivityTaskManager
 import android.app.ITaskStackListener
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PixelFormat
@@ -14,6 +17,7 @@ import android.hardware.display.VirtualDisplay
 import android.os.Build
 import android.os.SystemClock
 import android.util.Log
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.IRotationWatcher
 import android.view.InputDevice
@@ -53,6 +57,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     TextureView.SurfaceTextureListener, SurfaceHolder.Callback {
     companion object {
         const val TAG = "YAMF_AppWindow"
+        const val ACTION_RESET_ALL_WINDOW = "io.github.duzhaokun123.yamf.ui.window.action.ACTION_RESET_ALL_WINDOW"
     }
 
     lateinit var binding: WindowAppBinding
@@ -66,6 +71,33 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     var halfWidth = 0
     var halfHeight = 0
     lateinit var surfaceView: View
+    
+    val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ACTION_RESET_ALL_WINDOW) {
+                val lp = binding.root.layoutParams as WindowManager.LayoutParams
+                lp.apply {
+                    x = 0
+                    y = 0
+                }
+                Instances.windowManager.updateViewLayout(binding.root, lp)
+                val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200F, context.resources.displayMetrics).toInt()
+                val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300F, context.resources.displayMetrics).toInt()
+                binding.vSizePreviewer.updateLayoutParams {
+                    this.width = width
+                    this.height = height
+                }
+                binding.vSupporter.updateLayoutParams {
+                    this.width = width
+                    this.height = height
+                }
+                surfaceView.updateLayoutParams {
+                    this.width = width
+                    this.height = height
+                }
+            }
+        }
+    }
 
     init {
         runCatching {
@@ -255,9 +287,11 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             }
         }
         watchRotation()
+        context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW))
     }
 
     private fun onDestroy() {
+        context.unregisterReceiver(broadcastReceiver)
         Instances.iWindowManager.removeRotationWatcher(rotationWatcher)
         Instances.activityTaskManager.unregisterTaskStackListener(taskStackListener)
         YAMFManager.removeWindow(displayId)

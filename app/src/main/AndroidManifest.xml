@@ -46,6 +46,17 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".services.QSResetAllWindow"
+            android:exported="true"
+            android:icon="@drawable/ic_picture_in_picture_alt_24"
+            android:label="reset all window"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="xposedmodule"
             android:value="true" />

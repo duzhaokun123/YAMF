@@ -3,6 +3,7 @@ package io.github.duzhaokun123.yamf.xposed
 import android.annotation.SuppressLint
 import android.app.ActivityTaskManager
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.os.Process
 import android.util.Log
@@ -145,6 +146,12 @@ class YAMFManager : IYAMFManager.Stub() {
         runMain {
             val task = getTopRootTask() ?: return@runMain
             createWindowLocal(StartCmd(taskId = task.taskId))
+        }
+    }
+
+    override fun resetAllWindow() {
+        runMain {
+            Instances.iStatusBarService.collapsePanels()
         }
     }
 
