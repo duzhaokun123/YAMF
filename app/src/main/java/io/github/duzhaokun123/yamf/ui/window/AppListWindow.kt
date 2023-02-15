@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.widget.doOnTextChanged
@@ -20,9 +21,12 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import io.github.duzhaokun123.androidapptemplate.bases.BaseSimpleAdapter
+import io.github.duzhaokun123.androidapptemplate.utils.runIO
+import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.databinding.ItemAppBinding
 import io.github.duzhaokun123.yamf.databinding.WindowAppListBinding
 import io.github.duzhaokun123.yamf.model.StartCmd
+import io.github.duzhaokun123.yamf.utils.AppInfoCache
 import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.utils.resetAdapter
 import io.github.duzhaokun123.yamf.utils.startActivity
@@ -101,21 +105,36 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
     }
 
     private fun onSelectUser(userId: Int) {
+        binding.pv.visibility = View.VISIBLE
         this.userId = userId
         binding.btnUser.text = users[userId]
 
-        val installedPackages = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Instances.iPackageManager.getInstalledPackages((PackageManager.GET_META_DATA).toLong(), userId)
-        } else {
-            Instances.iPackageManager.getInstalledPackages((PackageManager.GET_META_DATA), userId)
-        }.list as List<PackageInfo>
+        runIO {
+            val installedPackages = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Instances.iPackageManager.getInstalledPackages(
+                    (PackageManager.GET_META_DATA).toLong(),
+                    userId
+                )
+            } else {
+                Instances.iPackageManager.getInstalledPackages(
+                    (PackageManager.GET_META_DATA),
+                    userId
+                )
+            }.list as List<PackageInfo>
 
-        apps = installedPackages
-            .filter { it.applicationInfo != null && it.applicationInfo.uid / 100000 == userId }
-            .filter { Instances.packageManager.getLaunchIntentForPackage(it.packageName) != null }
-        showApps = apps
-        binding.etSearch.text.clear()
-        binding.rv.resetAdapter()
+            apps = installedPackages
+                .filter { it.applicationInfo != null && it.applicationInfo.uid / 100000 == userId }
+                .filter { Instances.packageManager.getLaunchIntentForPackage(it.packageName) != null }
+            apps.forEach {
+                AppInfoCache.getIconLabel(it)
+            }
+            runMain {
+                showApps = apps
+                binding.etSearch.text.clear()
+                binding.rv.resetAdapter()
+                binding.pv.visibility = View.GONE
+            }
+        }
     }
 
     private fun close() {
@@ -136,8 +155,9 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
 
         override fun initData(baseBinding: ItemAppBinding, position: Int) {
             val packageInfo = showApps[position]
-            baseBinding.ivIcon.setImageDrawable(Instances.packageManager.getApplicationIcon(packageInfo.packageName))
-            baseBinding.tvLabel.text = Instances.packageManager.getApplicationLabel(Instances.packageManager.getApplicationInfo(packageInfo.packageName, 0))
+            val (icon, label) = AppInfoCache.getIconLabel(packageInfo)
+            baseBinding.ivIcon.setImageDrawable(icon)
+            baseBinding.tvLabel.text = label
         }
 
         override fun getItemCount() = showApps.size

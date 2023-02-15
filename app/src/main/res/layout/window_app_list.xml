@@ -14,13 +14,13 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:gravity="center_horizontal">
 
             <LinearLayout
+                android:id="@+id/ll_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -42,7 +42,15 @@
                 android:id="@+id/rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_below="@id/ll_top"
                 tools:listitem="@layout/item_app" />
-        </LinearLayout>
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/pv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_top"
+                android:indeterminate="true" />
+        </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>
