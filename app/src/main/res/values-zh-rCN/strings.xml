@@ -23,4 +23,5 @@
     <string name="open_with_yamf">使用 YAMF 打开</string>
     <string name="enter_window">进窗</string>
     <string name="build_type">构建类型</string>
+    <string name="reset_all_window">重置所有窗口</string>
 </resources>

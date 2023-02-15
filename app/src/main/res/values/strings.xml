@@ -23,4 +23,5 @@
     <string name="open_with_yamf">Open with YAMF</string>
     <string name="enter_window">enter window</string>
     <string name="build_type">build type</string>
+    <string name="reset_all_window">reset all window</string>
 </resources>
