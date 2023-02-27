@@ -129,6 +129,9 @@ dependencies {
 
     //FlexboxLayout
     implementation("com.google.android.flexbox:flexbox:3.0.0")
+
+    //dynamicanimation
+    implementation("androidx.dynamicanimation:dynamicanimation-ktx:1.0.0-alpha03")
 }
 
 val optimizeReleaseRes = task("optimizeReleaseRes").doLast {

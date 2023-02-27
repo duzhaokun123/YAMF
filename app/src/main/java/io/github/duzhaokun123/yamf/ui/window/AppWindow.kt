@@ -18,6 +18,7 @@ import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 import android.util.TypedValue
+import android.view.GestureDetector
 import android.view.Gravity
 import android.view.IRotationWatcher
 import android.view.InputDevice
@@ -34,7 +35,10 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.window.TaskSnapshot
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.updateLayoutParams
+import androidx.dynamicanimation.animation.FlingAnimation
+import androidx.dynamicanimation.animation.flingAnimationOf
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.getObject
@@ -138,7 +142,15 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
 //            privateFlags = privateFlags or WindowLayoutParamsHidden.PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY
         }
         binding.root.let { layout ->
-            layout.setOnTouchListener(MoveOnTouchListener())
+            layout.setOnTouchListener { _, event ->
+                moveGestureDetector.onTouchEvent(event)
+                if (event.action == MotionEvent.ACTION_UP) {
+                    if (YAMFManager.isTop(displayId).not()) {
+                        moveToTop()
+                    }
+                }
+                true
+            }
             Instances.windowManager.addView(layout, params)
         }
         binding.ibResize.setOnTouchListener(object : View.OnTouchListener {
@@ -311,67 +323,6 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         Instances.windowManager.removeView(binding.root)
         Instances.windowManager.addView(binding.root, binding.root.layoutParams)
         YAMFManager.moveToTop(displayId)
-    }
-
-    inner class MoveOnTouchListener : View.OnTouchListener {
-        private var originalXPos = 0
-        private var originalYPos = 0
-
-        private var offsetX = 0f
-        private var offsetY = 0f
-
-        private var lastUp = 0L
-
-        @SuppressLint("ClickableViewAccessibility")
-        override fun onTouch(v: View, event: MotionEvent): Boolean {
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-//                    overlayWindow.onIsMovingChanged(true)
-
-                    val x = event.rawX
-                    val y = event.rawY
-
-                    val layoutParams = v.layoutParams as WindowManager.LayoutParams
-
-                    originalXPos = layoutParams.x
-                    originalYPos = layoutParams.y
-
-                    offsetX = x - originalXPos
-                    offsetY = y - originalYPos
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val x = event.rawX
-                    val y = event.rawY
-
-                    val params: WindowManager.LayoutParams = v.layoutParams as WindowManager.LayoutParams
-
-                    val newX = (x - offsetX).toInt()
-                    val newY = (y - offsetY).toInt()
-
-                    if (newX == originalXPos && newY == originalYPos) {
-                        return true
-                    }
-
-                    params.x = newX
-                    params.y = newY
-
-                    Instances.windowManager.updateViewLayout(v, params)
-                }
-                MotionEvent.ACTION_UP -> {
-                    if (YAMFManager.isTop(displayId).not()) {
-                        moveToTop()
-                    }
-
-                    if (isMini) {
-                        if (System.currentTimeMillis() - lastUp < 500) {
-                            changeMini()
-                        }
-                        lastUp = System.currentTimeMillis()
-                    }
-                }
-            }
-            return true
-        }
     }
 
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
@@ -614,4 +565,72 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         virtualDisplay.surface = null
     }
+
+    val moveGestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener() {
+        var startX = 0
+        var startY = 0
+        var xAnimation: FlingAnimation? = null
+        var yAnimation: FlingAnimation? = null
+
+        override fun onDown(e: MotionEvent): Boolean {
+            xAnimation?.cancel()
+            yAnimation?.cancel()
+            val params = binding.root.layoutParams as WindowManager.LayoutParams
+            startX = params.x
+            startY = params.y
+            return true
+        }
+
+        override fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            val params = binding.root.layoutParams as WindowManager.LayoutParams
+            params.x = (startX + (e2.rawX - e1.rawX)).toInt()
+            params.y = (startY + (e2.rawY - e1.rawY)).toInt()
+            Instances.windowManager.updateViewLayout(binding.root, params)
+            return true
+        }
+
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            val params = binding.root.layoutParams as WindowManager.LayoutParams
+            runCatching {
+                xAnimation = flingAnimationOf({
+                    params.x = it.toInt()
+                    Instances.windowManager.updateViewLayout(binding.root, params)
+                }, {
+                    params.x.toFloat()
+                })
+                    .setStartVelocity(velocityX)
+                    .setMinValue(0F)
+                    .setMaxValue(context.display!!.width.toFloat() - binding.root.width)
+                xAnimation?.start()
+            }
+            runCatching {
+                yAnimation = flingAnimationOf({
+                    params.y = it.toInt()
+                    Instances.windowManager.updateViewLayout(binding.root, params)
+                }, {
+                    params.y.toFloat()
+                })
+                    .setStartVelocity(velocityY)
+                    .setMinValue(0F)
+                    .setMaxValue(context.display!!.height.toFloat() - binding.root.height)
+                yAnimation?.start()
+            }
+            return true
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            if (isMini) changeMini()
+            return true
+        }
+    })
 }
