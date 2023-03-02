@@ -67,6 +67,5 @@ class XposedInit : IXposedHookZygoteInit, IXposedHookLoadPackage {
                  log(TAG, "system ready")
              }
         }
-        HookLauncher().handleLoadPackage(lpparam)
     }
 }

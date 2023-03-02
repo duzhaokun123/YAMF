@@ -2,6 +2,7 @@
 <resources>
     <string-array name="xposed_scope" >
         <item>android</item>
+        <item>com.android.systemui</item>
         <item>com.motorola.launcher3</item>
         <item>com.android.launcher3</item>
         <item>com.google.android.apps.nexuslauncher</item>

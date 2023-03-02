@@ -35,7 +35,6 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.window.TaskSnapshot
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.updateLayoutParams
 import androidx.dynamicanimation.animation.FlingAnimation
 import androidx.dynamicanimation.animation.flingAnimationOf
@@ -55,6 +54,7 @@ import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import kotlinx.coroutines.delay
+import kotlin.math.sign
 
 @SuppressLint("ClickableViewAccessibility")
 class AppWindow(val context: Context, private val densityDpi: Int, private val flags: Int, private val onVirtualDisplayCreated: ((Int) -> Unit)) :
@@ -566,11 +566,15 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         virtualDisplay.surface = null
     }
 
-    val moveGestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener() {
+    val moveGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
         var startX = 0
         var startY = 0
         var xAnimation: FlingAnimation? = null
         var yAnimation: FlingAnimation? = null
+        var lastX = 0F
+        var lastY = 0F
+        var last2X = 0F
+        var last2Y = 0F
 
         override fun onDown(e: MotionEvent): Boolean {
             xAnimation?.cancel()
@@ -591,6 +595,10 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             params.x = (startX + (e2.rawX - e1.rawX)).toInt()
             params.y = (startY + (e2.rawY - e1.rawY)).toInt()
             Instances.windowManager.updateViewLayout(binding.root, params)
+            last2X = lastX
+            last2Y = lastY
+            lastX = e2.rawX
+            lastY = e2.rawY
             return true
         }
 
@@ -602,6 +610,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         ): Boolean {
             val params = binding.root.layoutParams as WindowManager.LayoutParams
             runCatching {
+                if (sign(velocityX) != sign(e2.rawX - last2X)) return@runCatching
                 xAnimation = flingAnimationOf({
                     params.x = it.toInt()
                     Instances.windowManager.updateViewLayout(binding.root, params)
@@ -614,6 +623,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 xAnimation?.start()
             }
             runCatching {
+                if (sign(velocityY) != sign(e2.rawY - last2Y)) return@runCatching
                 yAnimation = flingAnimationOf({
                     params.y = it.toInt()
                     Instances.windowManager.updateViewLayout(binding.root, params)
