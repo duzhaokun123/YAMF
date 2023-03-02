@@ -69,6 +69,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     val taskStackListener = TaskStackListener()
     val rotationWatcher = RotationWatcher()
     val surfaceOnTouchListener = SurfaceOnTouchListener()
+    val surfaceOnGenericMotionListener = SurfaceOnGenericMotionListener()
     var displayId = -1
     var rotateLock = false
     var isMini = false
@@ -204,6 +205,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             }
         })
         surfaceView.setOnTouchListener(surfaceOnTouchListener)
+        surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
         binding.ibBack.setOnClickListener {
             val down = KeyEvent(
                 SystemClock.uptimeMillis(),
@@ -497,6 +499,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             binding.rlTop.visibility = View.VISIBLE
             binding.rlButton.visibility = View.VISIBLE
             surfaceView.setOnTouchListener(surfaceOnTouchListener)
+            surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
         } else {
             isMini = true
             surfaceView.updateLayoutParams {
@@ -510,46 +513,58 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             binding.rlTop.visibility = View.GONE
             binding.rlButton.visibility = View.GONE
             surfaceView.setOnTouchListener(null)
+            surfaceView.setOnGenericMotionListener(null)
         }
+    }
+
+    fun forwardMotionEvent(event: MotionEvent) {
+        val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
+        val pointerProperties: Array<MotionEvent.PointerProperties?> =
+            arrayOfNulls(event.pointerCount)
+        for (i in 0 until event.pointerCount) {
+            val oldCoords = MotionEvent.PointerCoords()
+            val pointerProperty = MotionEvent.PointerProperties()
+            event.getPointerCoords(i, oldCoords)
+            event.getPointerProperties(i, pointerProperty)
+            pointerCoords[i] = oldCoords
+            pointerCoords[i]!!.apply {
+                x = oldCoords.x
+                y = oldCoords.y
+            }
+            pointerProperties[i] = pointerProperty
+        }
+
+        val newEvent = MotionEvent.obtain(
+            event.downTime,
+            event.eventTime,
+            event.action,
+            event.pointerCount,
+            pointerProperties,
+            pointerCoords,
+            event.metaState,
+            event.buttonState,
+            event.xPrecision,
+            event.yPrecision,
+            event.deviceId,
+            event.edgeFlags,
+            event.source,
+            event.flags
+        )
+        newEvent.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
+        Instances.inputManager.injectInputEvent(newEvent, 0)
+        newEvent.recycle()
     }
 
     inner class SurfaceOnTouchListener : View.OnTouchListener {
         override fun onTouch(v: View, event: MotionEvent): Boolean {
-            val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
-            val pointerProperties: Array<MotionEvent.PointerProperties?> =
-                arrayOfNulls(event.pointerCount)
-            for (i in 0 until event.pointerCount) {
-                val oldCoords = MotionEvent.PointerCoords()
-                val pointerProperty = MotionEvent.PointerProperties()
-                event.getPointerCoords(i, oldCoords)
-                event.getPointerProperties(i, pointerProperty)
-                pointerCoords[i] = oldCoords
-                pointerCoords[i]!!.apply {
-                    x = oldCoords.x
-                    y = oldCoords.y
-                }
-                pointerProperties[i] = pointerProperty
-            }
+            forwardMotionEvent(event)
+            return true
+        }
+    }
 
-            val newEvent = MotionEvent.obtain(
-                event.downTime,
-                event.eventTime,
-                event.action,
-                event.pointerCount,
-                pointerProperties,
-                pointerCoords,
-                event.metaState,
-                event.buttonState,
-                event.xPrecision,
-                event.yPrecision,
-                event.deviceId,
-                event.edgeFlags,
-                event.source,
-                event.flags
-            )
-            newEvent.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
-            Instances.inputManager.injectInputEvent(newEvent, 0)
-            newEvent.recycle()
+    inner class SurfaceOnGenericMotionListener : View.OnGenericMotionListener {
+        override fun onGenericMotion(v: View, event: MotionEvent): Boolean {
+            forwardMotionEvent(event)
             return true
         }
     }
@@ -608,6 +623,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             velocityX: Float,
             velocityY: Float
         ): Boolean {
+            if (e1.source == InputDevice.SOURCE_MOUSE) return false
             val params = binding.root.layoutParams as WindowManager.LayoutParams
             runCatching {
                 if (sign(velocityX) != sign(e2.rawX - last2X)) return@runCatching
