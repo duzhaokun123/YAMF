@@ -1,3 +1,2 @@
 io.github.duzhaokun123.yamf.xposed.XposedInit
 io.github.duzhaokun123.yamf.xposed.hook.HookLauncher
-io.github.duzhaokun123.yamf.xposed.hook.HookSystemui
