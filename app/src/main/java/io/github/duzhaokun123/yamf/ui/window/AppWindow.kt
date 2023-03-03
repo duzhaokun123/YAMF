@@ -145,11 +145,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         binding.root.let { layout ->
             layout.setOnTouchListener { _, event ->
                 moveGestureDetector.onTouchEvent(event)
-                if (event.action == MotionEvent.ACTION_UP) {
-                    if (YAMFManager.isTop(displayId).not()) {
-                        moveToTop()
-                    }
-                }
+                moveToTopIfNeed(event)
                 true
             }
             Instances.windowManager.addView(layout, params)
@@ -199,6 +195,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                         }
                         binding.vSupporter.layoutParams = FrameLayout.LayoutParams(binding.vSizePreviewer.layoutParams)
                         binding.vSizePreviewer.visibility = View.GONE
+                        moveToTopIfNeed(event)
                     }
                 }
                 return true
@@ -325,6 +322,12 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         Instances.windowManager.removeView(binding.root)
         Instances.windowManager.addView(binding.root, binding.root.layoutParams)
         YAMFManager.moveToTop(displayId)
+    }
+
+    private fun moveToTopIfNeed(event: MotionEvent) {
+        if (event.action == MotionEvent.ACTION_UP && YAMFManager.isTop(displayId).not()) {
+            moveToTop()
+        }
     }
 
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
@@ -558,6 +561,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     inner class SurfaceOnTouchListener : View.OnTouchListener {
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             forwardMotionEvent(event)
+            moveToTopIfNeed(event)
             return true
         }
     }
