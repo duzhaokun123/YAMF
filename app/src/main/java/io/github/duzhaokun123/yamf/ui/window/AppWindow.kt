@@ -13,6 +13,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
+import android.graphics.drawable.BitmapDrawable
 import android.hardware.display.VirtualDisplay
 import android.os.Build
 import android.os.SystemClock
@@ -38,6 +39,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import androidx.dynamicanimation.animation.FlingAnimation
 import androidx.dynamicanimation.animation.flingAnimationOf
+import androidx.wear.widget.RoundedDrawable
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.getObject
@@ -338,11 +340,15 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             val topActivity = taskInfo.topActivity ?: return@add
             val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
             val icon = runCatching { taskDescription.icon }.getOrNull()
-            if (icon == null) {
-                binding.ivIcon.setImageDrawable(Instances.packageManager.getActivityIcon(topActivity))
-            } else {
-                binding.ivIcon.setImageBitmap(taskDescription.icon)
-            }
+            binding.ivIcon.setImageDrawable(RoundedDrawable().apply {
+                drawable = if (icon == null) {
+                    Instances.packageManager.getActivityIcon(topActivity)
+                } else {
+                    BitmapDrawable(taskDescription.icon)
+                }
+                isClipEnabled = true
+                radius = 100
+            })
             val label = taskDescription.label
             if (label == null) {
                 binding.tvLabel.text = Instances.packageManager.getActivityInfo(topActivity, 0).loadLabel(Instances.packageManager)
