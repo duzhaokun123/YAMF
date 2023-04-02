@@ -47,14 +47,6 @@ object YAMFManagerHelper : IYAMFManager, DeathRecipient {
         return getService()?.buildTime ?: 0
     }
 
-    override fun getConfigJson(): String {
-        return getService()?.configJson ?: "{}"
-    }
-
-    override fun updateConfig(newConfig: String) {
-        getService()?.updateConfig(newConfig)
-    }
-
     override fun registerOpenCountListener(iOpenCountListener: IOpenCountListener) {
         getService()?.registerOpenCountListener(iOpenCountListener)
     }

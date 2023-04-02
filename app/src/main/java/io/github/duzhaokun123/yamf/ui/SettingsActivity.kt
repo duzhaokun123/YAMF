@@ -1,10 +1,16 @@
 package io.github.duzhaokun123.yamf.ui
 
 import android.content.Intent
+import android.os.Bundle
+import android.preference.PreferenceFragment
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.edit
 import androidx.core.net.toUri
+import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
+import io.github.duzhaokun123.androidapptemplate.utils.TipUtil
+import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.ActivitySettingsBinding
 import io.github.duzhaokun123.yamf.utils.gson
 import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
@@ -31,69 +37,24 @@ class SettingsActivity :
         )
     }
 
-    lateinit var config: YAMFConfig
+    override fun initViews() {
+        super.initViews()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fl_root, SettingsFragment())
+            .commit()
+    }
 
-    override fun initData() {
-        super.initData()
-        config = gson.fromJson(YAMFManagerHelper.configJson, YAMFConfig::class.java)
-        baseBinding.etDensityDpi.setText(config.densityDpi.toString())
-        baseBinding.btnFlags.text = config.flags.toString()
-        baseBinding.sColoerd.isChecked = config.coloredController
-        baseBinding.btnWindowsfy.text = config.windowfy.toString()
-        baseBinding.btnSurface.text = config.surfaceView.toString()
-        baseBinding.sBackHome.isChecked = config.recentsBackHome
-
-        baseBinding.btnFlags.setOnClickListener {
-            val checks = BooleanArray(flags.size) { i ->
-                config.flags and (1 shl i) != 0
-            }
-            MaterialAlertDialogBuilder(this)
-                .setMultiChoiceItems(flags.toTypedArray(), checks) { _, i, c ->
-                    checks[i] = c
-                    baseBinding.btnFlags.text = checks.foldIndexed(0) { i, f, b ->
-                        if (b)
-                            f + (1 shl i)
-                        else
-                            f
-                    }.toString()
-                }
-                .setPositiveButton("about") { _, _ ->
-                    startActivity(Intent(Intent.ACTION_VIEW).apply {
-                        data = "https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/hardware/display/DisplayManager.java".toUri()
-                    })
-                }
-                .show()
-        }
-        baseBinding.btnWindowsfy.setOnClickListener {
-            PopupMenu(this, baseBinding.btnWindowsfy).apply {
-                listOf("0", "1", "2").forEach { i ->
-                    menu.add(i).setOnMenuItemClickListener {
-                        baseBinding.btnWindowsfy.text = i
-                        true
-                    }
-                }
-            }.show()
-        }
-        baseBinding.btnSurface.setOnClickListener {
-            PopupMenu(this, baseBinding.btnSurface).apply {
-                listOf("0", "1").forEach { i ->
-                    menu.add(i).setOnMenuItemClickListener {
-                        baseBinding.btnSurface.text = i
-                        true
-                    }
-                }
-            }.show()
+    class SettingsFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            preferenceManager.sharedPreferencesName = "yamf_config"
+            preferenceManager.sharedPreferencesMode = MODE_WORLD_READABLE
+            setPreferencesFromResource(R.xml.pref_yamf_config, rootKey)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        config.densityDpi = baseBinding.etDensityDpi.text.toString().toIntOrNull() ?: config.densityDpi
-        config.flags = baseBinding.btnFlags.text.toString().toIntOrNull() ?: config.flags
-        config.coloredController = baseBinding.sColoerd.isChecked
-        config.windowfy = baseBinding.btnWindowsfy.text.toString().toIntOrNull() ?: config.windowfy
-        config.surfaceView = baseBinding.btnSurface.text.toString().toIntOrNull() ?: config.surfaceView
-        config.recentsBackHome = baseBinding.sBackHome.isChecked
-        YAMFManagerHelper.updateConfig(gson.toJson(config))
+        TipUtil.showToast("need reboot to apply changes")
     }
 }
