@@ -1,20 +1,11 @@
 package io.github.duzhaokun123.yamf.ui
 
-import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceFragment
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.edit
-import androidx.core.net.toUri
 import androidx.preference.PreferenceFragmentCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
 import io.github.duzhaokun123.androidapptemplate.utils.TipUtil
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.ActivitySettingsBinding
-import io.github.duzhaokun123.yamf.utils.gson
-import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
-import io.github.duzhaokun123.yamf.model.Config as YAMFConfig
 
 class SettingsActivity :
     BaseActivity<ActivitySettingsBinding>(ActivitySettingsBinding::class.java) {

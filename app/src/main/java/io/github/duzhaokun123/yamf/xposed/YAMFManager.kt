@@ -5,20 +5,16 @@ import android.app.ActivityTaskManager
 import android.content.Context
 import android.content.IntentFilter
 import android.os.Process
-import android.util.Log
 import de.robv.android.xposed.XSharedPreferences
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
-import io.github.duzhaokun123.yamf.model.Config
 import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.ui.window.AppListWindow
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
-import io.github.duzhaokun123.yamf.utils.gson
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.ui.CommonContextWrapper
-import java.io.File
 
 
 class YAMFManager : IYAMFManager.Stub() {
