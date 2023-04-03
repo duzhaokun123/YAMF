@@ -1,6 +1,5 @@
 package io.github.duzhaokun123.yamf.xposed.hook
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AndroidAppHelper
 import android.app.Application
@@ -17,6 +16,7 @@ import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.newInstance
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -34,15 +34,14 @@ class HookLauncher : IXposedHookLoadPackage {
     private var mUserContext: Context? = null
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
-        if (runCatching{ lpparam.classLoader.loadClass("com.android.quickstep.TaskOverlayFactory") }.isFailure) return
-        log(TAG, "hooking ${lpparam.packageName}")
-        hookLauncherAfterQ(lpparam.classLoader)
+        hookRecents(lpparam)
+        hookTaskbar(lpparam)
     }
 
-    @SuppressLint("PrivateApi")
-    private fun hookLauncherAfterQ(classLoader: ClassLoader) {
-
-        XposedBridge.hookAllMethods(XposedHelpers.findClass("com.android.quickstep.TaskOverlayFactory", classLoader), "getEnabledShortcuts", object : XC_MethodHook() {
+    private fun hookRecents(lpparam: XC_LoadPackage.LoadPackageParam) {
+        if (runCatching{ XposedHelpers.findClass("com.android.quickstep.TaskOverlayFactory", lpparam.classLoader) }.isFailure) return
+        log(TAG, "hooking recents ${lpparam.packageName}")
+        XposedBridge.hookAllMethods(XposedHelpers.findClass("com.android.quickstep.TaskOverlayFactory", lpparam.classLoader), "getEnabledShortcuts", object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
                 val taskView = param.args[0] as View
                 val shortcuts = param.result as MutableList<Any>
@@ -55,12 +54,13 @@ class HookLauncher : IXposedHookLoadPackage {
                 val topComponent = XposedHelpers.callMethod(itemInfo, "getTargetComponent") as ComponentName
                 val userId = XposedHelpers.getIntField(key, "userId")
 
-                val class_RemoteActionShortcut = XposedHelpers.findClass("com.android.launcher3.popup.RemoteActionShortcut", classLoader)
+                val class_RemoteActionShortcut = XposedHelpers.findClass("com.android.launcher3.popup.RemoteActionShortcut", lpparam.classLoader)
                 val intent = Intent(OpenInYAMFBroadcastReceiver.ACTION_OPEN_IN_YAMF).apply {
                     setPackage("android")
                     putExtra(OpenInYAMFBroadcastReceiver.EXTRA_TASK_ID, taskId)
                     putExtra(OpenInYAMFBroadcastReceiver.EXTRA_COMPONENT_NAME, topComponent)
                     putExtra(OpenInYAMFBroadcastReceiver.EXTRA_USER_ID, userId)
+                    putExtra(OpenInYAMFBroadcastReceiver.EXTRA_SOURCE, "recents")
                 }
                 val action = RemoteAction(
                     Icon.createWithResource(getUserContext(), R.drawable.ic_picture_in_picture_alt_24),
@@ -86,6 +86,23 @@ class HookLauncher : IXposedHookLoadPackage {
                 if (shortcut != null) {
                     shortcuts.add(shortcut)
                 }
+            }
+        })
+    }
+
+    private fun hookTaskbar(lpparam: XC_LoadPackage.LoadPackageParam) {
+        if (runCatching{ XposedHelpers.findClass("com.android.launcher3.taskbar.TaskbarActivityContext", lpparam.classLoader) }.isFailure) return
+        log(TAG, "hooking taskbar ${lpparam.packageName}")
+        XposedBridge.hookAllMethods(XposedHelpers.findClass("com.android.launcher3.taskbar.TaskbarActivityContext", lpparam.classLoader), "startItemInfoActivity", object : XC_MethodReplacement() {
+            override fun replaceHookedMethod(param: MethodHookParam): Any? {
+                val infoIntent = XposedHelpers.callMethod(param.args[0], "getIntent") as Intent
+                val intent = Intent(OpenInYAMFBroadcastReceiver.ACTION_OPEN_IN_YAMF).apply {
+                    setPackage("android")
+                    putExtra(OpenInYAMFBroadcastReceiver.EXTRA_COMPONENT_NAME, infoIntent.component)
+                    putExtra(OpenInYAMFBroadcastReceiver.EXTRA_SOURCE, "taskbar")
+                }
+                AndroidAppHelper.currentApplication().sendBroadcast(intent)
+                return null
             }
         })
     }

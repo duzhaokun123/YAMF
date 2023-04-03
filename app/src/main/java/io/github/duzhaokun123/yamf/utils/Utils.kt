@@ -13,7 +13,6 @@ import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.newInstance
-import com.google.gson.Gson
 import java.lang.Error
 
 fun Context.getActivity(): Activity? {
@@ -21,8 +20,6 @@ fun Context.getActivity(): Activity? {
     if (this is ContextWrapper) return this.baseContext.getActivity()
     return null
 }
-
-val gson by lazy { Gson() }
 
 fun startActivity(context: Context, componentName: ComponentName, userId: Int, displayId: Int) {
     context.invokeMethod(

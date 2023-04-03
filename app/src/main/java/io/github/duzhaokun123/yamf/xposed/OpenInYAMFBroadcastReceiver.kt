@@ -21,6 +21,7 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
     const val EXTRA_TASK_ID = "io.github.duzhaokun123.yamf.receiver.extra.EXTRA_TASK_ID"
     const val EXTRA_COMPONENT_NAME = "io.github.duzhaokun123.yamf.receiver.extra.EXTRA_COMPONENT_NAME"
     const val EXTRA_USER_ID = "io.github.duzhaokun123.yamf.receiver.extra.EXTRA_USER_ID"
+    const val EXTRA_SOURCE = "io.github.duzhaokun123.yamf.receiver.extra.EXTRA_SOURCE"
 
     override fun onReceive(context: Context, intent: Intent) {
         when(intent.action) {
@@ -28,14 +29,10 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
                 val taskId = intent.getIntExtra(EXTRA_TASK_ID, 0)
                 val componentName = intent.getParcelableExtra<ComponentName>(EXTRA_COMPONENT_NAME)?: return
                 val userId = intent.getIntExtra(EXTRA_USER_ID, 0)
+                val source = intent.getStringExtra(EXTRA_SOURCE)
+                YAMFManager.createWindowLocal(StartCmd(componentName, userId, taskId))
 
-                if (taskId == 0) {
-                    TipUtil.showToast("bad taskid 0")
-                } else {
-                    YAMFManager.createWindowLocal(StartCmd(componentName, userId, taskId))
-                }
-
-                if (YAMFManager.config.getBoolean("recentsBackHome", false)) {
+                if (source == "recents" && YAMFManager.config.getBoolean("recentsBackHome", false)) {
                     val down = KeyEvent(
                         SystemClock.uptimeMillis(),
                         SystemClock.uptimeMillis(),
@@ -43,7 +40,7 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
                         KeyEvent.KEYCODE_HOME,
                         0
                     ).apply {
-                        source = InputDevice.SOURCE_KEYBOARD
+                        this.source = InputDevice.SOURCE_KEYBOARD
                         this.invokeMethod("setDisplayId", args(0), argTypes(Integer.TYPE))
                     }
                     Instances.inputManager.injectInputEvent(down, 0)
@@ -54,7 +51,7 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
                         KeyEvent.KEYCODE_HOME,
                         0
                     ).apply {
-                        source = InputDevice.SOURCE_KEYBOARD
+                        this.source = InputDevice.SOURCE_KEYBOARD
                         this.invokeMethod("setDisplayId", args(0), argTypes(Integer.TYPE))
                     }
                     Instances.inputManager.injectInputEvent(up, 0)
