@@ -3,6 +3,8 @@ package io.github.duzhaokun123.yamf.xposed.utils
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
+import android.content.res.Resources
+import android.util.TypedValue
 import de.robv.android.xposed.XposedBridge
 import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.utils.startActivity
@@ -53,3 +55,8 @@ fun moveTask(taskId: Int, displayId: Int) {
     Instances.activityTaskManager.moveRootTaskToDisplay(taskId, displayId)
     Instances.activityManager.moveTaskToFront(taskId, 0)
 }
+
+fun Number.dpToPx() =
+    TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), Resources.getSystem().displayMetrics
+    )

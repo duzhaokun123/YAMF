@@ -18,6 +18,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="default window size in dp" />
+
+        <EditText
+            android:id="@+id/et_sizeW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="200" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x" />
+
+        <EditText
+            android:id="@+id/et_sizeH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="300" />
     </LinearLayout>
 
     <LinearLayout

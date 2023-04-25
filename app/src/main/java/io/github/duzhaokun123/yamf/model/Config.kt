@@ -22,5 +22,7 @@ data class Config(
      */
     var surfaceView: Int = 0,
     var recentsBackHome: Boolean = false,
-    var showImeInWindow: Boolean = false
+    var showImeInWindow: Boolean = false,
+    var defaultWindowWidth: Int = 200,
+    var defaultWindowHeight: Int = 300,
 )

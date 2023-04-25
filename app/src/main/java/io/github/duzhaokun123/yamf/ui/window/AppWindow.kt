@@ -56,7 +56,7 @@ import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
-import io.github.duzhaokun123.yamf.xposed.utils.log
+import io.github.duzhaokun123.yamf.xposed.utils.dpToPx
 import kotlinx.coroutines.delay
 import kotlin.math.sign
 
@@ -289,7 +289,6 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         displayId = virtualDisplay.display.displayId
         (Instances.windowManager as WindowManagerHidden).setDisplayImePolicy(displayId, if (YAMFManager.config.showImeInWindow) WindowManagerHidden.DISPLAY_IME_POLICY_LOCAL else WindowManagerHidden.DISPLAY_IME_POLICY_FALLBACK_DISPLAY)
         Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
-        onVirtualDisplayCreated(displayId)
         (surfaceView as? TextureView)?.surfaceTextureListener = this
         (surfaceView as? SurfaceView)?.holder?.addCallback(this)
         var failCount = 0
@@ -304,6 +303,18 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
         watchRotation()
         context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW))
+        val width = YAMFManager.config.defaultWindowWidth.dpToPx().toInt()
+        val height = YAMFManager.config.defaultWindowHeight.dpToPx().toInt()
+        surfaceView.updateLayoutParams {
+            this.width = width
+            this.height = height
+        }
+        binding.vSizePreviewer.updateLayoutParams {
+            this.width = width
+            this.height = height
+        }
+        binding.vSupporter.layoutParams = FrameLayout.LayoutParams(binding.vSizePreviewer.layoutParams)
+        onVirtualDisplayCreated(displayId)
     }
 
     private fun onDestroy() {

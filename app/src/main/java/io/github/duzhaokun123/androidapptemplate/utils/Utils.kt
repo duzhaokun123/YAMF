@@ -39,4 +39,4 @@ fun Resources.Theme.getAttr(@AttrRes id: Int) =
 fun Number.dpToPx() =
     TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), application.resources.displayMetrics
-    ).toInt()
+    )

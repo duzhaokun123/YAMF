@@ -43,6 +43,8 @@ class SettingsActivity :
         baseBinding.btnSurface.text = config.surfaceView.toString()
         baseBinding.sBackHome.isChecked = config.recentsBackHome
         baseBinding.sShowIMEinWindow.isChecked = config.showImeInWindow
+        baseBinding.etSizeH.setText(config.defaultWindowHeight.toString())
+        baseBinding.etSizeW.setText(config.defaultWindowWidth.toString())
 
         baseBinding.btnFlags.setOnClickListener {
             val checks = BooleanArray(flags.size) { i ->
@@ -96,6 +98,8 @@ class SettingsActivity :
         config.surfaceView = baseBinding.btnSurface.text.toString().toIntOrNull() ?: config.surfaceView
         config.recentsBackHome = baseBinding.sBackHome.isChecked
         config.showImeInWindow = baseBinding.sShowIMEinWindow.isChecked
+        config.defaultWindowHeight = baseBinding.etSizeH.text.toString().toIntOrNull() ?: config.defaultWindowHeight
+        config.defaultWindowWidth = baseBinding.etSizeW.text.toString().toIntOrNull() ?: config.defaultWindowWidth
         YAMFManagerHelper.updateConfig(gson.toJson(config))
     }
 }
