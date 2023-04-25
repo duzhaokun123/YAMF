@@ -21,5 +21,6 @@ data class Config(
      * 1: SurfaceView
      */
     var surfaceView: Int = 0,
-    var recentsBackHome: Boolean = false
+    var recentsBackHome: Boolean = false,
+    var showImeInWindow: Boolean = false
 )

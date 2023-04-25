@@ -32,6 +32,7 @@ import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
+import android.view.WindowManagerHidden
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.window.TaskSnapshot
@@ -55,6 +56,7 @@ import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
+import io.github.duzhaokun123.yamf.xposed.utils.log
 import kotlinx.coroutines.delay
 import kotlin.math.sign
 
@@ -285,6 +287,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
         displayId = virtualDisplay.display.displayId
+        (Instances.windowManager as WindowManagerHidden).setDisplayImePolicy(displayId, if (YAMFManager.config.showImeInWindow) WindowManagerHidden.DISPLAY_IME_POLICY_LOCAL else WindowManagerHidden.DISPLAY_IME_POLICY_FALLBACK_DISPLAY)
         Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
         onVirtualDisplayCreated(displayId)
         (surfaceView as? TextureView)?.surfaceTextureListener = this

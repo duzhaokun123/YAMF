@@ -83,4 +83,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="back home" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/s_showIMEinWindow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="show IME in window, need window be VIRTUAL_DISPLAY_FLAG_PUBLIC" />
 </LinearLayout>
