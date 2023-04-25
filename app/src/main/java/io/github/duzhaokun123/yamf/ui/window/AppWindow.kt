@@ -118,7 +118,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     }
 
     fun doInit() {
-        when(YAMFManager.config.getString("surfaceView", "0")!!.toInt()) {
+        when(YAMFManager.config.surfaceView) {
             0 -> surfaceView = TextureView(context)
             1 -> surfaceView = SurfaceView(context)
         }
@@ -358,7 +358,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             if (BuildConfig.DEBUG) {
                 binding.tvLabel.text = "(${taskInfo.taskId}-$displayId) ${binding.tvLabel.text}"
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && YAMFManager.config.getBoolean("coloredController", false)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && YAMFManager.config.coloredController) {
                 val backgroundColor = taskDescription.backgroundColor
                 binding.cvApp.setCardBackgroundColor(backgroundColor)
 

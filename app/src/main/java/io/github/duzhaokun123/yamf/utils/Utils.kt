@@ -13,6 +13,7 @@ import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.newInstance
+import com.google.gson.Gson
 import java.lang.Error
 
 fun Context.getActivity(): Activity? {
@@ -52,3 +53,5 @@ inline fun <T> Result<T>.onException(action: (exception: Exception) -> Unit): Re
 fun RecyclerView.resetAdapter() {
     this.adapter = adapter
 }
+
+val gson by lazy { Gson() }

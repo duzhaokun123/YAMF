@@ -132,6 +132,9 @@ dependencies {
 
     //dynamicanimation
     implementation("androidx.dynamicanimation:dynamicanimation-ktx:1.0.0-alpha03")
+
+    //gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 val optimizeReleaseRes = task("optimizeReleaseRes").doLast {

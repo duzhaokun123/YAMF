@@ -32,7 +32,7 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
                 val source = intent.getStringExtra(EXTRA_SOURCE)
                 YAMFManager.createWindowLocal(StartCmd(componentName, userId, taskId))
 
-                if (source == "recents" && YAMFManager.config.getBoolean("recentsBackHome", false)) {
+                if (source == "recents" && YAMFManager.config.recentsBackHome) {
                     val down = KeyEvent(
                         SystemClock.uptimeMillis(),
                         SystemClock.uptimeMillis(),

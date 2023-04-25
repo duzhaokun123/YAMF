@@ -18,7 +18,7 @@ fun log(tag: String, message: String, t: Throwable) {
 }
 
 fun moveToDisplay(context: Context, taskId: Int, componentName: ComponentName, userId: Int, displayId: Int) {
-    when (YAMFManager.config.getString("windowfy", "0")!!.toInt()) {
+    when (YAMFManager.config.windowfy) {
         0 -> {
             runCatching {
                 moveTask(taskId, displayId)

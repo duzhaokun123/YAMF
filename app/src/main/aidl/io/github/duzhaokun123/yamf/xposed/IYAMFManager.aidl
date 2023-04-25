@@ -14,6 +14,10 @@ interface IYAMFManager {
 
     long getBuildTime();
 
+    String getConfigJson();
+
+    void updateConfig(String newConfig);
+
     void registerOpenCountListener(IOpenCountListener iOpenCountListener);
 
     void unregisterOpenCountListener(IOpenCountListener iOpenCountListener);

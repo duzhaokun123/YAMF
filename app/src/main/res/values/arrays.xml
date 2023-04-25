@@ -6,24 +6,4 @@
         <item>com.android.launcher3</item>
         <item>com.google.android.apps.nexuslauncher</item>
     </string-array>
-
-    <string-array name="windowfy_entries" >
-        <item>move task</item>
-        <item>start activity</item>
-        <item>move task, failback to start activity</item>
-    </string-array>
-    <string-array name="windowfy_entryValues" >
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="surfaceView_entries" >
-        <item>TextureView</item>
-        <item>SurfaceView</item>
-    </string-array>
-    <string-array name="surfaceView_entryValues" >
-        <item>0</item>
-        <item>1</item>
-    </string-array>
 </resources>

@@ -5,16 +5,19 @@ import android.app.ActivityTaskManager
 import android.content.Context
 import android.content.IntentFilter
 import android.os.Process
-import de.robv.android.xposed.XSharedPreferences
+import android.util.Log
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
+import io.github.duzhaokun123.yamf.model.Config
 import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.ui.window.AppListWindow
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
+import io.github.duzhaokun123.yamf.utils.gson
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.ui.CommonContextWrapper
+import java.io.File
 
 
 class YAMFManager : IYAMFManager.Stub() {
@@ -25,7 +28,8 @@ class YAMFManager : IYAMFManager.Stub() {
         @SuppressLint("StaticFieldLeak")
         lateinit var systemContext: Context
         val windowList = mutableListOf<Int>()
-        lateinit var config: XSharedPreferences
+        lateinit var config: Config
+        val configFile = File("/data/system/yamf.json")
         var openWindowCount = 0
         val iOpenCountListenerSet = mutableSetOf<IOpenCountListener>()
 
@@ -36,12 +40,16 @@ class YAMFManager : IYAMFManager.Stub() {
                     OpenInYAMFBroadcastReceiver.ACTION_OPEN_IN_YAMF))
             TipUtil.init(systemContext, "[YAMF] ")
             Instances.init(systemContext)
-            config = XSharedPreferences(BuildConfig.APPLICATION_ID, "yamf_config")
-            log(TAG, "config: ${config.all.map { "${it.key}=${it.value}[${it.value?.javaClass?.name}]" }.joinToString() }")
-//            config.registerOnSharedPreferenceChangeListener { _, _ ->
-//                config.reload()
-//                log(TAG, "config reload: ${config.all.map { "${it.key}=${it.value}[${it.value?.javaClass?.name}]" }.joinToString() }")
-//            }
+            if (configFile.exists().not()) {
+                configFile.parentFile!!.mkdirs()
+                configFile.createNewFile()
+            }
+            runCatching {
+                config = gson.fromJson(configFile.readText(), Config::class.java)
+            }.onFailure {
+                config = Config()
+            }
+            log(TAG, "config: $config")
         }
 
         fun addWindow(id: Int) {
@@ -71,7 +79,7 @@ class YAMFManager : IYAMFManager.Stub() {
 
         fun createWindowLocal(startCmd: StartCmd?) {
             Instances.iStatusBarService.collapsePanels()
-            AppWindow(CommonContextWrapper.createAppCompatContext(systemContext), config.getString("densityDpi", "200")!!.toInt(), config.getString("flags", "1668")!!.toInt()) { displayId ->
+            AppWindow(CommonContextWrapper.createAppCompatContext(systemContext), config.densityDpi, config.flags) { displayId ->
                 addWindow(displayId)
                 startCmd?.startAuto(displayId)
             }
@@ -103,6 +111,18 @@ class YAMFManager : IYAMFManager.Stub() {
 
     override fun getBuildTime(): Long {
         return BuildConfig.BUILD_TIME
+    }
+
+    override fun getConfigJson(): String {
+        return gson.toJson(config)
+    }
+
+    override fun updateConfig(newConfig: String) {
+        config = gson.fromJson(newConfig, Config::class.java)
+        runMain {
+            configFile.writeText(newConfig)
+            Log.d(TAG, "updateConfig: $config")
+        }
     }
 
     override fun registerOpenCountListener(iOpenCountListener: IOpenCountListener) {
