@@ -98,9 +98,9 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.activity:activity-ktx:1.7.0")
-    implementation("androidx.fragment:fragment-ktx:1.5.6")
+    implementation("androidx.core:core-ktx:1.10.0")
+    implementation("androidx.activity:activity-ktx:1.7.1")
+    implementation("androidx.fragment:fragment-ktx:1.5.7")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -112,7 +112,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     compileOnly(project(":android-stub"))
-    compileOnly("dev.rikka.hidden:stub:3.4.3")
+    compileOnly("dev.rikka.hidden:stub:4.2.0")
 
     //never upgrade until new extension function
     implementation("com.github.kyuubiran:EzXHelper:1.0.3")
