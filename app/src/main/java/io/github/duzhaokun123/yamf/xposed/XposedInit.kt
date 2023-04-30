@@ -2,6 +2,7 @@ package io.github.duzhaokun123.yamf.xposed
 
 import android.content.Context
 import android.content.pm.IPackageManager
+import androidx.annotation.Keep
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.utils.findAllConstructors
 import com.github.kyuubiran.ezxhelper.utils.findMethod

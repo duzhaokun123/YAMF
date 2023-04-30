@@ -50,8 +50,8 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -85,7 +85,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
-        useK2 = true
+        languageVersion = "2.0"
     }
     buildFeatures {
         viewBinding = true

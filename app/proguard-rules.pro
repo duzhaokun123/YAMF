@@ -1,1 +1,1 @@
--keep class io.github.duzhaokun123.yamf.**
+-keep class io.github.duzhaokun123.yamf.** { *; }
