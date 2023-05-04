@@ -27,7 +27,7 @@ object OpenInYAMFBroadcastReceiver : BroadcastReceiver() {
         when(intent.action) {
             ACTION_OPEN_IN_YAMF -> {
                 val taskId = intent.getIntExtra(EXTRA_TASK_ID, 0)
-                val componentName = intent.getParcelableExtra<ComponentName>(EXTRA_COMPONENT_NAME)?: return
+                val componentName = intent.getParcelableExtra<ComponentName>(EXTRA_COMPONENT_NAME)
                 val userId = intent.getIntExtra(EXTRA_USER_ID, 0)
                 val source = intent.getStringExtra(EXTRA_SOURCE)
                 YAMFManager.createWindowLocal(StartCmd(componentName, userId, taskId))

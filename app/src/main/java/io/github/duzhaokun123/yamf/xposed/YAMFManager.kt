@@ -2,7 +2,9 @@ package io.github.duzhaokun123.yamf.xposed
 
 import android.annotation.SuppressLint
 import android.app.ActivityTaskManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.os.Process
 import android.util.Log
@@ -38,6 +40,21 @@ class YAMFManager : IYAMFManager.Stub() {
             systemContext.registerReceiver(
                 OpenInYAMFBroadcastReceiver, IntentFilter(
                     OpenInYAMFBroadcastReceiver.ACTION_OPEN_IN_YAMF))
+            systemContext.registerReceiver(
+                object : BroadcastReceiver() {
+                    override fun onReceive(context: Context?, intent: Intent?) {
+                        val task = getTopRootTask() ?: return
+                        createWindowLocal(StartCmd(taskId = task.taskId))
+                    }
+                }, IntentFilter("io.github.duzhaokun123.yamf.action.CURRENT_TO_WINDOW")
+            )
+            systemContext.registerReceiver(
+                object : BroadcastReceiver() {
+                    override fun onReceive(context: Context?, intent: Intent?) {
+                        AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), null)
+                    }
+                }, IntentFilter("io.github.duzhaokun123.yamf.action.OPEN_APP_LIST")
+            )
             TipUtil.init(systemContext, "[YAMF] ")
             Instances.init(systemContext)
             if (configFile.exists().not()) {
@@ -83,6 +100,14 @@ class YAMFManager : IYAMFManager.Stub() {
                 addWindow(displayId)
                 startCmd?.startAuto(displayId)
             }
+        }
+
+        fun getTopRootTask(): ActivityTaskManager.RootTaskInfo? {
+            Instances.activityTaskManager.getAllRootTaskInfosOnDisplay(0).forEach { task ->
+                if (task.visible)
+                    return task
+            }
+            return null
         }
     }
 
@@ -152,13 +177,5 @@ class YAMFManager : IYAMFManager.Stub() {
         runMain {
             Instances.iStatusBarService.collapsePanels()
         }
-    }
-
-    private fun getTopRootTask(): ActivityTaskManager.RootTaskInfo? {
-        Instances.activityTaskManager.getAllRootTaskInfosOnDisplay(0).forEach { task ->
-            if (task.visible)
-                return task
-        }
-        return null
     }
 }

@@ -29,7 +29,7 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 缩放 (scale)       |                  ❌(不会支持)                  |                ✅                 |
 | 调整大小 (resize)    |                     ✅                     |                ✅                 |            
 | 快速设置磁贴           |                     ✅                     |                ✅                 |
-| open api         |                  ❌(或许会有)                  |                ✅                 |
+| open api         |                      部分的              |                ✅                 |
 | 无需关心保活           |               ✅(因为注入了系统进程)                |                ❌                 |
 | 高刷新率             |                     ❓                     |                ❓                 |
 | HDR              |                     ❌                     |                ❌                 |
@@ -37,6 +37,12 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 ## 下载
 
 https://github.com/Xposed-Modules-Repo/io.github.duzhaokun123.yamf
+
+## open api
+
+广播`io.github.duzhaokun123.yamf.action.CURRENT_TO_WINDOW`将当前活动的应用移动到小窗
+
+广播`io.github.duzhaokun123.yamf.action.OPEN_APP_LIST`将打开应用列表
 
 ## 已知问题
 
