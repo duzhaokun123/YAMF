@@ -36,7 +36,9 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 
 ## 下载
 
-https://github.com/Xposed-Modules-Repo/io.github.duzhaokun123.yamf
+ci https://github.com/duzhaokun123/YAMF/actions?query=event%3Apush+branch%3Amain
+
+release https://github.com/Xposed-Modules-Repo/io.github.duzhaokun123.yamf
 
 ## open api
 
