@@ -1,0 +1,54 @@
+name: bug 反馈
+description: bug 反馈模板
+title: '[bug]'
+labels:
+  - bug
+body:
+  - type: textarea
+    attributes:
+      label: 复现步骤
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 预期行为
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 实际行为
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Xposed 框架
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Android 版本
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: YAMF 版本
+      description: 必须是 `版本名`, 如 `v0.5-git.c384ea7`
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: 版本要求
+      options:
+        - label: 我正在使用最新 ci 的 dubug 的 YAMF
+          required: true
+  - type: textarea
+    attributes:
+      label: 日志
+      description: '`logcat`或 LSPosed 的日志'
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: >-
+        This template was generated with [Issue Forms
+        Creator](https://issue-forms-creator.netlify.app)

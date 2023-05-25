@@ -29,14 +29,14 @@ Yet Another [Mi-FreeForm](https://github.com/sunshine0523/Mi-FreeForm)
 | 缩放 (scale)       |                  ❌(不会支持)                  |                ✅                 |
 | 调整大小 (resize)    |                     ✅                     |                ✅                 |            
 | 快速设置磁贴           |                     ✅                     |                ✅                 |
-| open api         |                      部分的              |                ✅                 |
+| open api         |                    部分的                    |                ✅                 |
 | 无需关心保活           |               ✅(因为注入了系统进程)                |                ❌                 |
 | 高刷新率             |                     ❓                     |                ❓                 |
 | HDR              |                     ❌                     |                ❌                 |
 
 ## 下载
 
-ci https://github.com/duzhaokun123/YAMF/actions?query=event%3Apush+branch%3Amain
+ci https://github.com/duzhaokun123/YAMF/actions/workflows/push_ci.yaml?query=event%3Apush+branch%3Amain
 
 release https://github.com/Xposed-Modules-Repo/io.github.duzhaokun123.yamf
 

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: smart-question
+    url: http://www.catb.org/~esr/faqs/smart-questions.html
+    about: READ BEFORE YOU ASKING ANY QUESTION
+  - name: 提问的智慧
+    url: https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md
+    about: 在提问前请先阅读

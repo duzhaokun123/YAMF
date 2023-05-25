@@ -1,0 +1,54 @@
+name: Bug report
+description: Template for bug reports
+title: '[bug]'
+labels:
+  - bug
+body:
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Xposed framework
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Android version
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: YAMF version
+      description: must be `version_name`, like `v0.5-git.c384ea7`
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Version requirement
+      options:
+        - label: I am using latest debug CI version of YAMF
+          required: true
+  - type: textarea
+    attributes:
+      label: Logs
+      description: 'from `logcat` or LSPosed'
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: >-
+        This template was generated with [Issue Forms
+        Creator](https://issue-forms-creator.netlify.app)

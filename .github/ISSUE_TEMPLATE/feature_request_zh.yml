@@ -1,0 +1,25 @@
+name: 功能请求
+description: 功能请求模板
+title: '[Feature Request]'
+labels:
+  - enhancement
+body:
+  - type: textarea
+    attributes:
+      label: 功能描述
+      description: 对问题或缺失功能的清晰简明描述
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 解决方案
+      description: 如果您有解决方案 请描述
+  - type: textarea
+    attributes:
+      label: 备选方案
+      description: 您是否考虑过任何替代解决方案或变通方法？
+  - type: markdown
+    attributes:
+      value: >-
+        This template was generated with [Issue Forms
+        Creator](https://issue-forms-creator.netlify.app)
