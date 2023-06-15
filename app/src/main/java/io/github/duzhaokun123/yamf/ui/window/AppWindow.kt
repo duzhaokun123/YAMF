@@ -54,6 +54,7 @@ import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
 import io.github.duzhaokun123.yamf.utils.RunMainThreadQueue
+import io.github.duzhaokun123.yamf.utils.getActivityInfoCompat
 import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
@@ -355,7 +356,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             }
             val topActivity = taskInfo.topActivity ?: return@add
             val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
-            val activityInfo = (Instances.iPackageManager as IPackageManagerHidden).getActivityInfo(topActivity, 0, taskInfo.getObjectAs("userId")) ?: return@add
+            val activityInfo = (Instances.iPackageManager as IPackageManagerHidden).getActivityInfoCompat(topActivity, 0, taskInfo.getObjectAs("userId")) ?: return@add
             binding.ivIcon.setImageDrawable(RoundedDrawable().apply {
                 drawable = runCatching { taskDescription.icon }.getOrNull()?.let { BitmapDrawable(it) } ?: activityInfo.loadIcon(Instances.packageManager)
                 isClipEnabled = true

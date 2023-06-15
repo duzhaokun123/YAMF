@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
+import android.content.pm.ActivityInfo
+import android.content.pm.IPackageManagerHidden
 import android.content.pm.PackageManagerHidden
 import android.content.pm.UserInfo
 import android.graphics.PixelFormat
+import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -28,6 +30,8 @@ import io.github.duzhaokun123.yamf.databinding.ItemAppBinding
 import io.github.duzhaokun123.yamf.databinding.WindowAppListBinding
 import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.utils.AppInfoCache
+import io.github.duzhaokun123.yamf.utils.componentName
+import io.github.duzhaokun123.yamf.utils.getActivityInfoCompat
 import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.utils.resetAdapter
 import io.github.duzhaokun123.yamf.utils.startActivity
@@ -44,8 +48,8 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
     private lateinit var binding: WindowAppListBinding
     val users = mutableMapOf<Int, String>()
     var userId = 0
-    var apps = emptyList<Pair<ComponentName, PackageInfo>>()
-    var showApps = emptyList<Pair<ComponentName, PackageInfo>>()
+    var apps = emptyList<ActivityInfo>()
+    var showApps = emptyList<ActivityInfo>()
 
     init {
         runCatching {
@@ -105,9 +109,9 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
 
         binding.etSearch.doOnTextChanged { text, _, _, _ ->
             text ?: return@doOnTextChanged
-            showApps = apps.filter { (_, packageInfo) ->
-                text in packageInfo.packageName ||
-                        AppInfoCache.getIconLabel(packageInfo, userId).second.contains(text, true)
+            showApps = apps.filter { activityInfo ->
+                text in activityInfo.packageName ||
+                        AppInfoCache.getIconLabel(activityInfo).second.contains(text, true)
             }
             binding.rv.resetAdapter()
         }
@@ -124,13 +128,13 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
                     addCategory(Intent.CATEGORY_LAUNCHER)
                 }, 0, userId
             ).map {
-                ComponentName(it.activityInfo.packageName, it.activityInfo.name) to
-                        (Instances.packageManager as PackageManagerHidden).getPackageInfoAsUser(
-                            it.activityInfo.packageName, 0, userId
-                        )
+                (Instances.iPackageManager as IPackageManagerHidden).getActivityInfoCompat(
+                    ComponentName(it.activityInfo.packageName, it.activityInfo.name),
+                    0, userId
+                )
             }
-            apps.forEach { (_, packageInfo) ->
-                AppInfoCache.getIconLabel(packageInfo, userId)
+            apps.forEach { activityInfo ->
+                AppInfoCache.getIconLabel(activityInfo)
             }
             runMain {
                 showApps = apps
@@ -147,20 +151,19 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
 
     inner class Adapter : BaseSimpleAdapter<ItemAppBinding>(context, ItemAppBinding::class.java) {
         override fun initViews(baseBinding: ItemAppBinding, position: Int) {
-            val (component, packageInfo) = showApps[position]
+            val activityInfo = showApps[position]
             baseBinding.ll.setOnClickListener {
-                Log.d(TAG, "initViews: ${packageInfo.packageName}")
                 if (displayId == null)
-                    YAMFManager.createWindowLocal(StartCmd(component, userId))
+                    YAMFManager.createWindowLocal(StartCmd(activityInfo.componentName, userId))
                 else
-                    startActivity(context, component, userId, displayId)
+                    startActivity(context, activityInfo.componentName, userId, displayId)
                 close()
             }
         }
 
         override fun initData(baseBinding: ItemAppBinding, position: Int) {
-            val (_, packageInfo) = showApps[position]
-            val (icon, label) = AppInfoCache.getIconLabel(packageInfo, userId)
+            val activityInfo = showApps[position]
+            val (icon, label) = AppInfoCache.getIconLabel(activityInfo)
             baseBinding.ivIcon.setImageDrawable(icon)
             baseBinding.tvLabel.text = label
         }
