@@ -9,6 +9,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.IPackageManagerHidden
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PixelFormat
@@ -44,6 +45,7 @@ import androidx.wear.widget.RoundedDrawable
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.getObject
+import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
 import io.github.duzhaokun123.androidapptemplate.utils.getAttr
@@ -353,22 +355,13 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             }
             val topActivity = taskInfo.topActivity ?: return@add
             val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
-            val icon = runCatching { taskDescription.icon }.getOrNull()
+            val activityInfo = (Instances.iPackageManager as IPackageManagerHidden).getActivityInfo(topActivity, 0, taskInfo.getObjectAs("userId")) ?: return@add
             binding.ivIcon.setImageDrawable(RoundedDrawable().apply {
-                drawable = if (icon == null) {
-                    Instances.packageManager.getActivityIcon(topActivity)
-                } else {
-                    BitmapDrawable(taskDescription.icon)
-                }
+                drawable = runCatching { taskDescription.icon }.getOrNull()?.let { BitmapDrawable(it) } ?: activityInfo.loadIcon(Instances.packageManager)
                 isClipEnabled = true
                 radius = 100
             })
-            val label = taskDescription.label
-            if (label == null) {
-                binding.tvLabel.text = Instances.packageManager.getActivityInfo(topActivity, 0).loadLabel(Instances.packageManager)
-            } else {
-                binding.tvLabel.text = taskDescription.label
-            }
+            binding.tvLabel.text = taskDescription.label ?: activityInfo.loadLabel(Instances.packageManager)
             if (BuildConfig.DEBUG) {
                 binding.tvLabel.text = "(${taskInfo.taskId}-$displayId) ${binding.tvLabel.text}"
             }

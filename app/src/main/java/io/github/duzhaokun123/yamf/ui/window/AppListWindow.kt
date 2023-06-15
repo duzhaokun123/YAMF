@@ -1,12 +1,13 @@
 package io.github.duzhaokun123.yamf.ui.window
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
+import android.content.pm.PackageManagerHidden
 import android.content.pm.UserInfo
 import android.graphics.PixelFormat
-import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -43,12 +44,12 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
     private lateinit var binding: WindowAppListBinding
     val users = mutableMapOf<Int, String>()
     var userId = 0
-    var apps = emptyList<PackageInfo>()
-    var showApps = emptyList<PackageInfo>()
+    var apps = emptyList<Pair<ComponentName, PackageInfo>>()
+    var showApps = emptyList<Pair<ComponentName, PackageInfo>>()
 
     init {
         runCatching {
-            binding =  WindowAppListBinding.inflate(LayoutInflater.from(context))
+            binding = WindowAppListBinding.inflate(LayoutInflater.from(context))
         }.onException { e ->
             Log.e(TAG, "new app list failed: ", e)
             TipUtil.showToast("new app list failed\nmay you forget reboot")
@@ -56,6 +57,7 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
             doInit()
         }
     }
+
     fun doInit() {
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
@@ -75,7 +77,11 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
             close()
         }
         binding.mcv.setOnTouchListener { _, _ -> true }
-        Instances.userManager.invokeMethodAs<List<UserInfo>>("getUsers", args(true, true, true), argTypes(java.lang.Boolean.TYPE, java.lang.Boolean.TYPE, java.lang.Boolean.TYPE))!!
+        Instances.userManager.invokeMethodAs<List<UserInfo>>(
+            "getUsers",
+            args(true, true, true),
+            argTypes(java.lang.Boolean.TYPE, java.lang.Boolean.TYPE, java.lang.Boolean.TYPE)
+        )!!
             .filter { it.isProfile || it.isPrimary }
             .forEach {
                 users[it.id] = it.name
@@ -98,8 +104,11 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
         binding.rv.adapter = Adapter()
 
         binding.etSearch.doOnTextChanged { text, _, _, _ ->
-            text?:return@doOnTextChanged
-            showApps = apps.filter { text in it.packageName || Instances.packageManager.getApplicationLabel(Instances.packageManager.getApplicationInfo(it.packageName, 0)).contains(text, true) }
+            text ?: return@doOnTextChanged
+            showApps = apps.filter { (_, packageInfo) ->
+                text in packageInfo.packageName ||
+                        AppInfoCache.getIconLabel(packageInfo, userId).second.contains(text, true)
+            }
             binding.rv.resetAdapter()
         }
     }
@@ -110,23 +119,18 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
         binding.btnUser.text = users[userId]
 
         runIO {
-            val installedPackages = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Instances.iPackageManager.getInstalledPackages(
-                    (PackageManager.GET_META_DATA).toLong(),
-                    userId
-                )
-            } else {
-                Instances.iPackageManager.getInstalledPackages(
-                    (PackageManager.GET_META_DATA),
-                    userId
-                )
-            }.list as List<PackageInfo>
-
-            apps = installedPackages
-                .filter { it.applicationInfo != null && it.applicationInfo.uid / 100000 == userId }
-                .filter { Instances.packageManager.getLaunchIntentForPackage(it.packageName) != null }
-            apps.forEach {
-                AppInfoCache.getIconLabel(it)
+            apps = (Instances.packageManager as PackageManagerHidden).queryIntentActivitiesAsUser(
+                Intent(Intent.ACTION_MAIN).apply {
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                }, 0, userId
+            ).map {
+                ComponentName(it.activityInfo.packageName, it.activityInfo.name) to
+                        (Instances.packageManager as PackageManagerHidden).getPackageInfoAsUser(
+                            it.activityInfo.packageName, 0, userId
+                        )
+            }
+            apps.forEach { (_, packageInfo) ->
+                AppInfoCache.getIconLabel(packageInfo, userId)
             }
             runMain {
                 showApps = apps
@@ -143,19 +147,20 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
 
     inner class Adapter : BaseSimpleAdapter<ItemAppBinding>(context, ItemAppBinding::class.java) {
         override fun initViews(baseBinding: ItemAppBinding, position: Int) {
-            val packageInfo = showApps[position]
+            val (component, packageInfo) = showApps[position]
             baseBinding.ll.setOnClickListener {
+                Log.d(TAG, "initViews: ${packageInfo.packageName}")
                 if (displayId == null)
-                    YAMFManager.createWindowLocal(StartCmd(Instances.packageManager.getLaunchIntentForPackage(packageInfo.packageName)!!.component!!, userId))
+                    YAMFManager.createWindowLocal(StartCmd(component, userId))
                 else
-                    startActivity(context, Instances.packageManager.getLaunchIntentForPackage(packageInfo.packageName)!!.component!!, userId, displayId)
+                    startActivity(context, component, userId, displayId)
                 close()
             }
         }
 
         override fun initData(baseBinding: ItemAppBinding, position: Int) {
-            val packageInfo = showApps[position]
-            val (icon, label) = AppInfoCache.getIconLabel(packageInfo)
+            val (_, packageInfo) = showApps[position]
+            val (icon, label) = AppInfoCache.getIconLabel(packageInfo, userId)
             baseBinding.ivIcon.setImageDrawable(icon)
             baseBinding.tvLabel.text = label
         }

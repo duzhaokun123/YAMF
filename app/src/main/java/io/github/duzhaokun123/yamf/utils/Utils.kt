@@ -6,10 +6,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.os.UserHandle
-import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args

@@ -18,8 +18,3 @@ body:
     attributes:
       label: 备选方案
       description: 您是否考虑过任何替代解决方案或变通方法？
-  - type: markdown
-    attributes:
-      value: >-
-        This template was generated with [Issue Forms
-        Creator](https://issue-forms-creator.netlify.app)

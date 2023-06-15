@@ -28,7 +28,7 @@ android {
 
         buildConfigField("long", "BUILD_TIME", buildTime.toString())
     }
-    packagingOptions {
+    packaging {
         resources.excludes.addAll(
             arrayOf(
                 "META-INF/**",
@@ -99,8 +99,8 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.activity:activity-ktx:1.7.1")
-    implementation("androidx.fragment:fragment-ktx:1.5.7")
+    implementation("androidx.activity:activity-ktx:1.7.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -115,6 +115,7 @@ dependencies {
     compileOnly("dev.rikka.hidden:stub:4.2.0")
 
     //never upgrade until new extension function
+    //noinspection GradleDependency
     implementation("com.github.kyuubiran:EzXHelper:1.0.3")
     compileOnly("de.robv.android.xposed:api:82")
 

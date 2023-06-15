@@ -18,8 +18,3 @@ body:
     attributes:
       label: Describe alternatives you've considered
       description: Have you considered any alternative solutions or workarounds?
-  - type: markdown
-    attributes:
-      value: >-
-        This template was generated with [Issue Forms
-        Creator](https://issue-forms-creator.netlify.app)

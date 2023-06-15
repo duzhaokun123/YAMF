@@ -47,8 +47,3 @@ body:
       description: 'from `logcat` or LSPosed'
     validations:
       required: true
-  - type: markdown
-    attributes:
-      value: >-
-        This template was generated with [Issue Forms
-        Creator](https://issue-forms-creator.netlify.app)
