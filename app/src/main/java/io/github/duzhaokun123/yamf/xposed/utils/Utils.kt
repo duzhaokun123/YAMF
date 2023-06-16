@@ -3,6 +3,7 @@ package io.github.duzhaokun123.yamf.xposed.utils
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
+import android.content.ContextParams
 import android.content.res.Resources
 import android.util.TypedValue
 import de.robv.android.xposed.XposedBridge
@@ -60,3 +61,7 @@ fun Number.dpToPx() =
     TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), Resources.getSystem().displayMetrics
     )
+
+val emptyContextParams = ContextParams.Builder().build()
+
+fun Context.createContext() = createContext(emptyContextParams)

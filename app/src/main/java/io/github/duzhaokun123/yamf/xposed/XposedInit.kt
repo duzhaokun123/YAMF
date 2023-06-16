@@ -1,6 +1,7 @@
 package io.github.duzhaokun123.yamf.xposed
 
 import android.content.Context
+import android.content.ContextParams
 import android.content.pm.IPackageManager
 import androidx.annotation.Keep
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
@@ -15,6 +16,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.xposed.hook.HookLauncher
+import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.util.Initiator
 
@@ -53,8 +55,8 @@ class XposedInit : IXposedHookZygoteInit, IXposedHookLoadPackage {
                  parameterTypes[0] == Context::class.java
              }.hookAfter {
                  activityManagerServiceConstructorHook.forEach { hook -> hook.unhook() }
-                 YAMFManager.systemContext = it.thisObject.getObjectAs("mUiContext")
-                 log(TAG, "get systemUiContext")
+                 YAMFManager.activityManagerService = it.thisObject
+                 log(TAG, "get activityManagerService")
              }.also {
                  if (it.isEmpty())
                      log(TAG, "no constructor with parameterTypes[0] == Context found")

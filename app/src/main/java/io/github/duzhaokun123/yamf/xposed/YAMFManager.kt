@@ -17,6 +17,8 @@ import io.github.duzhaokun123.yamf.ui.window.AppWindow
 import io.github.duzhaokun123.yamf.utils.gson
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
+import io.github.duzhaokun123.yamf.xposed.utils.createContext
+import io.github.duzhaokun123.yamf.xposed.utils.emptyContextParams
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.ui.CommonContextWrapper
 import java.io.File
@@ -27,20 +29,20 @@ class YAMFManager : IYAMFManager.Stub() {
         const val TAG = "YAMFManager"
         @SuppressLint("StaticFieldLeak")
         var instance: YAMFManager? = null
-        @SuppressLint("StaticFieldLeak")
-        lateinit var systemContext: Context
         val windowList = mutableListOf<Int>()
         lateinit var config: Config
         val configFile = File("/data/system/yamf.json")
         var openWindowCount = 0
         val iOpenCountListenerSet = mutableSetOf<IOpenCountListener>()
+        lateinit var activityManagerService: Any
 
         @SuppressLint("UnspecifiedRegisterReceiverFlag")
         fun systemReady() {
-            systemContext.registerReceiver(
+            Instances.init(activityManagerService)
+            Instances.systemContext.registerReceiver(
                 OpenInYAMFBroadcastReceiver, IntentFilter(
                     OpenInYAMFBroadcastReceiver.ACTION_OPEN_IN_YAMF))
-            systemContext.registerReceiver(
+            Instances.systemContext.registerReceiver(
                 object : BroadcastReceiver() {
                     override fun onReceive(context: Context?, intent: Intent?) {
                         val task = getTopRootTask() ?: return
@@ -48,15 +50,13 @@ class YAMFManager : IYAMFManager.Stub() {
                     }
                 }, IntentFilter("io.github.duzhaokun123.yamf.action.CURRENT_TO_WINDOW")
             )
-            systemContext.registerReceiver(
+            Instances.systemContext.registerReceiver(
                 object : BroadcastReceiver() {
                     override fun onReceive(context: Context?, intent: Intent?) {
-                        AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), null)
+                        AppListWindow(CommonContextWrapper.createAppCompatContext(Instances.systemUiContext.createContext()), null)
                     }
                 }, IntentFilter("io.github.duzhaokun123.yamf.action.OPEN_APP_LIST")
             )
-            TipUtil.init(systemContext, "[YAMF] ")
-            Instances.init(systemContext)
             if (configFile.exists().not()) {
                 configFile.parentFile!!.mkdirs()
                 configFile.createNewFile()
@@ -96,7 +96,7 @@ class YAMFManager : IYAMFManager.Stub() {
 
         fun createWindowLocal(startCmd: StartCmd?) {
             Instances.iStatusBarService.collapsePanels()
-            AppWindow(CommonContextWrapper.createAppCompatContext(systemContext), config.densityDpi, config.flags) { displayId ->
+            AppWindow(CommonContextWrapper.createAppCompatContext(Instances.systemUiContext.createContext()), config.densityDpi, config.flags) { displayId ->
                 addWindow(displayId)
                 startCmd?.startAuto(displayId)
             }
@@ -162,7 +162,7 @@ class YAMFManager : IYAMFManager.Stub() {
     override fun openAppList() {
         runMain {
             Instances.iStatusBarService.collapsePanels()
-            AppListWindow(CommonContextWrapper.createAppCompatContext(systemContext), null)
+            AppListWindow(CommonContextWrapper.createAppCompatContext(Instances.systemUiContext.createContext()), null)
         }
     }
 

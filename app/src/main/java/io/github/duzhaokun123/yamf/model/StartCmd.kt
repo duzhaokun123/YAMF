@@ -4,6 +4,7 @@ import android.content.ComponentName
 import io.github.duzhaokun123.yamf.utils.onException
 import io.github.duzhaokun123.yamf.utils.startActivity
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
+import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.moveTask
 import io.github.duzhaokun123.yamf.xposed.utils.moveToDisplay
@@ -22,7 +23,7 @@ data class StartCmd(
     fun startAuto(displayId: Int) {
         when {
             canStartActivity && canMoveTask ->
-                moveToDisplay(YAMFManager.systemContext, taskId!!, componentName!!, userId!!, displayId)
+                moveToDisplay(Instances.systemContext, taskId!!, componentName!!, userId!!, displayId)
             canMoveTask -> {
                 runCatching {
                     moveTask(taskId!!, displayId)
@@ -32,7 +33,7 @@ data class StartCmd(
             }
             canStartActivity -> {
                 runCatching {
-                    startActivity(YAMFManager.systemContext, componentName!!, userId!!, displayId)
+                    startActivity(Instances.systemContext, componentName!!, userId!!, displayId)
                 }.onException {
                     TipUtil.showToast("can't start activity $componentName")
                 }

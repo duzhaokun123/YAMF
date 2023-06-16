@@ -1,5 +1,6 @@
 package io.github.duzhaokun123.yamf.xposed.utils
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.IActivityTaskManager
 import android.content.Context
@@ -12,7 +13,9 @@ import android.os.UserManager
 import android.view.IWindowManager
 import android.view.WindowManager
 import com.android.internal.statusbar.IStatusBarService
+import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 
+@SuppressLint("StaticFieldLeak")
 object Instances {
     lateinit var windowManager: WindowManager
         private set
@@ -34,17 +37,28 @@ object Instances {
         private set
     lateinit var iStatusBarService: IStatusBarService
         private set
+    lateinit var activityManagerService: Any
+        private set
+    lateinit var systemContext: Context
+        private set
+    val systemUiContext: Context
+        get() = activityManagerService.getObjectAs("mUiContext")
 
-    fun init(context: Context) {
-        windowManager = context.getSystemService(WindowManager::class.java)
+
+    fun init(activityManagerService: Any) {
+        this.activityManagerService = activityManagerService
+        systemContext = activityManagerService.getObjectAs("mContext")
+        windowManager = systemContext.getSystemService(WindowManager::class.java)
         iWindowManager = IWindowManager.Stub.asInterface(ServiceManager.getService("window"))
         inputManager = IInputManager.Stub.asInterface(ServiceManager.getService("input"))
-        displayManager = context.getSystemService(DisplayManager::class.java)
-        activityTaskManager = IActivityTaskManager.Stub.asInterface(ServiceManager.getService("activity_task"))
-        packageManager = context.packageManager
-        activityManager = context.getSystemService(ActivityManager::class.java)
-        userManager = context.getSystemService(UserManager::class.java)
+        displayManager = systemContext.getSystemService(DisplayManager::class.java)
+        activityTaskManager =
+            IActivityTaskManager.Stub.asInterface(ServiceManager.getService("activity_task"))
+        packageManager = systemContext.packageManager
+        activityManager = systemContext.getSystemService(ActivityManager::class.java)
+        userManager = systemContext.getSystemService(UserManager::class.java)
         iPackageManager = IPackageManager.Stub.asInterface(ServiceManager.getService("package"))
-        iStatusBarService = IStatusBarService.Stub.asInterface(ServiceManager.getService("statusbar"))
+        iStatusBarService =
+            IStatusBarService.Stub.asInterface(ServiceManager.getService("statusbar"))
     }
 }
