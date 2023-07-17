@@ -2,6 +2,7 @@ package io.github.duzhaokun123.yamf.xposed
 
 import android.content.Context
 import android.content.ContextParams
+import android.content.Intent
 import android.content.pm.IPackageManager
 import androidx.annotation.Keep
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
@@ -19,6 +20,7 @@ import io.github.duzhaokun123.yamf.xposed.hook.HookLauncher
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.util.Initiator
+import kotlin.concurrent.thread
 
 private const val TAG = "YAMF_XposedInit"
 
@@ -29,46 +31,58 @@ class XposedInit : IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
-         if (lpparam.packageName == "android") {
-             log(TAG, "xposed init")
-             log(TAG, "buildtype: ${BuildConfig.BUILD_TYPE}")
-             EzXHelperInit.initHandleLoadPackage(lpparam)
-             Initiator.init(lpparam.classLoader)
-             var serviceManagerHook: XC_MethodHook.Unhook? = null
-             serviceManagerHook = findMethod("android.os.ServiceManager") {
-                 name == "addService"
-             }.hookBefore { param ->
-                 if (param.args[0] == "package") {
-                     serviceManagerHook?.unhook()
-                     val pms = param.args[1] as IPackageManager
-                     log(TAG, "Got pms: $pms")
+         if (lpparam.packageName != "android") return
+         log(TAG, "xposed init")
+         log(TAG, "buildtype: ${BuildConfig.BUILD_TYPE}")
+         EzXHelperInit.initHandleLoadPackage(lpparam)
+         Initiator.init(lpparam.classLoader)
+
+         var serviceManagerHook: XC_MethodHook.Unhook? = null
+         serviceManagerHook = findMethod("android.os.ServiceManager") {
+             name == "addService"
+         }.hookBefore { param ->
+             if (param.args[0] == "package") {
+                 serviceManagerHook?.unhook()
+                 val pms = param.args[1] as IPackageManager
+                 log(TAG, "Got pms: $pms")
+                 thread {
                      runCatching {
-                         BridgeService.register(pms)
-                         log(TAG, "Bridge service injected")
+                         UserService.register(pms)
+                         log(TAG, "UserService started")
                      }.onFailure {
-                         log(TAG, "System service crashed", it)
+                         log(TAG, "UserService failed to start", it)
                      }
                  }
              }
-             var activityManagerServiceConstructorHook: List<XC_MethodHook.Unhook> = emptyList()
-             activityManagerServiceConstructorHook = findAllConstructors("com.android.server.am.ActivityManagerService") {
-                 parameterTypes[0] == Context::class.java
-             }.hookAfter {
-                 activityManagerServiceConstructorHook.forEach { hook -> hook.unhook() }
-                 YAMFManager.activityManagerService = it.thisObject
-                 log(TAG, "get activityManagerService")
-             }.also {
-                 if (it.isEmpty())
-                     log(TAG, "no constructor with parameterTypes[0] == Context found")
-             }
-             var activityManagerServiceSystemReadyHook: XC_MethodHook.Unhook? = null
-             activityManagerServiceSystemReadyHook = findMethod("com.android.server.am.ActivityManagerService") {
-                 name == "systemReady"
-             }.hookAfter {
-                 activityManagerServiceSystemReadyHook?.unhook()
-                 YAMFManager.systemReady()
-                 log(TAG, "system ready")
-             }
+         }
+
+         var activityManagerServiceConstructorHook: List<XC_MethodHook.Unhook> = emptyList()
+         activityManagerServiceConstructorHook = findAllConstructors("com.android.server.am.ActivityManagerService") {
+             parameterTypes[0] == Context::class.java
+         }.hookAfter {
+             activityManagerServiceConstructorHook.forEach { hook -> hook.unhook() }
+             YAMFManager.activityManagerService = it.thisObject
+             log(TAG, "get activityManagerService")
+         }.also {
+             if (it.isEmpty())
+                 log(TAG, "no constructor with parameterTypes[0] == Context found")
+         }
+
+         var activityManagerServiceSystemReadyHook: XC_MethodHook.Unhook? = null
+         activityManagerServiceSystemReadyHook = findMethod("com.android.server.am.ActivityManagerService") {
+             name == "systemReady"
+         }.hookAfter {
+             activityManagerServiceSystemReadyHook?.unhook()
+             YAMFManager.systemReady()
+             log(TAG, "system ready")
+         }
+
+        findMethod("com.android.server.am.ActivityManagerService") {
+            name == "checkBroadcastFromSystem"
+        }.hookBefore {
+            val intent = it.args[0] as Intent
+            if (intent.action == HookLauncher.ACTION_RECEIVE_LAUNCHER_CONFIG)
+                it.result = Unit
         }
     }
 }

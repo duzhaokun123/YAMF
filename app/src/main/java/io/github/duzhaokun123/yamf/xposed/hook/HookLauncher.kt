@@ -1,18 +1,24 @@
 package io.github.duzhaokun123.yamf.xposed.hook
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AndroidAppHelper
 import android.app.Application
 import android.app.PendingIntent
 import android.app.RemoteAction
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.Icon
 import android.view.View
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
+import com.github.kyuubiran.ezxhelper.utils.findMethod
+import com.github.kyuubiran.ezxhelper.utils.hookAfter
+import com.github.kyuubiran.ezxhelper.utils.loadClassOrNull
 import com.github.kyuubiran.ezxhelper.utils.newInstance
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
@@ -23,19 +29,40 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.xposed.OpenInYAMFBroadcastReceiver
+import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.log
 
 
 class HookLauncher : IXposedHookLoadPackage {
     companion object {
         const val TAG = "YAMF_HookLauncher"
+        const val ACTION_RECEIVE_LAUNCHER_CONFIG = "io.github.duzhaokun123.yamf.ACTION_RECEIVE_LAUNCHER_CONFIG"
     }
 
     private var mUserContext: Context? = null
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
-        hookRecents(lpparam)
-        hookTaskbar(lpparam)
+        loadClassOrNull("com.android.launcher3.Launcher", lpparam.classLoader) ?: return
+        Application::class.java.findMethod {
+            name == "onCreate"
+        }.hookAfter {
+            val application = it.thisObject as Application
+            application.registerReceiver(object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    val hookRecents = intent.getBooleanExtra("hookRecents", false)
+                    val hookTaskbar = intent.getBooleanExtra("hookTaskbar", false)
+                    log(TAG, "receive config hookRecents=$hookRecents hookTaskbar=$hookTaskbar")
+                    if (hookRecents) hookRecents(lpparam)
+                    if (hookTaskbar) hookTaskbar(lpparam)
+                    application.unregisterReceiver(this)
+                }
+            }, IntentFilter(ACTION_RECEIVE_LAUNCHER_CONFIG))
+            application.sendBroadcast(Intent(YAMFManager.ACTION_GET_LAUNCHER_CONFIG).apply {
+                `package` = "android"
+                putExtra("sender", application.packageName)
+            })
+        }
     }
 
     private fun hookRecents(lpparam: XC_LoadPackage.LoadPackageParam) {

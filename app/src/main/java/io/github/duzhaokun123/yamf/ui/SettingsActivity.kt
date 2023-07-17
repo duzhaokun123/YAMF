@@ -45,6 +45,8 @@ class SettingsActivity :
         baseBinding.sShowIMEinWindow.isChecked = config.showImeInWindow
         baseBinding.etSizeH.setText(config.defaultWindowHeight.toString())
         baseBinding.etSizeW.setText(config.defaultWindowWidth.toString())
+        baseBinding.sHookLauncherHookRecents.isChecked = config.hookLauncher.hookRecents
+        baseBinding.sHookLauncherHookTaskbar.isChecked = config.hookLauncher.hookTaskbar
 
         baseBinding.btnFlags.setOnClickListener {
             val checks = BooleanArray(flags.size) { i ->
@@ -100,6 +102,8 @@ class SettingsActivity :
         config.showImeInWindow = baseBinding.sShowIMEinWindow.isChecked
         config.defaultWindowHeight = baseBinding.etSizeH.text.toString().toIntOrNull() ?: config.defaultWindowHeight
         config.defaultWindowWidth = baseBinding.etSizeW.text.toString().toIntOrNull() ?: config.defaultWindowWidth
+        config.hookLauncher.hookRecents = baseBinding.sHookLauncherHookRecents.isChecked
+        config.hookLauncher.hookTaskbar = baseBinding.sHookLauncherHookTaskbar.isChecked
         YAMFManagerHelper.updateConfig(gson.toJson(config))
     }
 }

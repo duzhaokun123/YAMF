@@ -15,18 +15,22 @@ import io.github.duzhaokun123.yamf.model.StartCmd
 import io.github.duzhaokun123.yamf.ui.window.AppListWindow
 import io.github.duzhaokun123.yamf.ui.window.AppWindow
 import io.github.duzhaokun123.yamf.utils.gson
+import io.github.duzhaokun123.yamf.xposed.hook.HookLauncher
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.createContext
 import io.github.duzhaokun123.yamf.xposed.utils.emptyContextParams
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.ui.CommonContextWrapper
+import rikka.hidden.compat.ActivityManagerApis
 import java.io.File
 
 
 class YAMFManager : IYAMFManager.Stub() {
     companion object {
         const val TAG = "YAMFManager"
+        const val ACTION_GET_LAUNCHER_CONFIG = "io.github.duzhaokun123.yamf.ACTION_GET_LAUNCHER_CONFIG"
+
         @SuppressLint("StaticFieldLeak")
         var instance: YAMFManager? = null
         val windowList = mutableListOf<Int>()
@@ -56,6 +60,18 @@ class YAMFManager : IYAMFManager.Stub() {
                         AppListWindow(CommonContextWrapper.createAppCompatContext(Instances.systemUiContext.createContext()), null)
                     }
                 }, IntentFilter("io.github.duzhaokun123.yamf.action.OPEN_APP_LIST")
+            )
+            Instances.systemContext.registerReceiver(
+                object : BroadcastReceiver() {
+                    override fun onReceive(context: Context, intent: Intent) {
+                        ActivityManagerApis.broadcastIntent(Intent(HookLauncher.ACTION_RECEIVE_LAUNCHER_CONFIG).apply {
+                            log(TAG, "send config: ${config.hookLauncher}")
+                            putExtra("hookRecents", config.hookLauncher.hookRecents)
+                            putExtra("hookTaskbar", config.hookLauncher.hookTaskbar)
+                            `package` = intent.getStringExtra("sender")
+                        }, 0)
+                    }
+                }, IntentFilter(ACTION_GET_LAUNCHER_CONFIG)
             )
             if (configFile.exists().not()) {
                 configFile.parentFile!!.mkdirs()

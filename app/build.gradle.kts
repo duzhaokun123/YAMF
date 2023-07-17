@@ -108,11 +108,12 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.0")
 
     //kotlinx-coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
 
     compileOnly(project(":android-stub"))
     compileOnly("dev.rikka.hidden:stub:4.2.0")
+    implementation("dev.rikka.hidden:compat:4.2.0")
 
     //never upgrade until new extension function
     //noinspection GradleDependency

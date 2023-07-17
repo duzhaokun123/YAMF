@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.0.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.21")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
         classpath(kotlin("gradle-plugin"))
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -19,7 +19,7 @@ allprojects {
         google()
         mavenCentral()
         maven("https://jitpack.io")
-        jcenter()
+        maven("https://api.xposed.info")
     }
 }
 
