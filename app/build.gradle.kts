@@ -13,7 +13,7 @@ plugins {
 
 android {
     val buildTime = System.currentTimeMillis()
-    val baseVersionName = "0.6"
+    val baseVersionName = "0.7"
 
     compileSdk = 33
 
@@ -21,7 +21,7 @@ android {
         applicationId = "io.github.duzhaokun123.yamf"
         minSdk = 31
         targetSdk = 33
-        versionCode = 6
+        versionCode = 7
         versionName = "$baseVersionName-git.$gitHash${if (isDirty) "-dirty" else ""}"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
