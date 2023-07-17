@@ -3,6 +3,7 @@ package io.github.duzhaokun123.yamf.xposed
 import android.annotation.SuppressLint
 import android.app.ActivityTaskManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -30,6 +31,9 @@ class YAMFManager : IYAMFManager.Stub() {
     companion object {
         const val TAG = "YAMFManager"
         const val ACTION_GET_LAUNCHER_CONFIG = "io.github.duzhaokun123.yamf.ACTION_GET_LAUNCHER_CONFIG"
+        const val ACTION_OPEN_APP = "io.github.duzhaokun123.yamf.action.OPEN_APP"
+        const val EXTRA_COMPONENT_NAME = "componentName"
+        const val EXTRA_USER_ID = "userId"
 
         @SuppressLint("StaticFieldLeak")
         var instance: YAMFManager? = null
@@ -63,11 +67,21 @@ class YAMFManager : IYAMFManager.Stub() {
             )
             Instances.systemContext.registerReceiver(
                 object : BroadcastReceiver() {
+                    override fun onReceive(context: Context?, intent: Intent) {
+                        val componentName = intent.getParcelableExtra(EXTRA_COMPONENT_NAME) as? ComponentName ?: return
+                        val userId = intent.getIntExtra(EXTRA_USER_ID, 0)
+                        createWindowLocal(StartCmd(componentName = componentName, userId = userId))
+                    }
+                }, IntentFilter(ACTION_OPEN_APP)
+            )
+            Instances.systemContext.registerReceiver(
+                object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) {
                         ActivityManagerApis.broadcastIntent(Intent(HookLauncher.ACTION_RECEIVE_LAUNCHER_CONFIG).apply {
                             log(TAG, "send config: ${config.hookLauncher}")
                             putExtra("hookRecents", config.hookLauncher.hookRecents)
                             putExtra("hookTaskbar", config.hookLauncher.hookTaskbar)
+                            putExtra("hookPopup", config.hookLauncher.hookPopup)
                             `package` = intent.getStringExtra("sender")
                         }, 0)
                     }

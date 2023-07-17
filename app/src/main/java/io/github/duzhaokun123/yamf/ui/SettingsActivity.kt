@@ -47,6 +47,7 @@ class SettingsActivity :
         baseBinding.etSizeW.setText(config.defaultWindowWidth.toString())
         baseBinding.sHookLauncherHookRecents.isChecked = config.hookLauncher.hookRecents
         baseBinding.sHookLauncherHookTaskbar.isChecked = config.hookLauncher.hookTaskbar
+        baseBinding.sHookLauncherHookPopup.isChecked = config.hookLauncher.hookPopup
 
         baseBinding.btnFlags.setOnClickListener {
             val checks = BooleanArray(flags.size) { i ->
@@ -104,6 +105,7 @@ class SettingsActivity :
         config.defaultWindowWidth = baseBinding.etSizeW.text.toString().toIntOrNull() ?: config.defaultWindowWidth
         config.hookLauncher.hookRecents = baseBinding.sHookLauncherHookRecents.isChecked
         config.hookLauncher.hookTaskbar = baseBinding.sHookLauncherHookTaskbar.isChecked
+        config.hookLauncher.hookPopup = baseBinding.sHookLauncherHookPopup.isChecked
         YAMFManagerHelper.updateConfig(gson.toJson(config))
     }
 }

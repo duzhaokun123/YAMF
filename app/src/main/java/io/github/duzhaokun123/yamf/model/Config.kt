@@ -30,5 +30,6 @@ data class Config(
     data class HookLauncher(
         var hookRecents: Boolean = true,
         var hookTaskbar: Boolean = true,
+        var hookPopup: Boolean = true,
     )
 }
