@@ -21,11 +21,14 @@ import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.init.InitFields
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
+import com.github.kyuubiran.ezxhelper.utils.findAllFields
 import com.github.kyuubiran.ezxhelper.utils.findAllMethods
 import com.github.kyuubiran.ezxhelper.utils.findConstructor
+import com.github.kyuubiran.ezxhelper.utils.findField
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
+import com.github.kyuubiran.ezxhelper.utils.hookAllConstructorAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAuto
@@ -192,12 +195,15 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     private fun hookPopup(lpparam: XC_LoadPackage.LoadPackageParam) {
         log(TAG, "hooking popup ${lpparam.packageName}")
-        loadClass("com.android.launcher3.Launcher")
-            .findMethod { name == "getSupportedShortcuts" }
-            .hookAfter {
-                val r = (it.result as Stream<*>).toArray()
-                it.result = Stream.of(*r, getOpenInYAMFSystemShortcutFactory(lpparam.classLoader))
-            }
+//        loadClass("com.android.launcher3.Launcher")
+//            .findMethod { name == "getSupportedShortcuts" }
+//            .hookAfter {
+//                val r = (it.result as Stream<*>).toArray()
+//                it.result = Stream.of(*r, getOpenInYAMFSystemShortcutFactory(lpparam.classLoader))
+//            }
+        loadClass("com.android.launcher3.popup.SystemShortcut")
+            .findField { name == "INSTALL" }
+            .set(null, getOpenInYAMFSystemShortcutFactory(lpparam.classLoader))
         loadClass("com.android.launcher3.popup.SystemShortcut")
             .findAllMethods { true }
             .hookBefore {
