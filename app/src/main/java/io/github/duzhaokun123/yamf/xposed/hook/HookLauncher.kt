@@ -21,14 +21,12 @@ import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.init.InitFields
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
-import com.github.kyuubiran.ezxhelper.utils.findAllFields
 import com.github.kyuubiran.ezxhelper.utils.findAllMethods
 import com.github.kyuubiran.ezxhelper.utils.findConstructor
 import com.github.kyuubiran.ezxhelper.utils.findField
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
-import com.github.kyuubiran.ezxhelper.utils.hookAllConstructorAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAuto
@@ -49,7 +47,6 @@ import io.github.duzhaokun123.yamf.xposed.OpenInYAMFBroadcastReceiver
 import io.github.duzhaokun123.yamf.xposed.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import java.lang.reflect.Proxy
-import java.util.stream.Stream
 
 
 class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {

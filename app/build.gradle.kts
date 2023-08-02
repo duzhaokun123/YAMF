@@ -139,33 +139,6 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 }
 
-val optimizeReleaseRes = task("optimizeReleaseRes").doLast {
-    val aapt2 = Paths.get(
-        project.android.sdkDirectory.path,
-        "build-tools", project.android.buildToolsVersion, "aapt2"
-    )
-    val zip = Paths.get(
-        project.buildDir.path, "intermediates",
-        "optimized_processed_res", "release", "resources-release-optimize.ap_"
-    )
-    val optimized = File("${zip}.opt")
-    val cmd = exec {
-        commandLine(aapt2, "optimize", "--collapse-resource-names", "-o", optimized, zip)
-        isIgnoreExitValue = true
-    }
-    if (cmd.exitValue == 0) {
-        delete(zip)
-        optimized.renameTo(zip.toFile())
-    }
-}
-tasks.whenTaskAdded {
-    when (name) {
-        "optimizeReleaseResources" -> {
-            finalizedBy(optimizeReleaseRes)
-        }
-    }
-}
-
 val gitHash: String
     get() {
         val out = ByteArrayOutputStream()
