@@ -43,8 +43,6 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ActivityMainBinding.inflate(LayoutInflater.from(this))
-
         super.onCreate(savedInstanceState)
         addMenuProvider(this, this)
         YAMFManagerHelper.registerOpenCountListener(openCountListener)
