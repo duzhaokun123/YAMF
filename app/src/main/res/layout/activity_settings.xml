@@ -1,145 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="densityDpi" />
-
-        <EditText
-            android:id="@+id/et_densityDpi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="default window size in dp" />
-
-        <EditText
-            android:id="@+id/et_sizeW"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:text="200" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="x" />
-
-        <EditText
-            android:id="@+id/et_sizeH"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:text="300" />
-    </LinearLayout>
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="densityDpi" />
+
+            <EditText
+                android:id="@+id/et_densityDpi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="default window size in dp" />
+
+            <EditText
+                android:id="@+id/et_sizeW"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="200" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="x" />
+
+            <EditText
+                android:id="@+id/et_sizeH"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="300" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="flags" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_flags"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_coloerd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="coloredController" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0: move task\n1: start activity\n2: move task, failback to start activity\n" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_windowsfy"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0: TextureView\n1: SurfaceView" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_surface"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_backHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="back home" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_showIMEinWindow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="show IME in window, need window be VIRTUAL_DISPLAY_FLAG_PUBLIC" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_hookLauncher_hookRecents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HookLauncher hookRecents" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_hookLauncher_hookTaskbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HookLauncher hookTaskbar" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_hookLauncher_hookPopup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HookLauncher hookPopup" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="flags" />
+            android:text="* it may neet restart launcher twice to take effect\nidk why" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_flags"
-            style="@style/Widget.Material3.Button.TextButton"
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_useAppList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:text="use app list" />
     </LinearLayout>
-
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/s_coloerd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="coloredController" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0: move task\n1: start activity\n2: move task, failback to start activity\n" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_windowsfy"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0: TextureView\n1: SurfaceView" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_surface"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/s_backHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="back home" />
-
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/s_showIMEinWindow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="show IME in window, need window be VIRTUAL_DISPLAY_FLAG_PUBLIC" />
-
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/s_hookLauncher_hookRecents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HookLauncher hookRecents" />
-
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/s_hookLauncher_hookTaskbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HookLauncher hookTaskbar" />
-
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/s_hookLauncher_hookPopup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HookLauncher hookPopup" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="* it may neet restart launcher twice to take effect\nidk why" />
-
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/s_useAppList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="use app list" />
-</LinearLayout>
+</ScrollView>

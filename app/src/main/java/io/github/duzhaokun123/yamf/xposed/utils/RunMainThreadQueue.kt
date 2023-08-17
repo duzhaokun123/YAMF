@@ -1,6 +1,6 @@
 package io.github.duzhaokun123.yamf.xposed.utils
 
-import io.github.duzhaokun123.androidapptemplate.utils.runMain
+import io.github.duzhaokun123.yamf.common.runMain
 import kotlinx.coroutines.CoroutineScope
 import java.util.LinkedList
 

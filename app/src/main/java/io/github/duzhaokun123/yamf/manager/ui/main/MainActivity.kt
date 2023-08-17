@@ -15,12 +15,12 @@ import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
-import io.github.duzhaokun123.androidapptemplate.utils.TipUtil
-import io.github.duzhaokun123.androidapptemplate.utils.getAttr
-import io.github.duzhaokun123.androidapptemplate.utils.runMain
+import io.github.duzhaokun123.yamf.manager.bases.BaseActivity
+import io.github.duzhaokun123.yamf.manager.utils.TipUtil
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
+import io.github.duzhaokun123.yamf.common.getAttr
+import io.github.duzhaokun123.yamf.common.runMain
 import io.github.duzhaokun123.yamf.databinding.ActivityMainBinding
 import io.github.duzhaokun123.yamf.manager.ui.SettingsActivity
 import io.github.duzhaokun123.yamf.xposed.IOpenCountListener

@@ -22,14 +22,14 @@ import com.github.kyuubiran.ezxhelper.utils.invokeMethodAs
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import io.github.duzhaokun123.androidapptemplate.bases.BaseSimpleAdapter
-import io.github.duzhaokun123.androidapptemplate.utils.runIO
-import io.github.duzhaokun123.androidapptemplate.utils.runMain
+import io.github.duzhaokun123.yamf.manager.bases.BaseSimpleAdapter
 import io.github.duzhaokun123.yamf.databinding.ItemAppBinding
 import io.github.duzhaokun123.yamf.databinding.WindowAppListBinding
 import io.github.duzhaokun123.yamf.common.model.StartCmd
 import io.github.duzhaokun123.yamf.common.onException
 import io.github.duzhaokun123.yamf.common.resetAdapter
+import io.github.duzhaokun123.yamf.common.runIO
+import io.github.duzhaokun123.yamf.common.runMain
 import io.github.duzhaokun123.yamf.xposed.utils.AppInfoCache
 import io.github.duzhaokun123.yamf.xposed.services.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances

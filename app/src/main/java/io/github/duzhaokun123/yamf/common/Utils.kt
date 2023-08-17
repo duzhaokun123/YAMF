@@ -1,7 +1,14 @@
 package io.github.duzhaokun123.yamf.common
 
+import android.content.res.Resources
+import android.util.TypedValue
+import androidx.annotation.AttrRes
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 val gson by lazy { Gson() }
 
@@ -14,3 +21,12 @@ inline fun <T> Result<T>.onException(action: (exception: Exception) -> Unit): Re
         if (t is Error) throw t
         action(t as Exception)
     }
+
+fun runMain(block: suspend CoroutineScope.() -> Unit) =
+    GlobalScope.launch(Dispatchers.Main, block = block)
+
+fun runIO(block: suspend CoroutineScope.() -> Unit) =
+    GlobalScope.launch(Dispatchers.IO, block = block)
+
+fun Resources.Theme.getAttr(@AttrRes id: Int) =
+    TypedValue().apply { resolveAttribute(id, this, true) }

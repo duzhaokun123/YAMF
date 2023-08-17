@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.androidapptemplate.bases
+package io.github.duzhaokun123.yamf.manager.bases
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.androidapptemplate.bases
+package io.github.duzhaokun123.yamf.manager.bases
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -19,8 +19,8 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
-import io.github.duzhaokun123.androidapptemplate.utils.TipUtil
-import io.github.duzhaokun123.androidapptemplate.utils.maxSystemBarsDisplayCutout
+import io.github.duzhaokun123.yamf.manager.utils.TipUtil
+import io.github.duzhaokun123.yamf.manager.utils.maxSystemBarsDisplayCutout
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.ActivityBaseRoot2Binding
 import net.matsudamper.viewbindingutil.ViewBindingUtil

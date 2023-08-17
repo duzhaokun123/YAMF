@@ -13,11 +13,11 @@ import android.view.KeyEvent
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
-import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.common.gson
 import io.github.duzhaokun123.yamf.common.model.Config
 import io.github.duzhaokun123.yamf.common.model.StartCmd
+import io.github.duzhaokun123.yamf.common.runMain
 import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
 import io.github.duzhaokun123.yamf.xposed.IYAMFManager
 import io.github.duzhaokun123.yamf.xposed.hook.HookLauncher

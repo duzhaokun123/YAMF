@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.androidapptemplate.utils
+package io.github.duzhaokun123.yamf.manager.utils
 
 import android.app.Activity
 import android.content.Context
@@ -11,6 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import io.github.duzhaokun123.yamf.R
+import io.github.duzhaokun123.yamf.common.runMain
 import io.github.duzhaokun123.yamf.manager.application
 
 object TipUtil {

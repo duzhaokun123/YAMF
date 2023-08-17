@@ -48,11 +48,11 @@ import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
-import io.github.duzhaokun123.androidapptemplate.utils.getAttr
-import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
+import io.github.duzhaokun123.yamf.common.getAttr
 import io.github.duzhaokun123.yamf.common.onException
+import io.github.duzhaokun123.yamf.common.runMain
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
 import io.github.duzhaokun123.yamf.xposed.utils.RunMainThreadQueue
 import io.github.duzhaokun123.yamf.xposed.services.YAMFManager

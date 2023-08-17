@@ -5,7 +5,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
+import io.github.duzhaokun123.yamf.manager.bases.BaseActivity
 import io.github.duzhaokun123.yamf.common.gson
 import io.github.duzhaokun123.yamf.databinding.ActivitySettingsBinding
 import io.github.duzhaokun123.yamf.manager.services.YAMFManagerProxy
