@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yamf.ui.window
+package io.github.duzhaokun123.yamf.xposed.ui.window
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
@@ -52,14 +52,14 @@ import io.github.duzhaokun123.androidapptemplate.utils.getAttr
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
+import io.github.duzhaokun123.yamf.common.onException
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
-import io.github.duzhaokun123.yamf.utils.RunMainThreadQueue
-import io.github.duzhaokun123.yamf.utils.getActivityInfoCompat
-import io.github.duzhaokun123.yamf.utils.onException
-import io.github.duzhaokun123.yamf.xposed.YAMFManager
+import io.github.duzhaokun123.yamf.xposed.utils.RunMainThreadQueue
+import io.github.duzhaokun123.yamf.xposed.services.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.dpToPx
+import io.github.duzhaokun123.yamf.xposed.utils.getActivityInfoCompat
 import kotlinx.coroutines.delay
 import kotlin.math.sign
 
@@ -349,6 +349,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
         RunMainThreadQueue.add {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2 && taskInfo.isVisible.not()) {

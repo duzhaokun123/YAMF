@@ -1,10 +1,10 @@
-package io.github.duzhaokun123.yamf.xposed
+package io.github.duzhaokun123.yamf.manager.providers
 
 import android.content.ContentProvider
 import android.content.ContentValues
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import io.github.duzhaokun123.yamf.manager.services.YAMFManagerProxy
 
 class ServiceProvider: ContentProvider() {
     override fun onCreate() = false
@@ -33,7 +33,7 @@ class ServiceProvider: ContentProvider() {
     override fun call(method: String, arg: String?, extras: Bundle?): Bundle? {
         if (callingPackage != "android" || extras == null) return null
         val binder = extras.getBinder("binder") ?: return null
-        YAMFManagerHelper.linkService(binder)
+        YAMFManagerProxy.linkService(binder)
         return Bundle()
     }
 }

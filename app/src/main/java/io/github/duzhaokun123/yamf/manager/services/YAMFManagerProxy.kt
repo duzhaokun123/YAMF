@@ -1,17 +1,16 @@
-package io.github.duzhaokun123.yamf.xposed
+package io.github.duzhaokun123.yamf.manager.services
 
 import android.os.IBinder
 import android.os.IBinder.DeathRecipient
-import android.os.Parcel
-import android.os.RemoteException
-import android.os.ServiceManager
 import android.util.Log
+import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
+import io.github.duzhaokun123.yamf.xposed.IYAMFManager
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
-object YAMFManagerHelper : IYAMFManager, DeathRecipient {
-    private const val TAG = "YAMFManagerHelper"
+object YAMFManagerProxy : IYAMFManager, DeathRecipient {
+    private const val TAG = "YAMFManagerProxy"
 
     private class ServiceProxy(private val obj: IYAMFManager) : InvocationHandler {
         override fun invoke(proxy: Any?, method: Method, args: Array<out Any?>?): Any? {
@@ -45,50 +44,46 @@ object YAMFManagerHelper : IYAMFManager, DeathRecipient {
     override fun asBinder() = service?.asBinder()
 
     override fun getVersionName(): String? {
-        return getService()?.versionName
+        return service?.versionName
     }
 
-    override fun getVersionCode() = getService()?.versionCode ?: 0
+    override fun getVersionCode() = service?.versionCode ?: 0
 
-    override fun getUid() = getService()?.uid ?: -1
+    override fun getUid() = service?.uid ?: -1
 
     override fun createWindow() {
-        getService()?.createWindow()
+        service?.createWindow()
     }
 
     override fun getBuildTime(): Long {
-        return getService()?.buildTime ?: 0
+        return service?.buildTime ?: 0
     }
 
     override fun getConfigJson(): String {
-        return getService()?.configJson ?: "{}"
+        return service?.configJson ?: "{}"
     }
 
     override fun updateConfig(newConfig: String) {
-        getService()?.updateConfig(newConfig)
+        service?.updateConfig(newConfig)
     }
 
     override fun registerOpenCountListener(iOpenCountListener: IOpenCountListener) {
-        getService()?.registerOpenCountListener(iOpenCountListener)
+        service?.registerOpenCountListener(iOpenCountListener)
     }
 
     override fun unregisterOpenCountListener(iOpenCountListener: IOpenCountListener) {
-        getService()?.unregisterOpenCountListener(iOpenCountListener)
+        service?.unregisterOpenCountListener(iOpenCountListener)
     }
 
     override fun openAppList() {
-        getService()?.openAppList()
+        service?.openAppList()
     }
 
     override fun currentToWindow() {
-        getService()?.currentToWindow()
+        service?.currentToWindow()
     }
 
     override fun resetAllWindow() {
-        getService()?.resetAllWindow()
-    }
-
-    private fun getService(): IYAMFManager? {
-        return service
+        service?.resetAllWindow()
     }
 }

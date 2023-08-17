@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yamf.xposed
+package io.github.duzhaokun123.yamf.xposed.services
 
 import android.app.ActivityManagerHidden
 import android.content.AttributionSource
@@ -32,7 +32,7 @@ object UserService {
                     return
                 }
                 val extras = Bundle()
-                extras.putBinder("binder", YAMFManager.instance)
+                extras.putBinder("binder", YAMFManager)
                 val attr = AttributionSource.Builder(1000).setPackageName("android").build()
                 val reply = provider.call(attr, PROVIDER_AUTHORITY, "", null, extras)
                 if (reply == null) {
@@ -48,7 +48,6 @@ object UserService {
 
     fun register(pms: IPackageManager) {
         log(TAG, "Init YAMFService")
-        YAMFManager()
         appUid = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             pms.getPackageUid(BuildConfig.APPLICATION_ID, 0L, 0);
         } else {

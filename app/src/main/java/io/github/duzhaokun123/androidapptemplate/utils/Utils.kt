@@ -5,7 +5,7 @@ import android.content.res.Resources
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.core.view.WindowInsetsCompat
-import io.github.duzhaokun123.yamf.application
+import io.github.duzhaokun123.yamf.manager.application
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

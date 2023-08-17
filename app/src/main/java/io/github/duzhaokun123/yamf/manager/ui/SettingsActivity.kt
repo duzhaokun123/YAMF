@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yamf.ui
+package io.github.duzhaokun123.yamf.manager.ui
 
 import android.content.Intent
 import androidx.appcompat.widget.PopupMenu
@@ -6,10 +6,10 @@ import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
+import io.github.duzhaokun123.yamf.common.gson
 import io.github.duzhaokun123.yamf.databinding.ActivitySettingsBinding
-import io.github.duzhaokun123.yamf.utils.gson
-import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
-import io.github.duzhaokun123.yamf.model.Config as YAMFConfig
+import io.github.duzhaokun123.yamf.manager.services.YAMFManagerProxy
+import io.github.duzhaokun123.yamf.common.model.Config as YAMFConfig
 
 class SettingsActivity :
     BaseActivity<ActivitySettingsBinding>(ActivitySettingsBinding::class.java) {
@@ -37,7 +37,7 @@ class SettingsActivity :
 
     override fun initData() {
         super.initData()
-        config = gson.fromJson(YAMFManagerHelper.configJson, YAMFConfig::class.java)
+        config = gson.fromJson(YAMFManagerProxy.configJson, YAMFConfig::class.java)
         baseBinding.etDensityDpi.setText(config.densityDpi.toString())
         baseBinding.btnFlags.text = config.flags.toString()
         baseBinding.sColoerd.isChecked = config.coloredController
@@ -109,7 +109,7 @@ class SettingsActivity :
         config.hookLauncher.hookRecents = baseBinding.sHookLauncherHookRecents.isChecked
         config.hookLauncher.hookTaskbar = baseBinding.sHookLauncherHookTaskbar.isChecked
         config.hookLauncher.hookPopup = baseBinding.sHookLauncherHookPopup.isChecked
-        YAMFManagerHelper.updateConfig(gson.toJson(config))
+        YAMFManagerProxy.updateConfig(gson.toJson(config))
         preference.edit().putBoolean("useAppList", baseBinding.sUseAppList.isChecked).apply()
     }
 }

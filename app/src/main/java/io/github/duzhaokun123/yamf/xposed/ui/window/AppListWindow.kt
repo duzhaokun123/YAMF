@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yamf.ui.window
+package io.github.duzhaokun123.yamf.xposed.ui.window
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
@@ -9,7 +9,6 @@ import android.content.pm.IPackageManagerHidden
 import android.content.pm.PackageManagerHidden
 import android.content.pm.UserInfo
 import android.graphics.PixelFormat
-import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -28,16 +27,16 @@ import io.github.duzhaokun123.androidapptemplate.utils.runIO
 import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.databinding.ItemAppBinding
 import io.github.duzhaokun123.yamf.databinding.WindowAppListBinding
-import io.github.duzhaokun123.yamf.model.StartCmd
-import io.github.duzhaokun123.yamf.utils.AppInfoCache
-import io.github.duzhaokun123.yamf.utils.componentName
-import io.github.duzhaokun123.yamf.utils.getActivityInfoCompat
-import io.github.duzhaokun123.yamf.utils.onException
-import io.github.duzhaokun123.yamf.utils.resetAdapter
-import io.github.duzhaokun123.yamf.utils.startActivity
-import io.github.duzhaokun123.yamf.xposed.YAMFManager
+import io.github.duzhaokun123.yamf.common.model.StartCmd
+import io.github.duzhaokun123.yamf.common.onException
+import io.github.duzhaokun123.yamf.common.resetAdapter
+import io.github.duzhaokun123.yamf.xposed.utils.AppInfoCache
+import io.github.duzhaokun123.yamf.xposed.services.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
+import io.github.duzhaokun123.yamf.xposed.utils.componentName
+import io.github.duzhaokun123.yamf.xposed.utils.getActivityInfoCompat
+import io.github.duzhaokun123.yamf.xposed.utils.startActivity
 
 @SuppressLint("ClickableViewAccessibility")
 class AppListWindow(val context: Context, val displayId: Int? = null) {
@@ -154,7 +153,7 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
             val activityInfo = showApps[position]
             baseBinding.ll.setOnClickListener {
                 if (displayId == null)
-                    YAMFManager.createWindowLocal(StartCmd(activityInfo.componentName, userId))
+                    YAMFManager.createWindow(StartCmd(activityInfo.componentName, userId))
                 else
                     startActivity(context, activityInfo.componentName, userId, displayId)
                 close()

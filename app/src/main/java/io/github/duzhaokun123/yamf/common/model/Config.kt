@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yamf.model
+package io.github.duzhaokun123.yamf.common.model
 
 data class Config(
     var densityDpi: Int = 200,

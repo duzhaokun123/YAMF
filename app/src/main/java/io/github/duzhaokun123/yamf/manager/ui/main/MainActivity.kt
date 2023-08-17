@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yamf.ui.main
+package io.github.duzhaokun123.yamf.manager.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -23,9 +22,9 @@ import io.github.duzhaokun123.androidapptemplate.utils.runMain
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.databinding.ActivityMainBinding
-import io.github.duzhaokun123.yamf.ui.SettingsActivity
+import io.github.duzhaokun123.yamf.manager.ui.SettingsActivity
 import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
-import io.github.duzhaokun123.yamf.xposed.YAMFManagerHelper
+import io.github.duzhaokun123.yamf.manager.services.YAMFManagerProxy
 
 
 class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class.java, Config.NO_BACK),
@@ -45,23 +44,25 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addMenuProvider(this, this)
-        YAMFManagerHelper.registerOpenCountListener(openCountListener)
+        YAMFManagerProxy.registerOpenCountListener(openCountListener)
     }
 
     override fun initViews() {
         super.initViews()
         baseBinding.ll.findViewById<RelativeLayout>(R.id.rl_cardRoot).addView(
-            View(this).apply { setBackgroundColor(Color.BLACK)
+            View(this).apply {
+                setBackgroundColor(Color.BLACK)
                 id = R.id.surface
-                             },
-            RelativeLayout.LayoutParams(baseBinding.ll.findViewById<View>(R.id.v_sizePreviewer).layoutParams).apply {
-                addRule(RelativeLayout.BELOW, R.id.rl_top)
-            }
+            },
+            RelativeLayout.LayoutParams(baseBinding.ll.findViewById<View>(R.id.v_sizePreviewer).layoutParams)
+                .apply {
+                    addRule(RelativeLayout.BELOW, R.id.rl_top)
+                }
         )
     }
     @SuppressLint("SetTextI18n")
     override fun initData() {
-        val buildTime = YAMFManagerHelper.buildTime
+        val buildTime = YAMFManagerProxy.buildTime
         Log.d(TAG, "buildtime: $buildTime ${BuildConfig.BUILD_TIME}")
         when(buildTime) {
             0L -> {
@@ -80,12 +81,12 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
             BuildConfig.BUILD_TIME -> {
                 baseBinding.ivIcon.setImageResource(R.drawable.ic_round_check_circle_24)
                 baseBinding.tvActive.setText(R.string.activated)
-                baseBinding.tvVersion.text = "${YAMFManagerHelper.versionName} (${YAMFManagerHelper.versionCode})"
+                baseBinding.tvVersion.text = "${YAMFManagerProxy.versionName} (${YAMFManagerProxy.versionCode})"
             }
             else -> {
                 baseBinding.ivIcon.setImageResource(R.drawable.ic_warning_amber_24)
                 baseBinding.tvActive.setText(R.string.need_reboot)
-                baseBinding.tvVersion.text = "system: ${YAMFManagerHelper.versionName} (${YAMFManagerHelper.versionCode})\n" +
+                baseBinding.tvVersion.text = "system: ${YAMFManagerProxy.versionName} (${YAMFManagerProxy.versionCode})\n" +
                         "module: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
                 baseBinding.mcvStatus.setCardBackgroundColor(MaterialColors.harmonizeWithPrimary(this, getColor(R.color.color_warning)))
                 baseBinding.mcvStatus.setOnClickListener {
@@ -114,7 +115,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when(menuItem.itemId) {
             R.id.new_window -> {
-                YAMFManagerHelper.createWindow()
+                YAMFManagerProxy.createWindow()
                 true
             }
             R.id.channel -> {
@@ -124,7 +125,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                 true
             }
             R.id.open_app_list -> {
-                YAMFManagerHelper.openAppList()
+                YAMFManagerProxy.openAppList()
                 true
             }
             R.id.settings -> {
@@ -144,7 +145,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
                 true
             }
             R.id.current_to_window -> {
-                YAMFManagerHelper.currentToWindow()
+                YAMFManagerProxy.currentToWindow()
                 true
             }
             else -> false
@@ -153,6 +154,6 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
 
     override fun onDestroy() {
         super.onDestroy()
-        YAMFManagerHelper.unregisterOpenCountListener(openCountListener)
+        YAMFManagerProxy.unregisterOpenCountListener(openCountListener)
     }
 }

@@ -1,7 +1,6 @@
 package io.github.duzhaokun123.yamf.xposed.utils
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.widget.Toast
 
 @SuppressLint("StaticFieldLeak")

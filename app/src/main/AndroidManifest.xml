@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name=".Application"
+        android:name=".manager.Application"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,12 +15,12 @@
         
         <provider
             android:authorities="io.github.duzhaokun123.yamf.ServiceProvider"
-            android:name=".xposed.ServiceProvider"
+            android:name=".manager.providers.ServiceProvider"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
         
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".manager.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,11 +29,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name=".manager.ui.SettingsActivity"
             android:label="@string/settings" />
 
         <service
-            android:name=".services.QSNewWindowService"
+            android:name=".manager.services.QSNewWindowService"
             android:exported="true"
             android:icon="@drawable/ic_picture_in_picture_alt_24"
             android:label="@string/new_window"
@@ -44,7 +44,7 @@
         </service>
 
         <service
-            android:name=".services.QSEnterWindow"
+            android:name=".manager.services.QSEnterWindow"
             android:exported="true"
             android:icon="@drawable/ic_picture_in_picture_alt_24"
             android:label="@string/enter_window"
@@ -55,7 +55,7 @@
         </service>
 
         <service
-            android:name=".services.QSResetAllWindow"
+            android:name=".manager.services.QSResetAllWindow"
             android:exported="true"
             android:icon="@drawable/ic_picture_in_picture_alt_24"
             android:label="@string/reset_all_window"

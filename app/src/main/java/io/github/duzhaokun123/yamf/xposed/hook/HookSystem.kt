@@ -1,14 +1,11 @@
-package io.github.duzhaokun123.yamf.xposed
+package io.github.duzhaokun123.yamf.xposed.hook
 
 import android.content.Context
-import android.content.ContextParams
 import android.content.Intent
 import android.content.pm.IPackageManager
-import androidx.annotation.Keep
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.utils.findAllConstructors
 import com.github.kyuubiran.ezxhelper.utils.findMethod
-import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
 import de.robv.android.xposed.IXposedHookLoadPackage
@@ -16,26 +13,27 @@ import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.duzhaokun123.yamf.BuildConfig
-import io.github.duzhaokun123.yamf.xposed.hook.HookLauncher
-import io.github.duzhaokun123.yamf.xposed.utils.Instances
+import io.github.duzhaokun123.yamf.xposed.services.YAMFManager
+import io.github.duzhaokun123.yamf.xposed.services.UserService
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.qauxv.util.Initiator
 import kotlin.concurrent.thread
 
-private const val TAG = "YAMF_XposedInit"
-
-class XposedInit : IXposedHookZygoteInit, IXposedHookLoadPackage {
+class HookSystem : IXposedHookZygoteInit, IXposedHookLoadPackage {
+    companion object {
+        private const val TAG = "YAMF_HookSystem"
+    }
 
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
         EzXHelperInit.initZygote(startupParam)
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
-         if (lpparam.packageName != "android") return
-         log(TAG, "xposed init")
-         log(TAG, "buildtype: ${BuildConfig.BUILD_TYPE}")
-         EzXHelperInit.initHandleLoadPackage(lpparam)
-         Initiator.init(lpparam.classLoader)
+        if (lpparam.packageName != "android") return
+        log(TAG, "xposed init")
+        log(TAG, "buildtype: ${BuildConfig.BUILD_TYPE}")
+        EzXHelperInit.initHandleLoadPackage(lpparam)
+        Initiator.init(lpparam.classLoader)
 
          var serviceManagerHook: XC_MethodHook.Unhook? = null
          serviceManagerHook = findMethod("android.os.ServiceManager") {
@@ -56,23 +54,12 @@ class XposedInit : IXposedHookZygoteInit, IXposedHookLoadPackage {
              }
          }
 
-         var activityManagerServiceConstructorHook: List<XC_MethodHook.Unhook> = emptyList()
-         activityManagerServiceConstructorHook = findAllConstructors("com.android.server.am.ActivityManagerService") {
-             parameterTypes[0] == Context::class.java
-         }.hookAfter {
-             activityManagerServiceConstructorHook.forEach { hook -> hook.unhook() }
-             YAMFManager.activityManagerService = it.thisObject
-             log(TAG, "get activityManagerService")
-         }.also {
-             if (it.isEmpty())
-                 log(TAG, "no constructor with parameterTypes[0] == Context found")
-         }
-
          var activityManagerServiceSystemReadyHook: XC_MethodHook.Unhook? = null
          activityManagerServiceSystemReadyHook = findMethod("com.android.server.am.ActivityManagerService") {
              name == "systemReady"
          }.hookAfter {
              activityManagerServiceSystemReadyHook?.unhook()
+             YAMFManager.activityManagerService = it.thisObject
              YAMFManager.systemReady()
              log(TAG, "system ready")
          }
@@ -82,7 +69,7 @@ class XposedInit : IXposedHookZygoteInit, IXposedHookLoadPackage {
         }.hookBefore {
             val intent = it.args[0] as Intent
             if (intent.action == HookLauncher.ACTION_RECEIVE_LAUNCHER_CONFIG)
-                it.result = Unit
+                it.result = Unit // bypass check
         }
     }
 }

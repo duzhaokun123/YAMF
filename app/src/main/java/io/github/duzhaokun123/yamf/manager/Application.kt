@@ -1,4 +1,4 @@
-package io.github.duzhaokun123.yamf
+package io.github.duzhaokun123.yamf.manager
 
 import com.google.android.material.color.DynamicColors
 

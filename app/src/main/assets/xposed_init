@@ -1,2 +1,2 @@
-io.github.duzhaokun123.yamf.xposed.XposedInit
+io.github.duzhaokun123.yamf.xposed.hook.HookSystem
 io.github.duzhaokun123.yamf.xposed.hook.HookLauncher
