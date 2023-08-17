@@ -4,14 +4,13 @@
 
     <application
         android:name=".manager.Application"
-        android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.YAMF">
+        android:theme="@style/Theme.YAMF"
+        tools:ignore="DataExtractionRules">
         
         <provider
             android:authorities="io.github.duzhaokun123.yamf.ServiceProvider"

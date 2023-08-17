@@ -84,9 +84,10 @@ object YAMFManager : IYAMFManager.Stub() {
         systemContext.registerReceiver(ACTION_GET_LAUNCHER_CONFIG) { _, intent ->
             ActivityManagerApis.broadcastIntent(Intent(HookLauncher.ACTION_RECEIVE_LAUNCHER_CONFIG).apply {
                 log(TAG, "send config: ${config.hookLauncher}")
-                putExtra("hookRecents", config.hookLauncher.hookRecents)
-                putExtra("hookTaskbar", config.hookLauncher.hookTaskbar)
-                putExtra("hookPopup", config.hookLauncher.hookPopup)
+                putExtra(HookLauncher.EXTRA_HOOK_RECENTS, config.hookLauncher.hookRecents)
+                putExtra(HookLauncher.EXTRA_HOOK_TASKBAR, config.hookLauncher.hookTaskbar)
+                putExtra(HookLauncher.EXTRA_HOOK_POPUP, config.hookLauncher.hookPopup)
+                putExtra(HookLauncher.EXTRA_HOOK_TRANSIENT_TASKBAR, config.hookLauncher.hookTransientTaskbar)
                 `package` = intent.getStringExtra("sender")
             }, 0)
         }

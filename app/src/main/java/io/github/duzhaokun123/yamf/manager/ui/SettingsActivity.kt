@@ -50,6 +50,8 @@ class SettingsActivity :
         baseBinding.sHookLauncherHookRecents.isChecked = config.hookLauncher.hookRecents
         baseBinding.sHookLauncherHookTaskbar.isChecked = config.hookLauncher.hookTaskbar
         baseBinding.sHookLauncherHookPopup.isChecked = config.hookLauncher.hookPopup
+        baseBinding.sHookLauncherHookTransientTaskbar.isChecked =
+            config.hookLauncher.hookTransientTaskbar
         baseBinding.sUseAppList.isChecked = preference.getBoolean("useAppList", true)
 
         baseBinding.btnFlags.setOnClickListener {
@@ -109,6 +111,7 @@ class SettingsActivity :
         config.hookLauncher.hookRecents = baseBinding.sHookLauncherHookRecents.isChecked
         config.hookLauncher.hookTaskbar = baseBinding.sHookLauncherHookTaskbar.isChecked
         config.hookLauncher.hookPopup = baseBinding.sHookLauncherHookPopup.isChecked
+        config.hookLauncher.hookTransientTaskbar = baseBinding.sHookLauncherHookTransientTaskbar.isChecked
         YAMFManagerProxy.updateConfig(gson.toJson(config))
         preference.edit().putBoolean("useAppList", baseBinding.sUseAppList.isChecked).apply()
     }

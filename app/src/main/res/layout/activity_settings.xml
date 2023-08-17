@@ -136,6 +136,12 @@
             android:layout_height="wrap_content"
             android:text="HookLauncher hookPopup" />
 
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_hookLauncher_hookTransientTaskbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HookLauncher for TransientTaskbar" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

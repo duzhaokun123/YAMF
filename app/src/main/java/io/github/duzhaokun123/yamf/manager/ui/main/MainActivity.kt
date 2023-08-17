@@ -15,16 +15,16 @@ import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.duzhaokun123.yamf.manager.bases.BaseActivity
-import io.github.duzhaokun123.yamf.manager.utils.TipUtil
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.common.getAttr
 import io.github.duzhaokun123.yamf.common.runMain
 import io.github.duzhaokun123.yamf.databinding.ActivityMainBinding
-import io.github.duzhaokun123.yamf.manager.ui.SettingsActivity
-import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
+import io.github.duzhaokun123.yamf.manager.bases.BaseActivity
 import io.github.duzhaokun123.yamf.manager.services.YAMFManagerProxy
+import io.github.duzhaokun123.yamf.manager.ui.SettingsActivity
+import io.github.duzhaokun123.yamf.manager.utils.TipUtil
+import io.github.duzhaokun123.yamf.xposed.IOpenCountListener
 
 
 class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class.java, Config.NO_BACK),
@@ -53,7 +53,7 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
             View(this).apply {
                 setBackgroundColor(Color.BLACK)
                 id = R.id.surface
-            },
+            }, 0,
             RelativeLayout.LayoutParams(baseBinding.ll.findViewById<View>(R.id.v_sizePreviewer).layoutParams)
                 .apply {
                     addRule(RelativeLayout.BELOW, R.id.rl_top)

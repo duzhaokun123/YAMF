@@ -24,6 +24,7 @@ import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
+import com.github.kyuubiran.ezxhelper.utils.hookReturnConstant
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAuto
 import com.github.kyuubiran.ezxhelper.utils.loadClass
@@ -39,9 +40,9 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
-import io.github.duzhaokun123.yamf.xposed.utils.registerReceiver
 import io.github.duzhaokun123.yamf.xposed.services.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.log
+import io.github.duzhaokun123.yamf.xposed.utils.registerReceiver
 import java.lang.reflect.Proxy
 
 
@@ -54,6 +55,7 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
         const val EXTRA_HOOK_RECENTS = "hookRecents"
         const val EXTRA_HOOK_TASKBAR = "hookTaskbar"
         const val EXTRA_HOOK_POPUP = "hookPopup"
+        const val EXTRA_HOOK_TRANSIENT_TASKBAR = "hookTransientTaskbar"
     }
 
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
@@ -72,10 +74,13 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 val hookRecents = intent.getBooleanExtra(EXTRA_HOOK_RECENTS, false)
                 val hookTaskbar = intent.getBooleanExtra(EXTRA_HOOK_TASKBAR, false)
                 val hookPopup = intent.getBooleanExtra(EXTRA_HOOK_POPUP, false)
-                log(TAG, "receive config hookRecents=$hookRecents hookTaskbar=$hookTaskbar hookPopup=$hookPopup")
+                val hookTransientTaskbar =
+                    intent.getBooleanExtra(EXTRA_HOOK_TRANSIENT_TASKBAR, false)
+                log(TAG, "receive config hookRecents=$hookRecents hookTaskbar=$hookTaskbar hookPopup=$hookPopup hookTranslucentTaskbar=$hookTransientTaskbar")
                 if (hookRecents) hookRecents(lpparam)
                 if (hookTaskbar) hookTaskbar(lpparam)
                 if (hookPopup) hookPopup(lpparam)
+//                if (hookTransientTaskbar) hookTransientTaskbar(lpparam)
                 application.unregisterReceiver(this)
             }
             application.sendBroadcast(Intent(YAMFManager.ACTION_GET_LAUNCHER_CONFIG).apply {
@@ -83,6 +88,8 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 putExtra("sender", application.packageName)
             })
         }
+
+        hookTransientTaskbar(lpparam)
     }
 
     private fun hookRecents(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -254,5 +261,12 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 .newInstance(args[0], args[1], args[2])
                 .also { proxyClass = it }
         }
+    }
+
+    private fun hookTransientTaskbar(lpparam: XC_LoadPackage.LoadPackageParam) {
+        log(TAG, "hook transientTaskbar ${lpparam.packageName}")
+        loadClass("com.android.launcher3.util.DisplayController")
+            .findMethod { name == "isTransientTaskbar" }
+            .hookReturnConstant(true)
     }
 }

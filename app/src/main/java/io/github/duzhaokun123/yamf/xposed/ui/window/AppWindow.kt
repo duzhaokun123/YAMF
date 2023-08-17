@@ -54,16 +54,16 @@ import io.github.duzhaokun123.yamf.common.getAttr
 import io.github.duzhaokun123.yamf.common.onException
 import io.github.duzhaokun123.yamf.common.runMain
 import io.github.duzhaokun123.yamf.databinding.WindowAppBinding
-import io.github.duzhaokun123.yamf.xposed.utils.RunMainThreadQueue
 import io.github.duzhaokun123.yamf.xposed.services.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.Instances
+import io.github.duzhaokun123.yamf.xposed.utils.RunMainThreadQueue
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.dpToPx
 import io.github.duzhaokun123.yamf.xposed.utils.getActivityInfoCompat
 import kotlinx.coroutines.delay
 import kotlin.math.sign
 
-@SuppressLint("ClickableViewAccessibility")
+@SuppressLint("ClickableViewAccessibility", "SetTextI18n")
 class AppWindow(val context: Context, private val densityDpi: Int, private val flags: Int, private val onVirtualDisplayCreated: ((Int) -> Unit)) :
     TextureView.SurfaceTextureListener, SurfaceHolder.Callback {
     companion object {
@@ -129,7 +129,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
         binding.rlCardRoot.addView(surfaceView.apply {
             id = R.id.surface
-        }, RelativeLayout.LayoutParams(binding.vSizePreviewer.layoutParams).apply {
+        }, 0, RelativeLayout.LayoutParams(binding.vSizePreviewer.layoutParams).apply {
             addRule(RelativeLayout.BELOW, R.id.rl_top)
         })
         val params = WindowManager.LayoutParams(
@@ -166,7 +166,6 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             var offsetX = 0F
             var offsetY = 0F
 
-            @SuppressLint("ClickableViewAccessibility")
             override fun onTouch(v: View, event: MotionEvent): Boolean {
                 when(event.action) {
                     MotionEvent.ACTION_DOWN -> {
@@ -349,7 +348,6 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
         RunMainThreadQueue.add {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2 && taskInfo.isVisible.not()) {

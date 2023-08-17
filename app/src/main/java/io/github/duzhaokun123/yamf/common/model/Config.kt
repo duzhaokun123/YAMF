@@ -31,5 +31,6 @@ data class Config(
         var hookRecents: Boolean = true,
         var hookTaskbar: Boolean = true,
         var hookPopup: Boolean = true,
+        var hookTransientTaskbar: Boolean = false,
     )
 }
