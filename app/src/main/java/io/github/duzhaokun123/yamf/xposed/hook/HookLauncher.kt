@@ -21,12 +21,15 @@ import com.github.kyuubiran.ezxhelper.utils.findAllMethods
 import com.github.kyuubiran.ezxhelper.utils.findConstructor
 import com.github.kyuubiran.ezxhelper.utils.findField
 import com.github.kyuubiran.ezxhelper.utils.findMethod
+import com.github.kyuubiran.ezxhelper.utils.findMethodOrNull
 import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
+import com.github.kyuubiran.ezxhelper.utils.hookReplace
 import com.github.kyuubiran.ezxhelper.utils.hookReturnConstant
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAuto
+import com.github.kyuubiran.ezxhelper.utils.invokeMethodAutoAs
 import com.github.kyuubiran.ezxhelper.utils.loadClass
 import com.github.kyuubiran.ezxhelper.utils.loadClassOrNull
 import com.github.kyuubiran.ezxhelper.utils.newInstance
@@ -34,7 +37,6 @@ import com.github.kyuubiran.ezxhelper.utils.paramCount
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -76,7 +78,10 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 val hookPopup = intent.getBooleanExtra(EXTRA_HOOK_POPUP, false)
                 val hookTransientTaskbar =
                     intent.getBooleanExtra(EXTRA_HOOK_TRANSIENT_TASKBAR, false)
-                log(TAG, "receive config hookRecents=$hookRecents hookTaskbar=$hookTaskbar hookPopup=$hookPopup hookTranslucentTaskbar=$hookTransientTaskbar")
+                log(
+                    TAG,
+                    "receive config hookRecents=$hookRecents hookTaskbar=$hookTaskbar hookPopup=$hookPopup hookTranslucentTaskbar=$hookTransientTaskbar"
+                )
                 if (hookRecents) hookRecents(lpparam)
                 if (hookTaskbar) hookTaskbar(lpparam)
                 if (hookPopup) hookPopup(lpparam)
@@ -161,22 +166,35 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     private fun hookTaskbar(lpparam: XC_LoadPackage.LoadPackageParam) {
         log(TAG, "hooking taskbar ${lpparam.packageName}")
-        XposedBridge.hookAllMethods(
-            XposedHelpers.findClass(
-                "com.android.launcher3.taskbar.TaskbarActivityContext",
-                lpparam.classLoader
-            ), "startItemInfoActivity", object : XC_MethodReplacement() {
-                override fun replaceHookedMethod(param: MethodHookParam): Any? {
-                    val infoIntent = XposedHelpers.callMethod(param.args[0], "getIntent") as Intent
+        loadClass("com.android.launcher3.taskbar.TaskbarActivityContext").apply {
+            findMethodOrNull { name == "startItemInfoActivity" }
+                ?.hookReplace {
+                    val infoIntent = it.args[0].invokeMethodAutoAs<Intent>("getIntent")!!
                     val intent = Intent(YAMFManager.ACTION_OPEN_IN_YAMF).apply {
                         setPackage("android")
                         putExtra(YAMFManager.EXTRA_COMPONENT_NAME, infoIntent.component)
                         putExtra(YAMFManager.EXTRA_SOURCE, YAMFManager.SOURCE_TASKBAR)
                     }
                     AndroidAppHelper.currentApplication().sendBroadcast(intent)
-                    return null
                 }
-            })
+            val class_WorkspaceItemInfo =
+                loadClass("com.android.launcher3.model.data.WorkspaceItemInfo")
+            findMethod { name == "onTaskbarIconClicked" }
+                .hookBefore {
+                    val tag = it.args[0].invokeMethodAuto("getTag")!!
+                    if (class_WorkspaceItemInfo.isInstance(tag)) {
+                        val infoIntent = tag.invokeMethodAutoAs<Intent>("getIntent")!!
+                        val intent = Intent(YAMFManager.ACTION_OPEN_IN_YAMF).apply {
+                            setPackage("android")
+                            putExtra(YAMFManager.EXTRA_COMPONENT_NAME, infoIntent.component)
+                            putExtra(YAMFManager.EXTRA_SOURCE, YAMFManager.SOURCE_TASKBAR)
+                        }
+                        AndroidAppHelper.currentApplication().sendBroadcast(intent)
+                        it.result = Unit
+                    }
+                }
+        }
+
     }
 
     var proxyClass: Any? = null
