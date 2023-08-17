@@ -8,7 +8,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("kotlin-android")
-    id("dev.rikka.tools.refine") version "4.1.0"
+    id("dev.rikka.tools.refine") version "4.3.0"
 }
 
 android {

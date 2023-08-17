@@ -3,6 +3,7 @@ package io.github.duzhaokun123.yamf.ui
 import android.content.Intent
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
+import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.duzhaokun123.androidapptemplate.bases.BaseActivity
 import io.github.duzhaokun123.yamf.databinding.ActivitySettingsBinding
@@ -32,6 +33,7 @@ class SettingsActivity :
     }
 
     lateinit var config: YAMFConfig
+    val preference by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
     override fun initData() {
         super.initData()
@@ -48,6 +50,7 @@ class SettingsActivity :
         baseBinding.sHookLauncherHookRecents.isChecked = config.hookLauncher.hookRecents
         baseBinding.sHookLauncherHookTaskbar.isChecked = config.hookLauncher.hookTaskbar
         baseBinding.sHookLauncherHookPopup.isChecked = config.hookLauncher.hookPopup
+        baseBinding.sUseAppList.isChecked = preference.getBoolean("useAppList", true)
 
         baseBinding.btnFlags.setOnClickListener {
             val checks = BooleanArray(flags.size) { i ->
@@ -107,5 +110,6 @@ class SettingsActivity :
         config.hookLauncher.hookTaskbar = baseBinding.sHookLauncherHookTaskbar.isChecked
         config.hookLauncher.hookPopup = baseBinding.sHookLauncherHookPopup.isChecked
         YAMFManagerHelper.updateConfig(gson.toJson(config))
+        preference.edit().putBoolean("useAppList", baseBinding.sUseAppList.isChecked).apply()
     }
 }

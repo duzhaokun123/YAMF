@@ -113,23 +113,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="show IME in window, need window be VIRTUAL_DISPLAY_FLAG_PUBLIC" />
+
     <com.google.android.material.materialswitch.MaterialSwitch
-        android:layout_width="wrap_content"
-        android:text="HookLauncher hookRecents"
         android:id="@+id/s_hookLauncher_hookRecents"
-        android:layout_height="wrap_content" />
-    <com.google.android.material.materialswitch.MaterialSwitch
         android:layout_width="wrap_content"
-        android:text="HookLauncher hookTaskbar"
+        android:layout_height="wrap_content"
+        android:text="HookLauncher hookRecents" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/s_hookLauncher_hookTaskbar"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HookLauncher hookTaskbar" />
+
     <com.google.android.material.materialswitch.MaterialSwitch
-        android:layout_width="wrap_content"
-        android:text="HookLauncher hookPopup"
         android:id="@+id/s_hookLauncher_hookPopup"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:text="* it may neet restart launcher twice to take effect\nidk why"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="HookLauncher hookPopup" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="* it may neet restart launcher twice to take effect\nidk why" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/s_useAppList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="use app list" />
 </LinearLayout>

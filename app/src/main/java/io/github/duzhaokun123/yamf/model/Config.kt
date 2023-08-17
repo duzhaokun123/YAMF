@@ -25,7 +25,7 @@ data class Config(
     var showImeInWindow: Boolean = false,
     var defaultWindowWidth: Int = 200,
     var defaultWindowHeight: Int = 300,
-    var hookLauncher: HookLauncher = HookLauncher()
+    var hookLauncher: HookLauncher = HookLauncher(),
 ) {
     data class HookLauncher(
         var hookRecents: Boolean = true,
