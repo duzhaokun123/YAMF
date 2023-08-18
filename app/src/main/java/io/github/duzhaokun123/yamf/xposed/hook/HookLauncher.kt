@@ -46,6 +46,7 @@ import io.github.duzhaokun123.yamf.xposed.services.YAMFManager
 import io.github.duzhaokun123.yamf.xposed.utils.log
 import io.github.duzhaokun123.yamf.xposed.utils.registerReceiver
 import java.lang.reflect.Proxy
+import java.util.stream.Stream
 
 
 class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
@@ -82,9 +83,12 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
                     TAG,
                     "receive config hookRecents=$hookRecents hookTaskbar=$hookTaskbar hookPopup=$hookPopup hookTranslucentTaskbar=$hookTransientTaskbar"
                 )
-                if (hookRecents) hookRecents(lpparam)
-                if (hookTaskbar) hookTaskbar(lpparam)
-                if (hookPopup) hookPopup(lpparam)
+                if (hookRecents) runCatching { hookRecents(lpparam) }.onFailure { e ->
+                    log(TAG, "hook recents failed", e) }
+                if (hookTaskbar) runCatching { hookTaskbar(lpparam) }.onFailure { e ->
+                    log(TAG, "hook taskbar failed", e) }
+                if (hookPopup) runCatching { hookPopup(lpparam) }.onFailure { e ->
+                    log(TAG, "hook popup failed", e) }
 //                if (hookTransientTaskbar) hookTransientTaskbar(lpparam)
                 application.unregisterReceiver(this)
             }
