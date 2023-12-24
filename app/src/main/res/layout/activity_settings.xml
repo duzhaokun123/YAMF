@@ -152,5 +152,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="use app list" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_forceShowIME"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="force show IME" />
     </LinearLayout>
 </ScrollView>

@@ -26,6 +26,7 @@ data class Config(
     var defaultWindowWidth: Int = 200,
     var defaultWindowHeight: Int = 300,
     var hookLauncher: HookLauncher = HookLauncher(),
+    var showForceShowIME: Boolean = false,
 ) {
     data class HookLauncher(
         var hookRecents: Boolean = true,

@@ -160,6 +160,13 @@
                     android:text="@string/close_desc"
                     app:drawableStartCompat="@drawable/ic_close_24"
                     app:drawableTint="?colorOnBackground" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="click: force show ime (not recommended as it change floating window flag)"
+                    app:drawableStartCompat="@drawable/ic_keyboard"
+                    app:drawableTint="?colorOnBackground" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

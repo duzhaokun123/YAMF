@@ -72,6 +72,17 @@
                         android:tint="?colorOnPrimaryContainer" />
 
                     <ImageButton
+                        android:id="@+id/ib_ime"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_toEndOf="@id/ib_fullscreen"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_keyboard"
+                        android:tint="?colorOnPrimaryContainer" />
+
+                    <ImageButton
                         android:id="@+id/ib_resize"
                         android:layout_width="30dp"
                         android:layout_height="30dp"

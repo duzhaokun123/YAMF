@@ -34,6 +34,7 @@ import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
 import android.view.WindowManagerHidden
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.window.TaskSnapshot
@@ -286,6 +287,18 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         binding.ibFullscreen.setOnLongClickListener {
             changeMini()
             true
+        }
+        if (YAMFManager.config.showForceShowIME) {
+            binding.ibIme.setOnClickListener {
+                val params = binding.root.layoutParams as WindowManager.LayoutParams
+                params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+                params.flags = params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                Instances.windowManager.updateViewLayout(binding.root, params)
+                val imm = context.getSystemService(InputMethodManager::class.java)
+                imm.showSoftInput(binding.root, 0)
+            }
+        } else {
+            binding.ibIme.visibility = View.GONE
         }
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
         displayId = virtualDisplay.display.displayId

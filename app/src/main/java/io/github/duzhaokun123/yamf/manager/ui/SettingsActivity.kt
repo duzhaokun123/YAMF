@@ -53,6 +53,7 @@ class SettingsActivity :
         baseBinding.sHookLauncherHookTransientTaskbar.isChecked =
             config.hookLauncher.hookTransientTaskbar
         baseBinding.sUseAppList.isChecked = preference.getBoolean("useAppList", true)
+        baseBinding.sForceShowIME.isChecked = config.showForceShowIME
 
         baseBinding.btnFlags.setOnClickListener {
             val checks = BooleanArray(flags.size) { i ->
@@ -114,5 +115,6 @@ class SettingsActivity :
         config.hookLauncher.hookTransientTaskbar = baseBinding.sHookLauncherHookTransientTaskbar.isChecked
         YAMFManagerProxy.updateConfig(gson.toJson(config))
         preference.edit().putBoolean("useAppList", baseBinding.sUseAppList.isChecked).apply()
+        config.showForceShowIME = baseBinding.sForceShowIME.isChecked
     }
 }
