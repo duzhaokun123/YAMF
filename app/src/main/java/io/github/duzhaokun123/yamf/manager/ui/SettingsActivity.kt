@@ -113,8 +113,8 @@ class SettingsActivity :
         config.hookLauncher.hookTaskbar = baseBinding.sHookLauncherHookTaskbar.isChecked
         config.hookLauncher.hookPopup = baseBinding.sHookLauncherHookPopup.isChecked
         config.hookLauncher.hookTransientTaskbar = baseBinding.sHookLauncherHookTransientTaskbar.isChecked
+        config.showForceShowIME = baseBinding.sForceShowIME.isChecked
         YAMFManagerProxy.updateConfig(gson.toJson(config))
         preference.edit().putBoolean("useAppList", baseBinding.sUseAppList.isChecked).apply()
-        config.showForceShowIME = baseBinding.sForceShowIME.isChecked
     }
 }
