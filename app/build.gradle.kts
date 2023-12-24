@@ -1,6 +1,5 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import java.io.ByteArrayOutputStream
-import java.nio.file.Paths
 
 val localProperties = gradleLocalProperties(rootDir)
 
@@ -15,12 +14,12 @@ android {
     val buildTime = System.currentTimeMillis()
     val baseVersionName = "0.7"
 
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "io.github.duzhaokun123.yamf"
         minSdk = 31
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 7
         versionName = "$baseVersionName-git.$gitHash${if (isDirty) "-dirty" else ""}"
 
@@ -98,11 +97,11 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.activity:activity-ktx:1.7.2")
-    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.wear:wear:1.3.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
@@ -121,7 +120,7 @@ dependencies {
     compileOnly("de.robv.android.xposed:api:82")
 
     //lifecycle
-    val lifecycleVersion = "2.6.1"
+    val lifecycleVersion = "2.6.2"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
