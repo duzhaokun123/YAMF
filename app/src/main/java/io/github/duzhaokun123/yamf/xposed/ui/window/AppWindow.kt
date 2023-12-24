@@ -433,6 +433,8 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
         override fun onActivityRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {}
         override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {}
+//        override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?, userId: Int) {}
+
         override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?) {}
         override fun onTaskSnapshotChanged(taskId: Int, snapshot: TaskSnapshot?) {}
         override fun onBackPressedOnTaskRoot(taskInfo: ActivityManager.RunningTaskInfo?) {}
@@ -630,12 +632,14 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             return true
         }
 
+
         override fun onScroll(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             distanceX: Float,
             distanceY: Float
         ): Boolean {
+            e1 ?: return false
             val params = binding.root.layoutParams as WindowManager.LayoutParams
             params.x = (startX + (e2.rawX - e1.rawX)).toInt()
             params.y = (startY + (e2.rawY - e1.rawY)).toInt()
@@ -648,11 +652,12 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
 
         override fun onFling(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
+            e1 ?: return false
             if (e1.source == InputDevice.SOURCE_MOUSE) return false
             val params = binding.root.layoutParams as WindowManager.LayoutParams
             runCatching {
