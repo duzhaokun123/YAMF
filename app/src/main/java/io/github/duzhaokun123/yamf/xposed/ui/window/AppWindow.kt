@@ -317,7 +317,11 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             }
         }
         watchRotation()
-        context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW), Context.RECEIVER_EXPORTED)
+        } else {
+            context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW))
+        }
         val width = YAMFManager.config.defaultWindowWidth.dpToPx().toInt()
         val height = YAMFManager.config.defaultWindowHeight.dpToPx().toInt()
         surfaceView.updateLayoutParams {
