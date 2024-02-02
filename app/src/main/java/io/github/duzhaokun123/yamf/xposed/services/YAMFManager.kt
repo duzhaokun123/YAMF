@@ -94,7 +94,7 @@ object YAMFManager : IYAMFManager.Stub() {
         configFile.createNewFile()
         config = runCatching {
             gson.fromJson(configFile.readText(), Config::class.java)
-        }.getOrElse { Config() }
+        }.getOrNull() ?: Config()
         log(TAG, "config: $config")
     }
 
