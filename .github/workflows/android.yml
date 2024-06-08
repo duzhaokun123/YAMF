@@ -19,6 +19,8 @@ jobs:
           distribution: 'temurin'
           java-version: '20'
           cache: 'gradle'
+      - name: Grant Execute Permission
+        run: chmod +x ./gradlew
       - name: Cache Gradle Dependencies
         uses: actions/cache@v3.2.3
         with:
