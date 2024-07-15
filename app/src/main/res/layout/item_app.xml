@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:foreground="?selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="4dp">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_icon"
+        android:layout_alignStart="@id/iv_icon"
+        android:layout_alignEnd="@id/iv_icon"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:textAppearance="?textAppearanceLabelSmall"
+        tools:text="@tools:sample/cities" />
+</RelativeLayout>

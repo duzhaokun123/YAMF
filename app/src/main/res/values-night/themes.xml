@@ -1,7 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Freeform" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.Reyamf" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:textColor">@color/darkThemeText</item>
+        <item name="android:windowBackground">?attr/colorPrimarySurface</item>
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
+        <item name="liftOnScrollColor">?attr/colorPrimarySurface</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>

@@ -1,4 +1,4 @@
-package com.mja.freeform
+package com.mja.reyamf
 
 import org.junit.Test
 

@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.UserHandle;
 
-import androidx.annotation.RequiresApi;
-
 public class UserInfo {
 
     public static final int FLAG_MANAGED_PROFILE = 0x00000020;
@@ -15,7 +13,6 @@ public class UserInfo {
     public int flags;
     public int serialNumber;
 
-    @RequiresApi(30)
     public String userType;
 
     public boolean isPrimary() {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/keep_alive_service_text"
+    android:packageNames="com.mja.reyamf"
+    android:accessibilityFlags="flagDefault"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:canRetrieveWindowContent="false"
+    android:settingsActivity="com.mja.reyamf.manager.ui.SettingsActivity"
+    />

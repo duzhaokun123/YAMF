@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:theme="@style/Theme.Material3.DayNight">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingBottom="15dp"
+        android:background="?attr/colorSurface"
+        tools:ignore="UselessParent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_app"
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="@dimen/app_card_radius"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:id="@+id/rl_cardRoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="?attr/colorSurface">
+
+                <!--                <TextureView-->
+                <!--                    android:id="@+id/surface"-->
+                <!--                    android:layout_width="200dp"-->
+                <!--                    android:layout_height="300dp"-->
+                <!--                    android:layout_below="@id/rl_top" />-->
+
+                <ImageView
+                    android:id="@+id/app_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/collapsed_app_icon"
+                    tools:srcCompat="@tools:sample/avatars"
+                    tools:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_alignEnd="@id/surface"
+                    android:paddingHorizontal="6dp"
+                    app:cardBackgroundColor="?attr/colorOnSurfaceInverse"
+                    tools:ignore="UnknownId">
+
+                    <ImageButton
+                        android:id="@+id/ib_back"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/back_desc"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_back" />
+
+                    <ImageButton
+                        android:id="@+id/ib_minimize"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/ib_fullscreen"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/minimize_desc"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_minimize" />
+
+                    <ImageButton
+                        android:id="@+id/ib_fullscreen"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="4dp"
+                        android:layout_toStartOf="@id/ib_close"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/fullscreen_desc"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_maximize" />
+
+                    <ImageButton
+                        android:id="@+id/ib_close"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/close_desc"
+                        android:src="@drawable/ic_close_24" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <RelativeLayout
+            android:id="@+id/v_sizePreviewer"
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            android:background="@drawable/a_bg"
+            android:elevation="5dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- This thing has to be stretched to keep it from getting smaller. Ridiculous. -->
+        <!-- absolutely love this comment by duzhaokun123 lol -->
+        <View
+            android:id="@+id/v_supporter"
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cv_app" />
+
+        <RelativeLayout
+            android:id="@+id/rl_bottom"
+            android:layout_width="50dp"
+            android:layout_height="15dp"
+            android:layout_below="@id/surface"
+            android:layout_alignEnd="@id/surface"
+            android:layout_marginBottom="-15dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageButton
+                android:id="@+id/ib_resize"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:background="@null"
+                android:contentDescription="@string/resize_desc"
+                android:elevation="2dp" />
+
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
+        android:name="com.mja.reyamf.manager.Application"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -10,10 +14,20 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Freeform"
-        tools:targetApi="31">
+        android:theme="@style/Theme.Reyamf"
+        tools:targetApi="35">
         <activity
-            android:name=".MainActivity"
+            android:name="com.mja.reyamf.manager.ui.setting.SettingActivity"
+            android:exported="false" />
+
+        <provider
+            android:name="com.mja.reyamf.manager.providers.ServiceProvider"
+            android:authorities="com.mja.reyamf.ServiceProvider"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
+
+        <activity
+            android:name="com.mja.reyamf.manager.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +35,76 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="com.mja.reyamf.manager.services.CurrentToFloatingService"
+            android:exported="false"
+            android:label="Move To Floating Service" />
+        <service
+            android:name="com.mja.reyamf.manager.services.QSNewWindowService"
+            android:exported="true"
+            android:icon="@drawable/ic_picture_in_picture_alt_24"
+            android:label="@string/new_window"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.mja.reyamf.manager.services.QSEnterWindow"
+            android:exported="true"
+            android:icon="@drawable/ic_picture_in_picture_alt_24"
+            android:label="@string/enter_window"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.mja.reyamf.manager.services.QSResetAllWindow"
+            android:exported="true"
+            android:icon="@drawable/ic_picture_in_picture_alt_24"
+            android:label="@string/reset_all_window"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.mja.reyamf.manager.services.AccessibilityService"
+            android:exported="false"
+            android:label="reYAMF Accessibility Service"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <receiver
+            android:name="com.mja.reyamf.manager.broadcastreceiver.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="@string/xposeddescription" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="93" />
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/xposed_scope" />
     </application>
 
 </manifest>

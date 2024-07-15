@@ -26,12 +26,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    namespace = "io.github.kaii_lb.android_stub"
+    namespace = "com.mja.android_stub"
 }
 
 dependencies {
-    annotationProcessor("dev.rikka.tools.refine:annotation-processor:4.4.0")
-    compileOnly("dev.rikka.tools.refine:annotation:4.4.0")
-    compileOnly("androidx.annotation:annotation:1.8.0")
-    compileOnly("dev.rikka.hidden:stub:4.2.0")
+    annotationProcessor(libs.rikka.annotation.processor)
+    compileOnly(libs.rikka.annotation)
+    compileOnly(libs.androidx.annotation)
+    compileOnly(libs.rikka.hidden.stub)
 }

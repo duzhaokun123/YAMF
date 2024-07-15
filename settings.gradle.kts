@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google {
@@ -16,9 +18,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://jitpack.io")
+        maven("https://api.xposed.info")
     }
 }
 
-rootProject.name = "Freeform"
-include(":app")
-include(":android-stub")
+rootProject.name = "reYAMF"
+include(":app", ":android-stub")

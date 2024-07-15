@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    style="@style/Theme.Material3.DynamicColors.DayNight"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="DPI Density"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/et_densityDpi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.05"
+                    android:inputType="number"
+                    android:text="350"
+                    android:textAlignment="center"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textAlignment="gravity"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/default_window_size_text"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_sizeW"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:inputType="number"
+                        android:text="200" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/window_size_separator" />
+
+                    <EditText
+                        android:id="@+id/et_sizeH"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:inputType="number"
+                        android:text="300" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Widget.Material3.CardView.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical"
+                android:text="Flags"
+                android:textAlignment="gravity"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_flags"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textColor="?attr/colorOnSurface"/>
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_coloerd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Colored Controller"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            style="@style/Widget.Material3.CardView.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical"
+                android:text="Launch Method"
+                android:textAlignment="gravity"
+                android:textStyle="bold"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_windowsfy"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Widget.Material3.CardView.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical"
+                android:text="View Type"
+                android:textAlignment="gravity"
+                android:textStyle="bold"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_surface"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"/>
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_backHome"
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recents Back Home"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_showIMEinWindow"
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ime_switch_text"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_hookLauncher_hookRecents"
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recents App Icon Hook"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_hookLauncher_hookTaskbar"
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Taskbar Hook"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_hookLauncher_hookPopup"
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="App Long Press Hook"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_hookLauncher_hookTransientTaskbar"
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Transient Taskbar Hook"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_useAppList"
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Use App List"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/s_forceShowIME"
+            style="@style/Widget.Material3.CardView.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Force Show IME"
+            android:textStyle="bold"/>
+
+        <TextView
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="40dp"
+            android:text="* Launcher might need to be restarted twice for hooks to take effect" />
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/barLayout"
+        android:layout_width="30dp"
+        android:layout_height="65dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/sideBarImage"
+            android:layout_width="8dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="3dp"
+            android:src="@drawable/bar_corners_bg"
+            tools:ignore="ContentDescription" />
+
+        <View
+            android:id="@+id/clickMask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp" />
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sideBarMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
+        android:background="@drawable/menu_bg"
+        android:padding="10dp"
+        android:layout_marginStart="-15dp"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintStart_toEndOf="@+id/barLayout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivAllApp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/baseline_apps_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="?attr/colorSurface"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivAllApp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSideBarMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/cpiLoading"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:indeterminate="true"
+                android:elevation="2dp" />
+
+            <TextView
+                android:id="@+id/tvEmpty"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="@string/wow_nsuch_empty"
+                android:gravity="center"/>
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/closeLayout"
+        android:layout_width="25dp"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:layout_marginStart="3dp"
+        android:backgroundTint="?attr/colorSurface"
+        android:visibility="gone"
+        app:cardCornerRadius="13dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/sideBarMenu"
+        app:layout_constraintStart_toEndOf="@+id/sideBarMenu"
+        app:layout_constraintTop_toTopOf="@+id/sideBarMenu">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_keyboard_double_arrow_left_24"/>
+
+        <View
+            android:id="@+id/closeClickMask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/restartSidebar"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="3dp"
+        android:backgroundTint="?attr/colorSurface"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/closeSidebar"
+        app:layout_constraintStart_toEndOf="@+id/sideBarMenu">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_restart_alt_24" />
+
+        <View
+            android:id="@+id/restartBarClickMask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/closeSidebar"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="3dp"
+        android:backgroundTint="?attr/colorSurface"
+        android:gravity="center"
+        android:visibility="gone"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sideBarMenu">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_close_24" />
+
+        <View
+            android:id="@+id/closeBarClickMask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp" />
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
