@@ -44,16 +44,16 @@ import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
 import com.mja.reyamf.R
+import com.mja.reyamf.common.getAttr
+import com.mja.reyamf.common.onException
+import com.mja.reyamf.common.runMain
 import com.mja.reyamf.databinding.WindowAppBinding
+import com.mja.reyamf.xposed.services.YAMFManager
+import com.mja.reyamf.xposed.services.YAMFManager.config
 import com.mja.reyamf.xposed.utils.Instances
 import com.mja.reyamf.xposed.utils.RunMainThreadQueue
 import com.mja.reyamf.xposed.utils.TipUtil
 import com.mja.reyamf.xposed.utils.dpToPx
-import com.mja.reyamf.xposed.utils.log
-import com.mja.reyamf.common.getAttr
-import com.mja.reyamf.common.onException
-import com.mja.reyamf.common.runMain
-import com.mja.reyamf.xposed.services.YAMFManager
 import kotlinx.coroutines.delay
 import kotlin.math.floor
 import kotlin.math.pow
@@ -86,7 +86,9 @@ class AppWindow(
     private var halfWidth = 0
     private var halfHeight = 0
     lateinit var surfaceView: View
-    private var newDpi = calculateDpi(200, 300, calculateScreenInches(200, 300))
+    private var newDpi = calculateDpi(
+        config.defaultWindowWidth, config.defaultWindowHeight, calculateScreenInches(config.defaultWindowWidth, config.defaultWindowHeight)
+    ) - config.reduceDPI
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -127,7 +129,7 @@ class AppWindow(
     }
 
     private fun doInit() {
-        when(YAMFManager.config.surfaceView) {
+        when(config.surfaceView) {
             0 -> surfaceView = TextureView(context)
             1 -> surfaceView = SurfaceView(context)
         }
@@ -282,9 +284,11 @@ class AppWindow(
             true
         }
 
-        virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, newDpi, null, flags)
+        virtualDisplay = Instances.displayManager.createVirtualDisplay(
+            "yamf${System.currentTimeMillis()}", 1080, 1920, newDpi-config.reduceDPI, null, flags
+        )
         displayId = virtualDisplay.display.displayId
-        (Instances.windowManager as WindowManagerHidden).setDisplayImePolicy(displayId, if (YAMFManager.config.showImeInWindow) WindowManagerHidden.DISPLAY_IME_POLICY_LOCAL else WindowManagerHidden.DISPLAY_IME_POLICY_FALLBACK_DISPLAY)
+        (Instances.windowManager as WindowManagerHidden).setDisplayImePolicy(displayId, if (config.showImeInWindow) WindowManagerHidden.DISPLAY_IME_POLICY_LOCAL else WindowManagerHidden.DISPLAY_IME_POLICY_FALLBACK_DISPLAY)
         Instances.activityTaskManager.registerTaskStackListener(taskStackListener)
         (surfaceView as? TextureView)?.surfaceTextureListener = this
         (surfaceView as? SurfaceView)?.holder?.addCallback(this)
@@ -300,8 +304,8 @@ class AppWindow(
         }
         watchRotation()
         context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW), Context.RECEIVER_EXPORTED)
-        val width = YAMFManager.config.defaultWindowWidth.dpToPx().toInt()
-        val height = YAMFManager.config.defaultWindowHeight.dpToPx().toInt()
+        val width = config.defaultWindowWidth.dpToPx().toInt()
+        val height = config.defaultWindowHeight.dpToPx().toInt()
         surfaceView.updateLayoutParams {
             this.width = width
             this.height = height
@@ -350,7 +354,7 @@ class AppWindow(
             }
             val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
 
-            if (YAMFManager.config.coloredController) {
+            if (config.coloredController) {
                 val backgroundColor = taskDescription.backgroundColor
                 binding.cvApp.setCardBackgroundColor(backgroundColor)
 
@@ -364,6 +368,7 @@ class AppWindow(
                 binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
 
                 val navigationBarColor = taskDescription.backgroundColor
+                binding.background.setBackgroundColor(navigationBarColor)
                 binding.rlBottom.setBackgroundColor(navigationBarColor)
                 val onNavigationBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(navigationBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
@@ -449,15 +454,13 @@ class AppWindow(
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
         if (isMini.not() && isCollapsed.not()) {
-            newDpi = calculateDpi(width, height, calculateScreenInches(width, height))
-            log(TAG, newDpi.toString())
+            newDpi = calculateDpi(width, height, calculateScreenInches(width, height)) - config.reduceDPI
             virtualDisplay.resize(width, height, newDpi)
             surface.setDefaultBufferSize(width, height)
             halfWidth = width % 2
             halfHeight = height % 2
         } else {
-            newDpi = calculateDpi(width, height, calculateScreenInches(width, height))
-            log(TAG, newDpi.toString())
+            newDpi = calculateDpi(width, height, calculateScreenInches(width, height)) - config.reduceDPI
             virtualDisplay.resize(width * 2 + halfWidth, height * 2 + halfHeight, newDpi)
             surface.setDefaultBufferSize(width * 2 + halfWidth, height * 2 + halfHeight)
         }
@@ -466,15 +469,13 @@ class AppWindow(
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
         if (isMini.not()) {
-            newDpi = calculateDpi(width, height, calculateScreenInches(width, height))
-            log(TAG, newDpi.toString())
+            newDpi = calculateDpi(width, height, calculateScreenInches(width, height)) - config.reduceDPI
             virtualDisplay.resize(width, height, newDpi)
             surface.setDefaultBufferSize(width, height)
             halfWidth = width % 2
             halfHeight = height % 2
         } else {
-            newDpi = calculateDpi(width, height, calculateScreenInches(width, height))
-            log(TAG, newDpi.toString())
+            newDpi = calculateDpi(width, height, calculateScreenInches(width, height)) - config.reduceDPI
             virtualDisplay.resize(width * 2 + halfWidth, height * 2 + halfHeight, newDpi)
             surface.setDefaultBufferSize(width * 2 + halfWidth, height * 2 + halfHeight)
         }
@@ -675,7 +676,7 @@ class AppWindow(
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        newDpi = calculateDpi(width, height, calculateScreenInches(width, height ))
+        newDpi = calculateDpi(width, height, calculateScreenInches(width, height )) - config.reduceDPI
         virtualDisplay.resize(width, height, newDpi)
     }
 

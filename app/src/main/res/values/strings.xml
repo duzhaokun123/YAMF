@@ -53,4 +53,5 @@
     <string name="launcher_might_need_to_be_restarted_twice_for_hooks_to_take_effect">* Launcher might need to be restarted twice for hooks to take effect</string>
     <string name="current_to_window">Current to window</string>
     <string name="launch_sidebar">Launch sidebar</string>
+    <string name="reduce_dpi">Reduce DPI</string>
 </resources>

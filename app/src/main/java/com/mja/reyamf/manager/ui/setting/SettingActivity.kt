@@ -62,7 +62,7 @@ class SettingActivity : AppCompatActivity() {
     private fun initData() {
         binding?.apply {
             config = gson.fromJson(YAMFManagerProxy.configJson, YAMFConfig::class.java)
-            etDensityDpi.setText(config.densityDpi.toString())
+            etReduceDPI.setText(config.reduceDPI.toString())
             btnFlags.text = config.flags.toString()
             sColoerd.isChecked = config.coloredController
             sBackHome.isChecked = config.recentBackHome
@@ -152,7 +152,7 @@ class SettingActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         binding?.apply {
-            config.densityDpi = etDensityDpi.text.toString().toIntOrNull() ?: config.densityDpi
+            config.reduceDPI = etReduceDPI.text.toString().toIntOrNull() ?: config.reduceDPI
             config.flags = btnFlags.text.toString().toIntOrNull() ?: config.flags
             config.surfaceView = when (val surface = btnSurface.text.toString()) {
                 "Texture View" -> {

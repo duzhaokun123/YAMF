@@ -1,7 +1,7 @@
 package com.mja.reyamf.common.model
 
 data class Config(
-    var densityDpi: Int = 200,
+    var reduceDPI: Int = 50,
     /*
      * VIRTUAL_DISPLAY_FLAG_SECURE                          1 << 2
      * VIRTUAL_DISPLAY_FLAG_ROTATES_WITH_CONTENT            1 << 7
@@ -23,8 +23,8 @@ data class Config(
     var surfaceView: Int = 0,
     var recentBackHome: Boolean = false,
     var showImeInWindow: Boolean = false,
-    var defaultWindowWidth: Int = 200,
-    var defaultWindowHeight: Int = 300,
+    var defaultWindowWidth: Int = 280,
+    var defaultWindowHeight: Int = 380,
     var hookLauncher: HookLauncher = HookLauncher(),
     var showForceShowIME: Boolean = false,
     var portraitY: Int = 0,

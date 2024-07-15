@@ -26,6 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
+                android:layout_marginTop="20dp"
                 app:layout_scrollFlags="scroll|enterAlways">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -71,7 +72,7 @@
                 android:stateListAnimator="@null"
                 android:layout_marginTop="32dp"
                 app:cardBackgroundColor="?colorPrimary"
-                app:cardElevation="6dp"
+                app:cardElevation="0dp"
                 app:cardPreventCornerOverlap="false">
 
                 <RelativeLayout
@@ -119,6 +120,8 @@
                 android:id="@+id/mcvInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
+                app:strokeWidth="0dp"
                 android:layout_marginTop="16dp">
 
                 <LinearLayout
@@ -172,6 +175,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="?attr/cardBackgroundColor"
                 android:orientation="horizontal">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -179,6 +184,7 @@
                     android:layout_height="match_parent"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
+                    app:cardBackgroundColor="?attr/cardBackgroundColor"
                     android:padding="20dp">
 
                     <TextView

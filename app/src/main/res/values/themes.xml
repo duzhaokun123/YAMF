@@ -7,9 +7,6 @@
         <item name="cardBackgroundColor">?attr/colorSurfaceContainer</item>
         <item name="liftOnScrollColor">?attr/colorSurfaceBright</item>
         <item name="android:fontFamily">sans-serif-light</item>
-
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="Theme.Reyamf" parent="Base.Theme.Reyamf" />

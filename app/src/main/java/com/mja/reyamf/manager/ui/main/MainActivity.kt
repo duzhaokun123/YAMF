@@ -4,11 +4,15 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.ScrollView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -55,6 +59,9 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val typedValue = TypedValue()
+        this@MainActivity.theme.resolveAttribute(android.R.attr.textColor, typedValue, true)
+        binding?.toolbar?.overflowIcon?.setTint(typedValue.data)
 
         setSupportActionBar(binding?.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)

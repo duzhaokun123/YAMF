@@ -6,8 +6,5 @@
         <item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
         <item name="liftOnScrollColor">?attr/colorPrimarySurface</item>
         <item name="android:fontFamily">sans-serif-light</item>
-
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>
