@@ -30,14 +30,14 @@ A fork of YAMF (forked from [YAMFSquared](https://github.com/kaii-lb/YAMFsquared
 ## Launch by home button long press (or swipe gesture)
 - Be willing to give up google assistant
 - Go to Settings -> Assistant App
-- Change it to YAMF^2
+- Change it to reYAMF
 - Profit
 
 ## How to install
 - Grab the latest APK from the [releases section](https://github.com/JuanArton/YAMFsquared/releases)
 - Install it
 - Enable module in LSPosed
-- Go to Accessibility Settings and enable YAMF^2 accessibility service
+- Go to Accessibility Settings and enable reYAMF accessibility service
 - Reboot
 
 ## "API" 
