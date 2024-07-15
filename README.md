@@ -25,7 +25,7 @@ A fork of YAMF (forked from [YAMFSquared](https://github.com/kaii-lb/YAMFsquared
 
 ## My Changes
 - Added sidebar. From app list window, long press app icon until the phone vibrate to add app to sidebar.
-- Removed custom dpi, replace with auto density according to window size. Increase 'Reduce DPI' number from setting if you feel the app appearance is too big. (I recommended value between 50-100)
+- Removed custom dpi, replace with auto density according to window size. Increase 'Reduce DPI' number from setting if you feel the app appearance is too big. Setting this value too big may cause crash (I recommended value between 50-100)
 
 ## Launch by home button long press (or swipe gesture)
 - Be willing to give up google assistant
