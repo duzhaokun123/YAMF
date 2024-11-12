@@ -24,6 +24,7 @@ A fork of YAMF (forked from [YAMFSquared](https://github.com/kaii-lb/YAMFsquared
 - Bunch of others in app :D
 
 ## My Changes
+- Fix crash on Android 15
 - Added sidebar. From app list window, long press app icon until the phone vibrate to add app to sidebar.
 - Removed custom dpi, replace with auto density according to window size. Increase 'Reduce DPI' number from setting if you feel the app appearance is too big. Setting this value too big may cause crash (I recommended value between 50-100)
 

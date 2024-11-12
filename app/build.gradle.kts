@@ -9,7 +9,7 @@ plugins {
 
 android {
     val buildTime = System.currentTimeMillis()
-    val baseVersionName = "0.7"
+    val baseVersionName = "0.8"
     namespace = "com.mja.reyamf"
     compileSdk = 35
 

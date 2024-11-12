@@ -14,6 +14,7 @@ import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
 import android.hardware.display.VirtualDisplay
+import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 import android.util.TypedValue
@@ -352,9 +353,10 @@ class AppWindow(
             if (taskInfo.isVisible.not()) {
                 delay(500) // fixme: use a method that directly determines visibility
             }
-            val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
 
-            if (config.coloredController) {
+            if (config.coloredController && Build.VERSION.SDK_INT < 35) {
+                val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
+
                 val backgroundColor = taskDescription.backgroundColor
                 binding.cvApp.setCardBackgroundColor(backgroundColor)
 
