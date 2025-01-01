@@ -6,5 +6,6 @@
         <item>com.android.launcher3</item>
         <item>com.google.android.apps.nexuslauncher</item>
         <item>com.google.android.permissioncontroller</item>
+        <item>com.android.permissioncontroller</item>
     </string-array>
 </resources>
