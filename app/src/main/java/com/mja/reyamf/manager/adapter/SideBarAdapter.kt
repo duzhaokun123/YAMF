@@ -20,6 +20,7 @@ class SideBarAdapter (
             items?.let { addAll(it) }
         }
     }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -27,6 +28,7 @@ class SideBarAdapter (
         val view = LayoutInflater.from(parent.context).inflate(R.layout.sidebar_itemview, parent, false)
         return ViewHolder(view)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(sideBarApp[position])
 
     override fun getItemCount(): Int = sideBarApp.size

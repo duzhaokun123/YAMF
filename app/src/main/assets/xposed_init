@@ -1,2 +1,3 @@
 com.mja.reyamf.xposed.hook.HookSystem
 com.mja.reyamf.xposed.hook.HookLauncher
+com.mja.reyamf.xposed.hook.HookPermission

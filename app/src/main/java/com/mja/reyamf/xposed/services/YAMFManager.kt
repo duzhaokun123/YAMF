@@ -17,14 +17,14 @@ import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.mja.reyamf.BuildConfig
-import com.mja.reyamf.common.model.Config
 import com.mja.reyamf.common.gson
+import com.mja.reyamf.common.model.Config
 import com.mja.reyamf.common.model.StartCmd
 import com.mja.reyamf.common.runMain
+import com.mja.reyamf.manager.sidebar.SideBar
 import com.mja.reyamf.xposed.IOpenCountListener
 import com.mja.reyamf.xposed.IYAMFManager
 import com.mja.reyamf.xposed.hook.HookLauncher
-import com.mja.reyamf.manager.sidebar.SideBar
 import com.mja.reyamf.xposed.ui.window.AppListWindow
 import com.mja.reyamf.xposed.ui.window.AppWindow
 import com.mja.reyamf.xposed.utils.Instances
@@ -67,6 +67,7 @@ object YAMFManager : IYAMFManager.Stub() {
     private val iOpenCountListenerSet = mutableSetOf<IOpenCountListener>()
     lateinit var activityManagerService: Any
     var isSideBarRun = false
+    var sidebarLayout: ConstraintLayout? = null
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     fun systemReady() {
@@ -147,15 +148,17 @@ object YAMFManager : IYAMFManager.Stub() {
         }
     }
 
-    fun restartSideBar(sidebar: ConstraintLayout) {
+    fun restartSideBar(sidebar: ConstraintLayout, duration: Long) {
+        sidebarLayout = null
         Handler(Looper.getMainLooper()).postDelayed({
             try {
+                Log.d(TAG, "updateConfig: restart")
                 launchSideBar()
             } catch (e: Exception) {
                 log(SideBar.TAG, "Failed restart sidebar")
             }
 
-        }, 5000)
+        }, duration)
         Instances.windowManager.removeView(sidebar)
     }
 
@@ -238,6 +241,13 @@ object YAMFManager : IYAMFManager.Stub() {
         runMain {
             Instances.iStatusBarService.collapsePanels()
             systemContext.sendBroadcast(Intent(AppWindow.ACTION_RESET_ALL_WINDOW))
+        }
+    }
+
+    override fun killSideBar() {
+        if (isSideBarRun && sidebarLayout != null) {
+            isSideBarRun = false
+            Instances.windowManager.removeView(sidebarLayout)
         }
     }
 

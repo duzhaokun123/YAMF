@@ -20,15 +20,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAs
-import com.mja.reyamf.common.model.AppInfo
-import com.mja.reyamf.databinding.SidebarLayoutBinding
 import com.mja.reyamf.common.gson
+import com.mja.reyamf.common.model.AppInfo
 import com.mja.reyamf.common.model.StartCmd
 import com.mja.reyamf.common.onException
-import com.mja.reyamf.common.resetAdapter
 import com.mja.reyamf.common.runIO
 import com.mja.reyamf.common.runMain
+import com.mja.reyamf.databinding.SidebarLayoutBinding
 import com.mja.reyamf.manager.adapter.SideBarAdapter
+import com.mja.reyamf.manager.utils.TipUtil
+import com.mja.reyamf.xposed.hook.HookPermission
+import com.mja.reyamf.xposed.services.YAMFManager
+import com.mja.reyamf.xposed.services.YAMFManager.config
+import com.mja.reyamf.xposed.services.YAMFManager.isSideBarRun
 import com.mja.reyamf.xposed.ui.window.AppListWindow
 import com.mja.reyamf.xposed.utils.AppInfoCache
 import com.mja.reyamf.xposed.utils.Instances
@@ -40,10 +44,6 @@ import com.mja.reyamf.xposed.utils.log
 import com.mja.reyamf.xposed.utils.startActivity
 import com.mja.reyamf.xposed.utils.vibratePhone
 import com.qauxv.ui.CommonContextWrapper
-import com.mja.reyamf.manager.utils.TipUtil
-import com.mja.reyamf.xposed.services.YAMFManager
-import com.mja.reyamf.xposed.services.YAMFManager.config
-import com.mja.reyamf.xposed.services.YAMFManager.isSideBarRun
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -74,6 +74,7 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
     private var showApps: MutableList<AppInfo> = mutableListOf()
     private var filteredShowApps: MutableList<AppInfo> = mutableListOf()
     private lateinit var rvAdapter: SideBarAdapter
+    private var orientation = 0
 
     init {
         if (!isSideBarRun) {
@@ -104,16 +105,19 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
         params.y = when (windowManager.defaultDisplay.rotation) {
             Surface.ROTATION_0, Surface.ROTATION_180 -> {
                 log(TAG, "portrait ${config.portraitY}")
+                orientation = 0
                 config.portraitY
             }
             Surface.ROTATION_90, Surface.ROTATION_270 -> {
                 log(TAG, "landscape ${config.landscapeY}")
+                orientation = 1
                 config.landscapeY
             }
             else -> 0
         }
 
 
+        YAMFManager.sidebarLayout = binding.root
         binding.root.let { layout ->
             windowManager.addView(layout, params)
         }
@@ -123,12 +127,13 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
         }
         binding.closeBarClickMask.setOnClickListener {
             isSideBarRun = false
+            YAMFManager.sidebarLayout = null
             Instances.windowManager.removeView(binding.root)
         }
 
         binding.restartBarClickMask.setOnClickListener {
             isSideBarRun = false
-            YAMFManager.restartSideBar(binding.root)
+            YAMFManager.restartSideBar(binding.root, 5000)
         }
 
         binding.ivAllApp.setOnClickListener {
@@ -155,18 +160,26 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
         }
 
         binding.root.addOnLayoutChangeListener {  _, _, _, _, _, _, _, _, _ ->
+            var newOrientation = 0
             when (windowManager.defaultDisplay.rotation) {
                 Surface.ROTATION_0, Surface.ROTATION_180 -> {
                     params.y = config.portraitY
                     windowManager.updateViewLayout(binding.root, params)
                     log(TAG, "Portrait")
+                    newOrientation = 0
                 }
 
                 Surface.ROTATION_90, Surface.ROTATION_270 -> {
                     params.y = config.landscapeY
                     windowManager.updateViewLayout(binding.root, params)
                     log(TAG, "Landscape")
+                    newOrientation = 1
                 }
+            }
+            if (orientation != newOrientation) {
+                isSideBarRun = false
+                orientation = newOrientation
+                YAMFManager.restartSideBar(binding.root, 2000)
             }
         }
 

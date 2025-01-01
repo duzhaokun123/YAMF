@@ -90,4 +90,8 @@ object YAMFManagerProxy : IYAMFManager, DeathRecipient {
     override fun launchSideBar() {
         service?.launchSideBar()
     }
-}
+
+    override fun killSideBar() {
+        service?.killSideBar()
+    }
+ }

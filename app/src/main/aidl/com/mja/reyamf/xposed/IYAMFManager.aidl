@@ -30,4 +30,6 @@ interface IYAMFManager {
     void resetAllWindow();
 
     void launchSideBar();
+
+    void killSideBar();
 }

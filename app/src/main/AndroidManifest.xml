@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name="com.mja.reyamf.manager.Application"
+        android:name=".manager.Application"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,18 +16,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reyamf"
         tools:targetApi="35">
+
         <activity
-            android:name="com.mja.reyamf.manager.ui.setting.SettingActivity"
+            android:name=".manager.ui.setting.SettingActivity"
             android:exported="false" />
 
         <provider
-            android:name="com.mja.reyamf.manager.providers.ServiceProvider"
+            android:name=".manager.providers.ServiceProvider"
             android:authorities="com.mja.reyamf.ServiceProvider"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
 
         <activity
-            android:name="com.mja.reyamf.manager.ui.main.MainActivity"
+            android:name=".manager.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,11 +38,11 @@
         </activity>
 
         <service
-            android:name="com.mja.reyamf.manager.services.CurrentToFloatingService"
+            android:name=".manager.services.CurrentToFloatingService"
             android:exported="false"
             android:label="Move To Floating Service" />
         <service
-            android:name="com.mja.reyamf.manager.services.QSNewWindowService"
+            android:name=".manager.services.QSNewWindowService"
             android:exported="true"
             android:icon="@drawable/ic_picture_in_picture_alt_24"
             android:label="@string/new_window"
@@ -51,7 +52,7 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.mja.reyamf.manager.services.QSEnterWindow"
+            android:name=".manager.services.QSEnterWindow"
             android:exported="true"
             android:icon="@drawable/ic_picture_in_picture_alt_24"
             android:label="@string/enter_window"
@@ -61,7 +62,7 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.mja.reyamf.manager.services.QSResetAllWindow"
+            android:name=".manager.services.QSResetAllWindow"
             android:exported="true"
             android:icon="@drawable/ic_picture_in_picture_alt_24"
             android:label="@string/reset_all_window"
@@ -71,7 +72,7 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.mja.reyamf.manager.services.AccessibilityService"
+            android:name=".manager.services.AccessibilityService"
             android:exported="false"
             android:label="reYAMF Accessibility Service"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -84,8 +85,14 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
+
+        <service
+            android:name=".manager.services.SidebarHiderService"
+            android:enabled="true"
+            android:exported="true" />
+
         <receiver
-            android:name="com.mja.reyamf.manager.broadcastreceiver.BootReceiver"
+            android:name=".manager.broadcastreceiver.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
