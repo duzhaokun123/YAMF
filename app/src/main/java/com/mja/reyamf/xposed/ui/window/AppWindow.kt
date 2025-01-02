@@ -9,10 +9,13 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.IPackageManagerHidden
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
+import android.graphics.drawable.BitmapDrawable
 import android.hardware.display.VirtualDisplay
 import android.os.Build
 import android.os.SystemClock
@@ -39,9 +42,11 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import androidx.dynamicanimation.animation.FlingAnimation
 import androidx.dynamicanimation.animation.flingAnimationOf
+import androidx.wear.widget.RoundedDrawable
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.getObject
+import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
 import com.mja.reyamf.R
@@ -49,18 +54,21 @@ import com.mja.reyamf.common.getAttr
 import com.mja.reyamf.common.onException
 import com.mja.reyamf.common.runMain
 import com.mja.reyamf.databinding.WindowAppBinding
+import com.mja.reyamf.manager.sidebar.SideBar
+import com.mja.reyamf.manager.sidebar.SideBar.Companion
 import com.mja.reyamf.xposed.services.YAMFManager
 import com.mja.reyamf.xposed.services.YAMFManager.config
 import com.mja.reyamf.xposed.utils.Instances
 import com.mja.reyamf.xposed.utils.RunMainThreadQueue
 import com.mja.reyamf.xposed.utils.TipUtil
 import com.mja.reyamf.xposed.utils.dpToPx
+import com.mja.reyamf.xposed.utils.getActivityInfoCompat
+import com.mja.reyamf.xposed.utils.log
 import kotlinx.coroutines.delay
 import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.math.sqrt
-
 
 @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
 class AppWindow(
@@ -88,7 +96,8 @@ class AppWindow(
     private var halfHeight = 0
     lateinit var surfaceView: View
     private var newDpi = calculateDpi(
-        config.defaultWindowWidth, config.defaultWindowHeight, calculateScreenInches(config.defaultWindowWidth, config.defaultWindowHeight)
+        config.defaultWindowWidth, config.defaultWindowHeight,
+        calculateScreenInches(config.defaultWindowWidth, config.defaultWindowHeight)
     ) - config.reduceDPI
 
     private val broadcastReceiver = object : BroadcastReceiver() {
@@ -354,29 +363,67 @@ class AppWindow(
                 delay(500) // fixme: use a method that directly determines visibility
             }
 
-            if (config.coloredController && Build.VERSION.SDK_INT < 35) {
-                val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
+            var backgroundColor = 0
+            var statusBarColor = 0
+            var navigationBarColor = 0
+            var taskDescription: ActivityManager.TaskDescription? = null
 
-                val backgroundColor = taskDescription.backgroundColor
+            if (Build.VERSION.SDK_INT < 35) {
+                val topActivity = taskInfo.topActivity ?: return@add
+                taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
+                val activityInfo = (Instances.iPackageManager as IPackageManagerHidden).getActivityInfoCompat(topActivity, 0, taskInfo.getObjectAs("userId"))
+
+                backgroundColor = taskDescription.backgroundColor
+                statusBarColor = taskDescription.backgroundColor
+                navigationBarColor = taskDescription.backgroundColor
+                binding.appIcon.setImageDrawable(RoundedDrawable().apply {
+                    drawable = runCatching { taskDescription.icon }.getOrNull()?.let { BitmapDrawable(it) } ?: activityInfo.loadIcon(Instances.packageManager)
+                    isClipEnabled = true
+                    radius = 100
+                })
+            } else {
+                val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                val runningTasks = activityManager.getRunningTasks(1)
+
+                for (task in runningTasks) {
+                    if (task.taskId == taskInfo.taskId) {
+                        val packageName = task.baseActivity?.packageName
+                        try {
+                            val packageManager = context.packageManager
+                            backgroundColor = task.taskDescription!!.backgroundColor
+                            statusBarColor = task.taskDescription!!.backgroundColor
+                            navigationBarColor = task.taskDescription!!.backgroundColor
+                            binding.appIcon.setImageDrawable(packageManager.getApplicationIcon(
+                                packageName!!
+                            ))
+                        } catch (e: PackageManager.NameNotFoundException) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+
+            if (config.coloredController) {
+
                 binding.cvApp.setCardBackgroundColor(backgroundColor)
-
-                val statusBarColor = taskDescription.backgroundColor
                 binding.rlTop.setBackgroundColor(statusBarColor)
+
                 val onStateBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(statusBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
                 } else {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
                 }
-                binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
 
-                val navigationBarColor = taskDescription.backgroundColor
+                binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
                 binding.background.setBackgroundColor(navigationBarColor)
                 binding.rlBottom.setBackgroundColor(navigationBarColor)
+
                 val onNavigationBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(navigationBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
                 } else {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
                 }
+
                 binding.ibBack.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibMinimize.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
@@ -564,44 +611,14 @@ class AppWindow(
 
     // minimizes the floating window to an app icon
     private fun changeCollapsed() {
-        isMini = false
-
         if (isCollapsed) {
             isCollapsed = false
-            binding.vSupporter.updateLayoutParams {
-                width = virtualDisplay.display.width
-                height = virtualDisplay.display.height
-            }
-            surfaceView.updateLayoutParams {
-                width = virtualDisplay.display.width
-                height = virtualDisplay.display.height
-            }
-
-            binding.rlTop.visibility = View.VISIBLE
-            binding.rlBottom.visibility = View.VISIBLE
-            surfaceView.visibility = View.VISIBLE
-//            surfaceView.foregroundTintList = null
-            binding.appIcon.visibility = View.GONE
-            surfaceView.setOnTouchListener(surfaceOnTouchListener)
-            surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
+            binding.background.visibility = View.VISIBLE
+            binding.cvBackground.visibility = View.VISIBLE
         } else {
             isCollapsed = true
-            binding.vSupporter.updateLayoutParams {
-                width = 200
-                height = 200
-            }
-//            surfaceView.updateLayoutParams {
-//                width = 200
-//                height = 200
-//            }
-
-            binding.rlTop.visibility = View.GONE
-            binding.rlBottom.visibility = View.GONE
-            surfaceView.visibility = View.GONE
-//            surfaceView.foregroundTintList = ColorStateList.valueOf(Color.BLACK)
-            binding.appIcon.visibility = View.VISIBLE
-            surfaceView.setOnTouchListener(null)
-            surfaceView.setOnGenericMotionListener(null)
+            binding.background.visibility = View.GONE
+            binding.cvBackground.visibility = View.GONE
         }
     }
 

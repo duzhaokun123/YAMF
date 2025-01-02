@@ -103,7 +103,7 @@ fun moveToDisplay(context: Context, taskId: Int, componentName: ComponentName, u
     }
 }
 
-fun StartCmd.startAuto(displayId: Int) {
+    fun StartCmd.startAuto(displayId: Int) {
         when {
             canStartActivity && canMoveTask ->
                 moveToDisplay(Instances.systemContext, taskId!!, componentName!!, userId!!, displayId)

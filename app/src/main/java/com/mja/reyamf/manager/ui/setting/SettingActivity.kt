@@ -65,11 +65,6 @@ class SettingActivity : AppCompatActivity() {
 
     private fun initData() {
         binding?.apply {
-            if (Build.VERSION.SDK_INT >= 35) {
-                sColoerd.isEnabled = false
-                sColoerd.setTextColor(Color.DKGRAY)
-                sColoerd.thumbTintList = ColorStateList.valueOf(Color.DKGRAY)
-            }
             config = gson.fromJson(YAMFManagerProxy.configJson, YAMFConfig::class.java)
             etReduceDPI.setText(config.reduceDPI.toString())
             btnFlags.text = config.flags.toString()
