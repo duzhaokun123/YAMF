@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAs
+import com.github.kyuubiran.ezxhelper.utils.runOnMainThread
 import com.mja.reyamf.common.gson
 import com.mja.reyamf.common.model.AppInfo
 import com.mja.reyamf.common.model.StartCmd
@@ -37,8 +38,11 @@ import com.mja.reyamf.xposed.ui.window.AppListWindow
 import com.mja.reyamf.xposed.utils.AppInfoCache
 import com.mja.reyamf.xposed.utils.Instances
 import com.mja.reyamf.xposed.utils.Instances.systemUiContext
+import com.mja.reyamf.xposed.utils.animateAlpha
+import com.mja.reyamf.xposed.utils.animateResize
 import com.mja.reyamf.xposed.utils.componentName
 import com.mja.reyamf.xposed.utils.createContext
+import com.mja.reyamf.xposed.utils.dpToPx
 import com.mja.reyamf.xposed.utils.getActivityInfoCompat
 import com.mja.reyamf.xposed.utils.log
 import com.mja.reyamf.xposed.utils.startActivity
@@ -49,6 +53,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 @SuppressLint("ClickableViewAccessibility")
@@ -75,6 +80,7 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
     private var filteredShowApps: MutableList<AppInfo> = mutableListOf()
     private lateinit var rvAdapter: SideBarAdapter
     private var orientation = 0
+    private var isShown = false
 
     init {
         if (!isSideBarRun) {
@@ -215,11 +221,13 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
         movable = false
         if (initialTouchY == event.rawY) {
             showMenu()
+            isShown = false
             vibratePhone(context)
         }
 
         if (swipeX > 200) {
             showMenu()
+            isShown = false
             swipeX = 0
             vibratePhone(context)
         }
@@ -264,35 +272,70 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
 
     private fun startCounter() {
         job = CoroutineScope(Dispatchers.IO).launch {
-            delay(500)
+            delay(200)
             movable = true
             vibratePhone(context)
         }
     }
 
     private fun showMenu() {
-        runIO {
-            filterApp()
+        if (!isShown) {
+            isShown = true
+            animateAlpha(binding.sideBarImage, 1F, 0F)
+            runBlocking {
+                delay(400)
+                runOnMainThread {
+                    binding.sideBarMenu.visibility = View.VISIBLE
+                    animateResize(
+                        binding.sideBarMenu,
+                        0, 90.dpToPx().toInt(),
+                        350.dpToPx().toInt(), 350.dpToPx().toInt()
+                    ) {
+                        binding.closeLayout.visibility = View.VISIBLE
+                        binding.closeSidebar.visibility = View.VISIBLE
+                        binding.restartSidebar.visibility = View.VISIBLE
 
-            runMain {
-                rvAdapter.setData(filteredShowApps)
-                rvAdapter.notifyDataSetChanged()
+                        animateAlpha(binding.closeLayout, 0F, 1F)
+                        animateAlpha(binding.closeSidebar, 0F, 1F)
+                        animateAlpha(binding.restartSidebar, 0F, 1F)
+
+                        runIO {
+                            filterApp()
+
+                            runMain {
+                                rvAdapter.setData(filteredShowApps)
+                                rvAdapter.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                }
             }
         }
-
-        binding.sideBarImage.visibility = View.INVISIBLE
-        binding.sideBarMenu.visibility = View.VISIBLE
-        binding.closeLayout.visibility = View.VISIBLE
-        binding.closeSidebar.visibility = View.VISIBLE
-        binding.restartSidebar.visibility = View.VISIBLE
     }
 
     private fun hideMenu() {
-        binding.sideBarImage.visibility = View.VISIBLE
-        binding.sideBarMenu.visibility = View.GONE
-        binding.closeLayout.visibility = View.GONE
-        binding.closeSidebar.visibility = View.GONE
-        binding.restartSidebar.visibility = View.GONE
+        isShown = false
+        animateResize(
+            binding.sideBarMenu,
+            90.dpToPx().toInt(), 0,
+            350.dpToPx().toInt(), 350.dpToPx().toInt()
+        ) {
+            animateAlpha(binding.closeLayout, 1F, 0F)
+            animateAlpha(binding.closeSidebar, 1F, 0F)
+            animateAlpha(binding.restartSidebar, 1F, 0F)
+
+            binding.closeLayout.visibility = View.GONE
+            binding.closeSidebar.visibility = View.GONE
+            binding.restartSidebar.visibility = View.GONE
+            binding.sideBarMenu.visibility = View.GONE
+        }
+
+        runBlocking {
+            delay(500)
+            runOnMainThread {
+                animateAlpha(binding.sideBarImage, 0F, 1F)
+            }
+        }
     }
 
     private fun getAppList() {
@@ -315,6 +358,7 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
                 filterApp()
                 binding.rvSideBarMenu.layoutManager = LinearLayoutManager(context)
                 binding.rvSideBarMenu.adapter = rvAdapter
+                binding.rvSideBarMenu.isVerticalScrollBarEnabled = false
                 rvAdapter.setData(filteredShowApps)
                 rvAdapter.notifyDataSetChanged()
             }

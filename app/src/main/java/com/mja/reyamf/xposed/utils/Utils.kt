@@ -1,5 +1,9 @@
 package com.mja.reyamf.xposed.utils
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.app.ActivityTaskManager
@@ -17,6 +21,8 @@ import android.os.UserHandle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.TypedValue
+import android.view.View
+import android.view.animation.AlphaAnimation
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
@@ -150,4 +156,48 @@ fun IPackageManagerHidden.getActivityInfoCompat(className: ComponentName, flags:
 fun vibratePhone(context: Context) {
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+}
+
+fun animateResize(
+    view: View,
+    startWidth: Int,
+    endWidth: Int,
+    startHeight: Int,
+    endHeight: Int,
+    onEnd: (() -> Unit)? = null
+) {
+    val widthAnimator = ValueAnimator.ofInt(startWidth, endWidth)
+    val heightAnimator = ValueAnimator.ofInt(startHeight, endHeight)
+
+    widthAnimator.addUpdateListener { animator ->
+        val value = animator.animatedValue as Int
+        val params = view.layoutParams
+        params.width = value
+        view.layoutParams = params
+    }
+
+    heightAnimator.addUpdateListener { animator ->
+        val value = animator.animatedValue as Int
+        val params = view.layoutParams
+        params.height = value
+        view.layoutParams = params
+    }
+
+    val animatorSet = AnimatorSet()
+    animatorSet.playTogether(widthAnimator, heightAnimator)
+    animatorSet.duration = 200
+    animatorSet.addListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationEnd(animation: Animator) {
+            onEnd?.invoke()
+        }
+    })
+    animatorSet.start()
+}
+
+fun animateAlpha(view: View, startAlpha: Float, endAlpha: Float) {
+    if (endAlpha == 1F) view.visibility = View.VISIBLE
+    val animation1 = AlphaAnimation(startAlpha, endAlpha)
+    animation1.duration = 200
+    view.startAnimation(animation1)
+    if (endAlpha == 1F) view.visibility = View.VISIBLE else view.visibility = View.GONE
 }

@@ -1,5 +1,9 @@
 package com.mja.reyamf.xposed.ui.window
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.ActivityTaskManager
@@ -33,8 +37,10 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.WindowManagerHidden
+import android.view.animation.AlphaAnimation
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.window.TaskSnapshot
@@ -48,27 +54,29 @@ import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
+import com.github.kyuubiran.ezxhelper.utils.runOnMainThread
 import com.google.android.material.color.MaterialColors
 import com.mja.reyamf.R
 import com.mja.reyamf.common.getAttr
 import com.mja.reyamf.common.onException
 import com.mja.reyamf.common.runMain
 import com.mja.reyamf.databinding.WindowAppBinding
-import com.mja.reyamf.manager.sidebar.SideBar
-import com.mja.reyamf.manager.sidebar.SideBar.Companion
 import com.mja.reyamf.xposed.services.YAMFManager
 import com.mja.reyamf.xposed.services.YAMFManager.config
 import com.mja.reyamf.xposed.utils.Instances
 import com.mja.reyamf.xposed.utils.RunMainThreadQueue
 import com.mja.reyamf.xposed.utils.TipUtil
+import com.mja.reyamf.xposed.utils.animateAlpha
+import com.mja.reyamf.xposed.utils.animateResize
 import com.mja.reyamf.xposed.utils.dpToPx
 import com.mja.reyamf.xposed.utils.getActivityInfoCompat
-import com.mja.reyamf.xposed.utils.log
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.math.sqrt
+
 
 @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
 class AppWindow(
@@ -99,6 +107,9 @@ class AppWindow(
         config.defaultWindowWidth, config.defaultWindowHeight,
         calculateScreenInches(config.defaultWindowWidth, config.defaultWindowHeight)
     ) - config.reduceDPI
+    private var originalWidth: Int = 0
+    private var originalHeight: Int = 0
+    private var isResize: Boolean = true
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -173,6 +184,7 @@ class AppWindow(
             }
             Instances.windowManager.addView(layout, params)
         }
+
         binding.ibResize.setOnTouchListener(object : View.OnTouchListener {
             var beginX = 0F
             var beginY = 0F
@@ -274,7 +286,22 @@ class AppWindow(
             true
         }
         binding.ibClose.setOnClickListener {
-            onDestroy()
+            isResize = false
+
+            binding.cvappIcon.visibility = View.INVISIBLE
+            animateAlpha(binding.ibClose, 1f, 0f)
+            animateAlpha(binding.ibMinimize, 1f, 0f)
+            animateAlpha(binding.ibFullscreen, 1f, 0f)
+            animateAlpha(binding.ibBack, 1f, 0f)
+
+            runBlocking {
+                delay(200)
+                runOnMainThread {
+                    animateResize(binding.cvBackground, originalWidth, 0, originalHeight, 0) {
+                        onDestroy()
+                    }
+                }
+            }
         }
         binding.ibFullscreen.setOnClickListener {
             getTopRootTask()?.runCatching {
@@ -326,6 +353,33 @@ class AppWindow(
         }
         binding.vSupporter.layoutParams = FrameLayout.LayoutParams(binding.vSizePreviewer.layoutParams)
         onVirtualDisplayCreated(displayId)
+
+        isResize = false
+        binding.cvBackground.post {
+            originalWidth = binding.cvBackground.width
+            originalHeight = binding.cvBackground.height
+            binding.cvBackground.visibility = View.VISIBLE
+
+            animateResize(binding.cvBackground, 0, originalWidth, 0, originalHeight) {
+                val layoutParams = binding.cvBackground.layoutParams
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding.cvBackground.layoutParams = layoutParams
+                binding.cvappIcon.visibility = View.VISIBLE
+
+                runBlocking {
+                    delay(200)
+                    runOnMainThread {
+                        animateAlpha(binding.ibClose, 0f, 1f)
+                        animateAlpha(binding.ibMinimize, 0f, 1f)
+                        animateAlpha(binding.ibFullscreen, 0f, 1f)
+                        animateAlpha(binding.ibBack, 0f, 1f)
+                    }
+                }
+
+                isResize = true
+            }
+        }
     }
 
     private fun onDestroy() {
@@ -366,7 +420,7 @@ class AppWindow(
             var backgroundColor = 0
             var statusBarColor = 0
             var navigationBarColor = 0
-            var taskDescription: ActivityManager.TaskDescription? = null
+            var taskDescription: ActivityManager.TaskDescription?
 
             if (Build.VERSION.SDK_INT < 35) {
                 val topActivity = taskInfo.topActivity ?: return@add
@@ -383,7 +437,7 @@ class AppWindow(
                 })
             } else {
                 val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                val runningTasks = activityManager.getRunningTasks(1)
+                val runningTasks = activityManager.getRunningTasks(5)
 
                 for (task in runningTasks) {
                     if (task.taskId == taskInfo.taskId) {
@@ -517,16 +571,18 @@ class AppWindow(
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-        if (isMini.not()) {
-            newDpi = calculateDpi(width, height, calculateScreenInches(width, height)) - config.reduceDPI
-            virtualDisplay.resize(width, height, newDpi)
-            surface.setDefaultBufferSize(width, height)
-            halfWidth = width % 2
-            halfHeight = height % 2
-        } else {
-            newDpi = calculateDpi(width, height, calculateScreenInches(width, height)) - config.reduceDPI
-            virtualDisplay.resize(width * 2 + halfWidth, height * 2 + halfHeight, newDpi)
-            surface.setDefaultBufferSize(width * 2 + halfWidth, height * 2 + halfHeight)
+        if (isResize) {
+            if (isMini.not()) {
+                newDpi = calculateDpi(width, height, calculateScreenInches(width, height)) - config.reduceDPI
+                virtualDisplay.resize(width, height, newDpi)
+                surface.setDefaultBufferSize(width, height)
+                halfWidth = width % 2
+                halfHeight = height % 2
+            } else {
+                newDpi = calculateDpi(width, height, calculateScreenInches(width, height)) - config.reduceDPI
+                virtualDisplay.resize(width * 2 + halfWidth, height * 2 + halfHeight, newDpi)
+                surface.setDefaultBufferSize(width * 2 + halfWidth, height * 2 + halfHeight)
+            }
         }
     }
 
@@ -611,14 +667,59 @@ class AppWindow(
 
     // minimizes the floating window to an app icon
     private fun changeCollapsed() {
+        isResize = false
         if (isCollapsed) {
-            isCollapsed = false
-            binding.background.visibility = View.VISIBLE
-            binding.cvBackground.visibility = View.VISIBLE
+            expandWindow()
         } else {
-            isCollapsed = true
-            binding.background.visibility = View.GONE
-            binding.cvBackground.visibility = View.GONE
+            collapseWindow()
+        }
+    }
+
+    private fun expandWindow() {
+        isCollapsed = false
+        binding.background.visibility = View.VISIBLE
+
+        animateResize(binding.appIcon, 40.dpToPx().toInt(), 0, 40.dpToPx().toInt(), 0) {
+            animateResize(binding.cvBackground, 0, originalWidth, 0, originalHeight) {
+                val layoutParams = binding.cvBackground.layoutParams
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding.cvBackground.layoutParams = layoutParams
+                binding.cvappIcon.visibility = View.VISIBLE
+
+                runBlocking {
+                    delay(200)
+                    runOnMainThread {
+                        animateAlpha(binding.ibClose, 0f, 1f)
+                        animateAlpha(binding.ibMinimize, 0f, 1f)
+                        animateAlpha(binding.ibFullscreen, 0f, 1f)
+                        animateAlpha(binding.ibBack, 0f, 1f)
+                    }
+                }
+
+                isResize = true
+            }
+        }
+    }
+
+    private fun collapseWindow() {
+        isCollapsed = true
+
+        animateAlpha(binding.ibClose, 1f, 0f)
+        animateAlpha(binding.ibMinimize, 1f, 0f)
+        animateAlpha(binding.ibFullscreen, 1f, 0f)
+        animateAlpha(binding.ibBack, 1f, 0f)
+
+        runBlocking {
+            delay(200)
+            runOnMainThread {
+                animateResize(binding.cvBackground, binding.cvBackground.width, 0, binding.cvBackground.height, 0) {
+                    binding.background.visibility = View.GONE
+                    animateResize(binding.appIcon, 0, 40.dpToPx().toInt(), 0, 40.dpToPx().toInt())
+
+                    isResize = true
+                }
+            }
         }
     }
 
