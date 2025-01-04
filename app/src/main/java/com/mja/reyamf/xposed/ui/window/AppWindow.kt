@@ -227,6 +227,10 @@ class AppWindow(
                                 height = targetHeight
                         }
                         binding.vSupporter.layoutParams = FrameLayout.LayoutParams(binding.vSizePreviewer.layoutParams)
+                        binding.cvBackground.post {
+                            originalWidth = binding.cvBackground.width
+                            originalHeight = binding.cvBackground.height
+                        }
                         binding.vSizePreviewer.visibility = View.GONE
                         moveToTopIfNeed(event)
                     }
@@ -361,10 +365,7 @@ class AppWindow(
             binding.cvBackground.visibility = View.VISIBLE
 
             animateResize(binding.cvBackground, 0, originalWidth, 0, originalHeight) {
-                val layoutParams = binding.cvBackground.layoutParams
-                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                binding.cvBackground.layoutParams = layoutParams
+                setBackgroundWrapContent()
                 binding.cvappIcon.visibility = View.VISIBLE
 
                 runBlocking {
@@ -597,72 +598,68 @@ class AppWindow(
     // minimizes the floating window a bar-less only-content floating window
     private fun changeMini() {
         isCollapsed = false
+        isResize = false
 
-       if (surfaceView is SurfaceView && isMini) {
+        if (isMini) {
             isMini = false
-            (surfaceView as SurfaceView).scaleX = 2.0f
-            (surfaceView as SurfaceView).scaleY = 2.0f
 
-            isCollapsed = false
-            binding.vSupporter.updateLayoutParams {
-                width = virtualDisplay.display.width
-                height = virtualDisplay.display.height
+            if (surfaceView is SurfaceView) {
+                binding.cvBackground.updateLayoutParams {
+                    width = originalWidth
+                    height = originalHeight
+                }
+                setBackgroundWrapContent()
+            } else {
+                animateResize(
+                    binding.cvBackground,
+                    originalWidth/2, originalWidth,
+                    originalHeight/2, originalHeight
+                ) {
+                    isResize = true
+                    setBackgroundWrapContent()
+                }
             }
 
             binding.rlTop.visibility = View.VISIBLE
             binding.rlBottom.visibility = View.VISIBLE
             surfaceView.visibility = View.VISIBLE
-            binding.appIcon.visibility = View.GONE
             surfaceView.setOnTouchListener(surfaceOnTouchListener)
             surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
 
             return
         }
-        else if (surfaceView is SurfaceView && !isMini) {
-           isMini = true
-           (surfaceView as SurfaceView).scaleX = 0.5f
-           (surfaceView as SurfaceView).scaleY = 0.5f
-           binding.vSupporter.updateLayoutParams {
-               width = virtualDisplay.display.width / 2
-               height = virtualDisplay.display.height / 2
-           }
-           binding.rlTop.visibility = View.GONE
-           binding.rlBottom.visibility = View.GONE
-           surfaceView.setOnTouchListener(null)
-           surfaceView.setOnGenericMotionListener(null)
-
-           return
-        }
-
-        if (isMini) {
-            isMini = false
-            surfaceView.updateLayoutParams {
-                width = virtualDisplay.display.width
-                height = virtualDisplay.display.height
-            }
-            binding.vSupporter.updateLayoutParams {
-                width = virtualDisplay.display.width
-                height = virtualDisplay.display.height
-            }
-            binding.rlTop.visibility = View.VISIBLE
-            binding.rlBottom.visibility = View.VISIBLE
-            surfaceView.setOnTouchListener(surfaceOnTouchListener)
-            surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
-        } else {
+        else if (!isMini) {
             isMini = true
-            surfaceView.updateLayoutParams {
-                width = virtualDisplay.display.width / 2
-                height = virtualDisplay.display.height / 2
+
+            if (config.surfaceView == 1) {
+                binding.cvBackground.updateLayoutParams {
+                    width = originalWidth/2
+                    height = originalHeight/2
+                }
+            } else {
+                animateResize(
+                    binding.cvBackground,
+                    originalWidth, originalWidth/2,
+                    originalHeight, originalHeight/2
+                ){
+                    isResize = true
+                }
             }
-            binding.vSupporter.updateLayoutParams {
-                width = virtualDisplay.display.width / 2
-                height = virtualDisplay.display.height / 2
-            }
+
             binding.rlTop.visibility = View.GONE
             binding.rlBottom.visibility = View.GONE
             surfaceView.setOnTouchListener(null)
             surfaceView.setOnGenericMotionListener(null)
+
+            return
         }
+    }
+
+    private fun setBackgroundWrapContent() {
+        val layoutParams = binding.cvBackground.layoutParams
+        layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        binding.cvBackground.layoutParams = layoutParams
     }
 
     // minimizes the floating window to an app icon
@@ -680,11 +677,9 @@ class AppWindow(
         binding.background.visibility = View.VISIBLE
 
         animateResize(binding.appIcon, 40.dpToPx().toInt(), 0, 40.dpToPx().toInt(), 0) {
+            binding.cvappIcon.visibility = View.GONE
             animateResize(binding.cvBackground, 0, originalWidth, 0, originalHeight) {
-                val layoutParams = binding.cvBackground.layoutParams
-                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                binding.cvBackground.layoutParams = layoutParams
+                setBackgroundWrapContent()
                 binding.cvappIcon.visibility = View.VISIBLE
 
                 runBlocking {
@@ -697,6 +692,7 @@ class AppWindow(
                     }
                 }
 
+                binding.cvappIcon.visibility = View.GONE
                 isResize = true
             }
         }
@@ -714,6 +710,7 @@ class AppWindow(
             delay(200)
             runOnMainThread {
                 animateResize(binding.cvBackground, binding.cvBackground.width, 0, binding.cvBackground.height, 0) {
+                    binding.cvappIcon.visibility = View.VISIBLE
                     binding.background.visibility = View.GONE
                     animateResize(binding.appIcon, 0, 40.dpToPx().toInt(), 0, 40.dpToPx().toInt())
 

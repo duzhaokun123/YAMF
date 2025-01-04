@@ -12,8 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:strokeWidth="0dp"
-        app:strokeColor="@android:color/transparent"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/transparentOutline"
         app:contentPadding="10dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp">
@@ -30,8 +31,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:strokeWidth="0dp"
-        app:strokeColor="@android:color/transparent"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/transparentOutline"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp">
         <androidx.constraintlayout.widget.ConstraintLayout

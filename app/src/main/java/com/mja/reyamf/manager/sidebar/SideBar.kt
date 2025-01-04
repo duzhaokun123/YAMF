@@ -126,6 +126,7 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
         YAMFManager.sidebarLayout = binding.root
         binding.root.let { layout ->
             windowManager.addView(layout, params)
+            layout.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         }
 
         binding.closeClickMask.setOnClickListener {
@@ -189,7 +190,6 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
             }
         }
 
-        Instances.sideBarLayout = binding.root
         val clickListener: (AppInfo) -> Unit = {
             if (displayId == null)
                 YAMFManager.createWindow(StartCmd(it.componentName, it.userId))
@@ -220,16 +220,16 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
         job?.cancel()
         movable = false
         if (initialTouchY == event.rawY) {
+            vibratePhone(context)
             showMenu()
             isShown = false
-            vibratePhone(context)
         }
 
         if (swipeX > 200) {
+            vibratePhone(context)
             showMenu()
             isShown = false
             swipeX = 0
-            vibratePhone(context)
         }
         return true
     }
@@ -281,9 +281,10 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
     private fun showMenu() {
         if (!isShown) {
             isShown = true
+            binding.root.elevation = 8.dpToPx()
             animateAlpha(binding.sideBarImage, 1F, 0F)
             runBlocking {
-                delay(400)
+                delay(200)
                 runOnMainThread {
                     binding.sideBarMenu.visibility = View.VISIBLE
                     animateResize(
@@ -298,6 +299,7 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
                         animateAlpha(binding.closeLayout, 0F, 1F)
                         animateAlpha(binding.closeSidebar, 0F, 1F)
                         animateAlpha(binding.restartSidebar, 0F, 1F)
+                        animateAlpha(binding.rvSideBarMenu, 0F, 1F)
 
                         runIO {
                             filterApp()
@@ -315,23 +317,31 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
 
     private fun hideMenu() {
         isShown = false
-        animateResize(
-            binding.sideBarMenu,
-            90.dpToPx().toInt(), 0,
-            350.dpToPx().toInt(), 350.dpToPx().toInt()
-        ) {
-            animateAlpha(binding.closeLayout, 1F, 0F)
-            animateAlpha(binding.closeSidebar, 1F, 0F)
-            animateAlpha(binding.restartSidebar, 1F, 0F)
+        binding.root.elevation = 0.dpToPx()
 
-            binding.closeLayout.visibility = View.GONE
-            binding.closeSidebar.visibility = View.GONE
-            binding.restartSidebar.visibility = View.GONE
-            binding.sideBarMenu.visibility = View.GONE
+        animateAlpha(binding.closeLayout, 1F, 0F)
+        animateAlpha(binding.closeSidebar, 1F, 0F)
+        animateAlpha(binding.restartSidebar, 1F, 0F)
+        animateAlpha(binding.rvSideBarMenu, 1F, 0F)
+
+        runBlocking {
+            delay(200)
+            runOnMainThread {
+                animateResize(
+                    binding.sideBarMenu,
+                    90.dpToPx().toInt(), 0,
+                    350.dpToPx().toInt(), 350.dpToPx().toInt()
+                ) {
+                    binding.closeLayout.visibility = View.GONE
+                    binding.closeSidebar.visibility = View.GONE
+                    binding.restartSidebar.visibility = View.GONE
+                    binding.sideBarMenu.visibility = View.GONE
+                }
+            }
         }
 
         runBlocking {
-            delay(500)
+            delay(200)
             runOnMainThread {
                 animateAlpha(binding.sideBarImage, 0F, 1F)
             }

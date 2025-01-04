@@ -5,4 +5,5 @@
 
     //dark theme
     <color name="darkThemeText">#cdcccc</color>
+    <color name="transparentOutline">#20000000</color>
 </resources>

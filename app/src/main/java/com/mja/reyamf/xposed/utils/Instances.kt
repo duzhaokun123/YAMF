@@ -12,6 +12,7 @@ import android.os.ServiceManager
 import android.os.UserManager
 import android.view.IWindowManager
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.android.internal.statusbar.IStatusBarService
 import com.github.kyuubiran.ezxhelper.utils.getObjectAs
@@ -44,7 +45,6 @@ object Instances {
         private set
     val systemUiContext: Context
         get() = activityManagerService.getObjectAs("mUiContext")
-    lateinit var sideBarLayout: ConstraintLayout
 
 
     fun init(activityManagerService: Any) {
