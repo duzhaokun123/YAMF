@@ -1,5 +1,5 @@
 [![Chat](https://img.shields.io/badge/Chat-Telegram-blue.svg?logo=telegram)](https://t.me/+HjGegWE9jBM0N2Rl)
-[![Size](https://img.shields.io/github/languages/code-size/juanarton/reyamf)](https://github.com/JuanArton/reYAMF)
+[![Size](https://img.shields.io/github/languages/code-size/juanarton/reYAMF)](https://github.com/JuanArton/reYAMF)
 
 # reYAMF
 
