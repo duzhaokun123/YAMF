@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity() {
     private fun initUi() {
         config = gson.fromJson(YAMFManagerProxy.configJson, Config::class.java)
         val buildTime = YAMFManagerProxy.buildTime
-        Log.d(TAG, "buildtime: $buildTime ${BuildConfig.BUILD_TIME}")
         when(buildTime) {
             0L -> {
                 binding?.apply {

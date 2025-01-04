@@ -317,6 +317,7 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
 
     private fun hideMenu() {
         isShown = false
+        vibratePhone(context)
         binding.root.elevation = 0.dpToPx()
 
         animateAlpha(binding.closeLayout, 1F, 0F)
