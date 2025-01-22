@@ -23,6 +23,8 @@ import android.os.Vibrator
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
@@ -109,41 +111,41 @@ fun moveToDisplay(context: Context, taskId: Int, componentName: ComponentName, u
     }
 }
 
-    fun StartCmd.startAuto(displayId: Int) {
-        when {
-            canStartActivity && canMoveTask ->
-                moveToDisplay(Instances.systemContext, taskId!!, componentName!!, userId!!, displayId)
-            canMoveTask -> {
-                runCatching {
-                    moveTask(taskId!!, displayId)
-                }.onException {
-                    TipUtil.showToast("can't move task $taskId")
-                }
+fun StartCmd.startAuto(displayId: Int) {
+    when {
+        canStartActivity && canMoveTask ->
+            moveToDisplay(Instances.systemContext, taskId!!, componentName!!, userId!!, displayId)
+        canMoveTask -> {
+            runCatching {
+                moveTask(taskId!!, displayId)
+            }.onException {
+                TipUtil.showToast("can't move task $taskId")
             }
-            canStartActivity -> {
-                runCatching {
-                    startActivity(Instances.systemContext, componentName!!, userId!!, displayId)
-                }.onException {
-                    TipUtil.showToast("can't start activity $componentName")
-                }
+        }
+        canStartActivity -> {
+            runCatching {
+                startActivity(Instances.systemContext, componentName!!, userId!!, displayId)
+            }.onException {
+                TipUtil.showToast("can't start activity $componentName")
             }
         }
     }
+}
 
-    fun getTopRootTask(displayId: Int): ActivityTaskManager.RootTaskInfo? {
-        Instances.activityTaskManager.getAllRootTaskInfosOnDisplay(displayId).forEach { task ->
-            if (task.visible)
-                return task
-        }
-        return null
+fun getTopRootTask(displayId: Int): ActivityTaskManager.RootTaskInfo? {
+    Instances.activityTaskManager.getAllRootTaskInfosOnDisplay(displayId).forEach { task ->
+        if (task.visible)
+            return task
     }
+    return null
+}
 
 fun Context.registerReceiver(action: String, onReceive: BroadcastReceiver.(Context, Intent) -> Unit) {
     registerReceiver(object : BroadcastReceiver() {
-      override fun onReceive(context: Context, intent: Intent) {
-          onReceive(this, context, intent)
-      }
-  }, android.content.IntentFilter(action), Context.RECEIVER_EXPORTED)
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceive(this, context, intent)
+        }
+    }, android.content.IntentFilter(action), Context.RECEIVER_EXPORTED)
 }
 
 
@@ -193,6 +195,46 @@ fun animateResize(
     })
     animatorSet.start()
 }
+
+fun animateScaleThenResize(
+    view: View,
+    startX: Float,
+    startY: Float,
+    endX: Float,
+    endY: Float,
+    pivotX: Float,
+    pivotY: Float,
+    endWidth: Int,
+    endHeight: Int,
+    onEnd: (() -> Unit)? = null
+) {
+    val scaleAnimation = ScaleAnimation(
+        startX, endX,
+        startY, endY,
+        Animation.RELATIVE_TO_SELF, pivotX,
+        Animation.RELATIVE_TO_SELF, pivotY
+    ).apply {
+        duration = 200
+        fillAfter = false
+    }
+
+    scaleAnimation.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationStart(animation: Animation?) {}
+
+        override fun onAnimationEnd(animation: Animation?) {
+            val params = view.layoutParams
+            params.width = endWidth
+            params.height = endHeight
+
+            onEnd?.invoke()
+        }
+
+        override fun onAnimationRepeat(animation: Animation?) {}
+    })
+
+    view.startAnimation(scaleAnimation)
+}
+
 
 fun animateAlpha(view: View, startAlpha: Float, endAlpha: Float) {
     if (endAlpha == 1F) view.visibility = View.VISIBLE

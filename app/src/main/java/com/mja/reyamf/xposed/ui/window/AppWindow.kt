@@ -68,6 +68,7 @@ import com.mja.reyamf.xposed.utils.RunMainThreadQueue
 import com.mja.reyamf.xposed.utils.TipUtil
 import com.mja.reyamf.xposed.utils.animateAlpha
 import com.mja.reyamf.xposed.utils.animateResize
+import com.mja.reyamf.xposed.utils.animateScaleThenResize
 import com.mja.reyamf.xposed.utils.dpToPx
 import com.mja.reyamf.xposed.utils.getActivityInfoCompat
 import kotlinx.coroutines.delay
@@ -301,7 +302,13 @@ class AppWindow(
             runBlocking {
                 delay(200)
                 runOnMainThread {
-                    animateResize(binding.cvBackground, originalWidth, 0, originalHeight, 0) {
+                    animateScaleThenResize(
+                        binding.cvBackground,
+                        1F, 1F,
+                        0F, 0F,
+                        0.5F, 0.5F,
+                        0, 0
+                    ) {
                         onDestroy()
                     }
                 }
@@ -364,7 +371,13 @@ class AppWindow(
             originalHeight = binding.cvBackground.height
             binding.cvBackground.visibility = View.VISIBLE
 
-            animateResize(binding.cvBackground, 0, originalWidth, 0, originalHeight) {
+            animateScaleThenResize(
+                binding.cvBackground,
+                0F, 0F,
+                1F, 1F,
+                0.5F, 0.5F,
+                originalWidth, originalHeight
+            ) {
                 setBackgroundWrapContent()
                 binding.cvappIcon.visibility = View.VISIBLE
 
@@ -610,11 +623,18 @@ class AppWindow(
                 }
                 setBackgroundWrapContent()
             } else {
-                animateResize(
+                animateScaleThenResize(
+                    binding.cvBackground,
+                    0.5F, 0.5F,
+                    1F, 1F,
+                    0F, 0F,
+                    originalWidth, originalHeight
+                )
+                /*animateResize(
                     binding.cvBackground,
                     originalWidth/2, originalWidth,
                     originalHeight/2, originalHeight
-                ) {
+                )*/ {
                     isResize = true
                     setBackgroundWrapContent()
                 }
@@ -662,7 +682,6 @@ class AppWindow(
         binding.cvBackground.layoutParams = layoutParams
     }
 
-    // minimizes the floating window to an app icon
     private fun changeCollapsed() {
         isResize = false
         if (isCollapsed) {
