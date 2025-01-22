@@ -30,7 +30,7 @@
     <string name="keep_alive_service_text">Keeps YAMF^2 alive in the background</string>
     <string name="collapsed_app_icon">app icon for collapsed view</string>
     <string name="wow_nsuch_empty">Wow! \nSuch empty</string>
-    <string name="sidebar">SideBar</string>
+    <string name="enable_sidebar">Enable Sidebar</string>
     <string name="launch_at_startup">Launch at startup</string>
     <string name="note">Note :</string>
     <string name="note_content"><b>IF YOU CAN\'T ACCEPT ANY APP PERMISSION REQUEST.</b> That\'s because the sidebar is overlaying the screen.</string>

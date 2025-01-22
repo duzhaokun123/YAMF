@@ -121,6 +121,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         if (Build.VERSION.PREVIEW_SDK_INT != 0) {
             binding?.systemVersion?.text = buildString {
                 append(Build.VERSION.CODENAME)
@@ -138,15 +139,36 @@ class MainActivity : AppCompatActivity() {
             btLaunchSideBar.setOnClickListener {
                 YAMFManagerProxy.launchSideBar()
             }
+
             msSideBar.isChecked = config.launchSideBarAtBoot
             msSideBar.setOnCheckedChangeListener { _, isChecked ->
                 config.launchSideBarAtBoot = isChecked
                 YAMFManagerProxy.updateConfig(gson.toJson(config))
             }
+
             ivDemo.let {
                 Glide.with(this@MainActivity)
                     .load(R.drawable.demo)
                     .into(it)
+            }
+
+            if (config.enableSidebar) {
+                innerClSidebar.visibility = View.VISIBLE
+            } else {
+                innerClSidebar.visibility = View.GONE
+            }
+
+            msEnableSideBar.isChecked = config.enableSidebar
+
+            msEnableSideBar.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    innerClSidebar.visibility = View.VISIBLE
+                } else {
+                    innerClSidebar.visibility = View.GONE
+                }
+
+                config.enableSidebar = isChecked
+                YAMFManagerProxy.updateConfig(gson.toJson(config))
             }
         }
     }

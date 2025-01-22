@@ -181,7 +181,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
                     app:cardBackgroundColor="?attr/cardBackgroundColor"
@@ -191,132 +191,148 @@
                         android:id="@+id/tvSideBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sidebar"
+                        android:text="@string/enable_sidebar"
                         android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/msEnableSideBar"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvLaunchAtStartup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/launch_at_startup"
-                        android:layout_marginTop="20dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvSideBar" />
+                        app:layout_constraintTop_toTopOf="@+id/msEnableSideBar" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/msSideBar"
+                        android:id="@+id/msEnableSideBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@+id/tvLaunchAtStartup"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tvLaunchAtStartup" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btLaunchSideBar"
-                        android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/innerClSidebar"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/launch_sidebar"
+                        android:orientation="vertical"
                         android:layout_marginTop="20dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/msSideBar" />
+                        app:layout_constraintTop_toBottomOf="@+id/msEnableSideBar">
 
-                    <TextView
-                        android:id="@+id/tvNote"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/note"
-                        android:textStyle="italic"
-                        android:layout_marginTop="20dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/btLaunchSideBar" />
-
-                    <TextView
-                        android:id="@+id/tvNoteContent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/note_content"
-                        android:justificationMode="inter_word"
-                        android:textStyle="italic"
-                        android:textColor="@color/design_default_color_error"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvNote" />
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cvClose"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        app:cardCornerRadius="5dp"
-                        app:cardElevation="0dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvNoteContent"
-                        app:strokeWidth="1dp">
-
-                        <ImageView
+                        <TextView
+                            android:id="@+id/tvLaunchAtStartup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:scaleX="1.2"
-                            android:scaleY="1.2"
-                            android:src="@drawable/ic_close_24" />
-                    </com.google.android.material.card.MaterialCardView>
+                            android:text="@string/launch_at_startup"
+                            app:layout_constraintBottom_toBottomOf="@+id/msSideBar"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/msSideBar" />
 
-                    <TextView
-                        android:id="@+id/tvCloseDesc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:justificationMode="inter_word"
-                        android:text="@string/close_butt_desc"
-                        android:textStyle="italic"
-                        app:layout_constraintBottom_toBottomOf="@+id/cvClose"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/cvClose"
-                        app:layout_constraintTop_toTopOf="@+id/cvClose" />
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="5dp"
-                        app:cardElevation="0dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/tvRestartDesc"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tvRestartDesc"
-                        app:strokeWidth="1dp">
-
-                        <ImageView
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/msSideBar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:scaleY="1.2"
-                            android:scaleX="1.2"
-                            android:padding="5dp"
-                            android:src="@drawable/baseline_restart_alt_24" />
-                    </com.google.android.material.card.MaterialCardView>
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvRestartDesc"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:justificationMode="inter_word"
-                        android:text="@string/restart_butt_desc"
-                        android:textStyle="italic"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/tvCloseDesc"
-                        app:layout_constraintTop_toBottomOf="@+id/tvCloseDesc" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btLaunchSideBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/launch_sidebar"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/msSideBar" />
 
-                    <ImageView
-                        android:id="@+id/ivDemo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="200dp"
-                        android:src="@drawable/demo"
-                        android:layout_marginTop="15dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvRestartDesc" />
+                        <TextView
+                            android:id="@+id/tvNote"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/note"
+                            android:textStyle="italic"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/btLaunchSideBar" />
+
+                        <TextView
+                            android:id="@+id/tvNoteContent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:justificationMode="inter_word"
+                            android:text="@string/note_content"
+                            android:textColor="@color/design_default_color_error"
+                            android:textStyle="italic"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tvNote" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cvClose"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="0dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tvNoteContent"
+                            app:strokeWidth="1dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:scaleX="1.2"
+                                android:scaleY="1.2"
+                                android:src="@drawable/ic_close_24" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/tvCloseDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:justificationMode="inter_word"
+                            android:text="@string/close_butt_desc"
+                            android:textStyle="italic"
+                            app:layout_constraintBottom_toBottomOf="@+id/cvClose"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/cvClose"
+                            app:layout_constraintTop_toTopOf="@+id/cvClose" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="0dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvRestartDesc"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tvRestartDesc"
+                            app:strokeWidth="1dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:scaleX="1.2"
+                                android:scaleY="1.2"
+                                android:src="@drawable/baseline_restart_alt_24" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/tvRestartDesc"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:justificationMode="inter_word"
+                            android:text="@string/restart_butt_desc"
+                            android:textStyle="italic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/tvCloseDesc"
+                            app:layout_constraintTop_toBottomOf="@+id/tvCloseDesc" />
+
+                        <ImageView
+                            android:id="@+id/ivDemo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="15dp"
+                            android:src="@drawable/demo"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tvRestartDesc" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>

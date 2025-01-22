@@ -83,7 +83,7 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
     private var isShown = false
 
     init {
-        if (!isSideBarRun) {
+        if (!isSideBarRun && config.enableSidebar) {
             runCatching {
                 binding = SidebarLayoutBinding.inflate(LayoutInflater.from(context))
             }.onException { e ->
