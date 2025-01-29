@@ -228,6 +228,37 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
+                        <TextView
+                            android:id="@+id/tvSidebarTransparency"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sidebar_transparency"
+                            android:layout_marginTop="20dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/msSideBar" />
+
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/sliderTransparency"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:stepSize="1"
+                            android:value="80"
+                            android:valueFrom="30"
+                            android:valueTo="100"
+                            app:layout_constraintEnd_toStartOf="@+id/tvTransparencyValue"
+                            app:layout_constraintTop_toBottomOf="@+id/tvSidebarTransparency" />
+
+                        <TextView
+                            android:id="@+id/tvTransparencyValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:text="@string/_80"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/sliderTransparency"
+                            app:layout_constraintBottom_toBottomOf="@+id/sliderTransparency"/>
+
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btLaunchSideBar"
                             android:layout_width="wrap_content"
@@ -235,8 +266,7 @@
                             android:layout_marginTop="20dp"
                             android:text="@string/launch_sidebar"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/msSideBar" />
+                            app:layout_constraintTop_toBottomOf="@+id/sliderTransparency" />
 
                         <TextView
                             android:id="@+id/tvNote"

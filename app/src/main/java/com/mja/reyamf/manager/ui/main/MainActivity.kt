@@ -3,33 +3,35 @@ package com.mja.reyamf.manager.ui.main
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ScrollView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.mja.reyamf.R
-import com.mja.reyamf.databinding.ActivityMainBinding
+import com.google.android.material.slider.Slider
 import com.mja.reyamf.BuildConfig
+import com.mja.reyamf.R
 import com.mja.reyamf.common.getAttr
 import com.mja.reyamf.common.gson
 import com.mja.reyamf.common.model.Config
 import com.mja.reyamf.common.runMain
+import com.mja.reyamf.databinding.ActivityMainBinding
 import com.mja.reyamf.manager.services.YAMFManagerProxy
+import com.mja.reyamf.manager.sidebar.SideBar
 import com.mja.reyamf.manager.ui.setting.SettingActivity
 import com.mja.reyamf.manager.utils.TipUtil
 import com.mja.reyamf.xposed.IOpenCountListener
+import com.mja.reyamf.xposed.utils.log
 
 class MainActivity : AppCompatActivity() {
 
@@ -118,6 +120,8 @@ class MainActivity : AppCompatActivity() {
                             }
                             .show()
                     }
+                    sliderTransparency.value = config.sidebarTransparency.toFloat()
+                    tvTransparencyValue.text = "${config.sidebarTransparency}"
                 }
             }
         }
@@ -170,6 +174,26 @@ class MainActivity : AppCompatActivity() {
                 config.enableSidebar = isChecked
                 YAMFManagerProxy.updateConfig(gson.toJson(config))
             }
+
+            sliderTransparency.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: Slider) {}
+
+                override fun onStopTrackingTouch(slider: Slider) {
+                    tvTransparencyValue.text = "${slider.value.toInt()}"
+                    config.sidebarTransparency = slider.value.toInt()
+                    YAMFManagerProxy.updateConfig(gson.toJson(config))
+                    YAMFManagerProxy.killSideBar()
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        try {
+                            Log.d(SideBar.TAG, "updateConfig: restart")
+                            YAMFManagerProxy.launchSideBar()
+                        } catch (e: Exception) {
+                            log(SideBar.TAG, "Failed restart sidebar")
+                        }
+                    }, 500)
+                }
+            })
         }
     }
 

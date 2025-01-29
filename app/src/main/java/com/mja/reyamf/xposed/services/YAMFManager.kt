@@ -22,6 +22,7 @@ import com.mja.reyamf.common.gson
 import com.mja.reyamf.common.model.Config
 import com.mja.reyamf.common.model.StartCmd
 import com.mja.reyamf.common.runMain
+import com.mja.reyamf.manager.services.YAMFManagerProxy
 import com.mja.reyamf.manager.sidebar.SideBar
 import com.mja.reyamf.xposed.IOpenCountListener
 import com.mja.reyamf.xposed.IYAMFManager
@@ -153,7 +154,7 @@ object YAMFManager : IYAMFManager.Stub() {
         sidebarLayout = null
         Handler(Looper.getMainLooper()).postDelayed({
             try {
-                Log.d(TAG, "updateConfig: restart")
+                Log.d(SideBar.TAG, "updateConfig: restart")
                 launchSideBar()
             } catch (e: Exception) {
                 log(SideBar.TAG, "Failed restart sidebar")

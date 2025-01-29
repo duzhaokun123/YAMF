@@ -623,6 +623,10 @@ class AppWindow(
                 }
                 setBackgroundWrapContent()
             } else {
+                binding.cvBackground.updateLayoutParams {
+                    width = originalWidth
+                    height = originalHeight
+                }
                 animateScaleThenResize(
                     binding.cvBackground,
                     0.5F, 0.5F,

@@ -54,4 +54,6 @@
     <string name="current_to_window">Current to window</string>
     <string name="launch_sidebar">Launch sidebar</string>
     <string name="reduce_dpi">Reduce DPI</string>
+    <string name="sidebar_transparency">Sidebar Transparency</string>
+    <string name="_80">80</string>
 </resources>

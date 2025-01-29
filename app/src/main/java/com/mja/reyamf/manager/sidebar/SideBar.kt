@@ -8,7 +8,9 @@ import android.content.pm.ActivityInfo
 import android.content.pm.IPackageManagerHidden
 import android.content.pm.PackageManagerHidden
 import android.content.pm.UserInfo
+import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -122,6 +124,13 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
             else -> 0
         }
 
+        val drawable = binding.sideBarImage.drawable as GradientDrawable
+        val color = if (config.sidebarTransparency == 100) {
+            "#AAAAAA"
+        } else {
+            "#${config.sidebarTransparency}AAAAAA"
+        }
+        drawable.setColor(Color.parseColor(color))
 
         YAMFManager.sidebarLayout = binding.root
         binding.root.let { layout ->
