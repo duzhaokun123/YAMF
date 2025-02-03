@@ -56,4 +56,6 @@
     <string name="reduce_dpi">Reduce DPI</string>
     <string name="sidebar_transparency">Sidebar Transparency</string>
     <string name="_80">80</string>
+    <string name="window_rounded_corner">Window Rounded Corner</string>
+    <string name="_20">20</string>
 </resources>

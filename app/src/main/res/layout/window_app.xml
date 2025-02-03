@@ -137,7 +137,7 @@
 
             <!-- This thing has to be stretched to keep it from getting smaller. Ridiculous. -->
             <!-- absolutely love this comment by duzhaokun123 lol -->
-            <View
+            <FrameLayout
                 android:id="@+id/v_supporter"
                 android:layout_width="200dp"
                 android:layout_height="300dp"

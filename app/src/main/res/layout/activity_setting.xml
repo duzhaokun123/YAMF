@@ -127,6 +127,39 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/btn_flags" />
 
+            <TextView
+                android:id="@+id/tvRoundedCorner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical"
+                android:text="@string/window_rounded_corner"
+                android:textAlignment="gravity"
+                android:layout_marginTop="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderRounded"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:stepSize="1"
+                android:valueFrom="0"
+                android:valueTo="50"
+                app:layout_constraintEnd_toStartOf="@+id/tvRoundedValue"
+                app:layout_constraintTop_toBottomOf="@+id/tvRoundedCorner" />
+
+            <TextView
+                android:id="@+id/tvRoundedValue"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="@string/_20"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sliderRounded"
+                app:layout_constraintBottom_toBottomOf="@+id/sliderRounded"/>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_flags"
                 style="@style/Widget.Material3.Button.OutlinedButton"
@@ -136,7 +169,7 @@
                 android:layout_marginTop="15dp"
                 android:textColor="?attr/colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/tvRoundedValue" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/s_coloerd"

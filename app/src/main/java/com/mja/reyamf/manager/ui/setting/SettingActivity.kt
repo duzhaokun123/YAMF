@@ -6,6 +6,8 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,10 +18,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.Slider
 import com.mja.reyamf.R
 import com.mja.reyamf.common.gson
 import com.mja.reyamf.databinding.ActivitySettingBinding
 import com.mja.reyamf.manager.services.YAMFManagerProxy
+import com.mja.reyamf.manager.sidebar.SideBar
+import com.mja.reyamf.xposed.utils.log
 import com.mja.reyamf.common.model.Config as YAMFConfig
 
 class SettingActivity : AppCompatActivity() {
@@ -79,6 +84,8 @@ class SettingActivity : AppCompatActivity() {
             sHookLauncherHookTransientTaskbar.isChecked = config.hookLauncher.hookTransientTaskbar
             sUseAppList.isChecked = preference.getBoolean("useAppList", true)
             sForceShowIME.isChecked = config.showForceShowIME
+            sliderRounded.value = config.windowRoundedCorner.toFloat()
+            tvRoundedValue.text = "${config.windowRoundedCorner}"
 
             btnSurface.text = when (config.surfaceView) {
                 0 -> {
@@ -150,6 +157,15 @@ class SettingActivity : AppCompatActivity() {
                     }
                 }.show()
             }
+            sliderRounded.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: Slider) {}
+
+                override fun onStopTrackingTouch(slider: Slider) {
+                    tvRoundedValue.text = "${slider.value.toInt()}"
+                    config.windowRoundedCorner = slider.value.toInt()
+                    YAMFManagerProxy.updateConfig(gson.toJson(config))
+                }
+            })
         }
     }
 

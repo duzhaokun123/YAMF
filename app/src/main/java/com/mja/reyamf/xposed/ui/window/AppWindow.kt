@@ -1,9 +1,5 @@
 package com.mja.reyamf.xposed.ui.window
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.ActivityTaskManager
@@ -40,7 +36,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.WindowManagerHidden
-import android.view.animation.AlphaAnimation
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.window.TaskSnapshot
@@ -333,7 +328,7 @@ class AppWindow(
         }
 
         virtualDisplay = Instances.displayManager.createVirtualDisplay(
-            "yamf${System.currentTimeMillis()}", 1080, 1920, newDpi-config.reduceDPI, null, flags
+            "yamf${System.currentTimeMillis()}", config.defaultWindowWidth, config.defaultWindowHeight, newDpi-config.reduceDPI, null, flags
         )
         displayId = virtualDisplay.display.displayId
         (Instances.windowManager as WindowManagerHidden).setDisplayImePolicy(displayId, if (config.showImeInWindow) WindowManagerHidden.DISPLAY_IME_POLICY_LOCAL else WindowManagerHidden.DISPLAY_IME_POLICY_FALLBACK_DISPLAY)
@@ -370,6 +365,9 @@ class AppWindow(
             originalWidth = binding.cvBackground.width
             originalHeight = binding.cvBackground.height
             binding.cvBackground.visibility = View.VISIBLE
+
+            binding.cvBackground.radius = config.windowRoundedCorner.dpToPx()
+            binding.cvappIcon.radius = config.windowRoundedCorner.dpToPx()
 
             animateScaleThenResize(
                 binding.cvBackground,

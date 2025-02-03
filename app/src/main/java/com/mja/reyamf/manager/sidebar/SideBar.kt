@@ -32,7 +32,6 @@ import com.mja.reyamf.common.runMain
 import com.mja.reyamf.databinding.SidebarLayoutBinding
 import com.mja.reyamf.manager.adapter.SideBarAdapter
 import com.mja.reyamf.manager.utils.TipUtil
-import com.mja.reyamf.xposed.hook.HookPermission
 import com.mja.reyamf.xposed.services.YAMFManager
 import com.mja.reyamf.xposed.services.YAMFManager.config
 import com.mja.reyamf.xposed.services.YAMFManager.isSideBarRun
@@ -57,6 +56,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
+
 
 @SuppressLint("ClickableViewAccessibility")
 class SideBar(val context: Context, private val displayId: Int? = null) {
@@ -104,7 +104,7 @@ class SideBar(val context: Context, private val displayId: Int? = null) {
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
+            PixelFormat.RGBA_8888
         )
 
         params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS

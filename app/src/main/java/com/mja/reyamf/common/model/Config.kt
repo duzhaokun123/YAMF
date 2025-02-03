@@ -32,7 +32,8 @@ data class Config(
     var favApps: MutableList<FavApps> = mutableListOf(),
     var launchSideBarAtBoot: Boolean = false,
     var enableSidebar: Boolean = true,
-    var sidebarTransparency: Int = 80
+    var sidebarTransparency: Int = 80,
+    var windowRoundedCorner: Int = 20
 ) {
     data class HookLauncher(
         var hookRecents: Boolean = true,
