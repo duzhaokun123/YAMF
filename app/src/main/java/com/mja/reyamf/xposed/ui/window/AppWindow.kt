@@ -377,7 +377,6 @@ class AppWindow(
                 originalWidth, originalHeight
             ) {
                 setBackgroundWrapContent()
-                binding.cvappIcon.visibility = View.VISIBLE
 
                 runBlocking {
                     delay(200)
