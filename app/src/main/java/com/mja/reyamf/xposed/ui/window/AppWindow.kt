@@ -612,6 +612,7 @@ class AppWindow(
 
         if (isMini) {
             isMini = false
+            isResize = true
 
             if (surfaceView is SurfaceView) {
                 binding.cvBackground.updateLayoutParams {
@@ -630,13 +631,7 @@ class AppWindow(
                     1F, 1F,
                     0F, 0F,
                     originalWidth, originalHeight
-                )
-                /*animateResize(
-                    binding.cvBackground,
-                    originalWidth/2, originalWidth,
-                    originalHeight/2, originalHeight
-                )*/ {
-                    isResize = true
+                ){
                     setBackgroundWrapContent()
                 }
             }
