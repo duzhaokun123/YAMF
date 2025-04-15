@@ -1,3 +1,15 @@
+# 已弃用
+
+YAMF 从 Mi-FreeForm 来的
+
+都有一个缺陷 将 Display 与 TaskStack 关联 并几乎与 package 关联 在大多数情况下这没有问题 应用只有一个 TaskStack 并被移动到 virtual display 以以小窗显示
+
+但 我对大多数情况不感兴趣, YAMF 处理不好诸如 Chrome 多窗口的情况
+
+就这样吧 这玩意是和人斗气写的 现在气消了
+
+不过可以看看 [JuanArton/reYAMF](https://github.com/JuanArton/reYAMF)
+
 # YAMF
 
 [![GitHub license](https://img.shields.io/github/license/duzhaokun123/YAMF?style=flat-square)](https://github.com/duzhaokun123/YAFM/blob/main/LICENSE)
