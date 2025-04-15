@@ -33,6 +33,8 @@ import de.robv.android.xposed.XposedBridge
 import com.mja.reyamf.common.model.StartCmd
 import com.mja.reyamf.common.onException
 import com.mja.reyamf.xposed.services.YAMFManager
+import net.bytebuddy.android.AndroidClassLoadingStrategy
+import java.io.File
 
 fun log(tag: String, message: String) {
     XposedBridge.log("[$tag] $message")
@@ -243,3 +245,5 @@ fun animateAlpha(view: View, startAlpha: Float, endAlpha: Float) {
     view.startAnimation(animation1)
     if (endAlpha == 1F) view.visibility = View.VISIBLE else view.visibility = View.GONE
 }
+
+val byteBuddyStrategy = AndroidClassLoadingStrategy.Wrapping(File("/data/system/reYAMF").also { it.mkdirs() })

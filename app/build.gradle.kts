@@ -100,6 +100,9 @@ dependencies {
 
     //glide
     implementation (libs.glide)
+
+    // byte buddy
+    implementation(libs.byte.buddy.android)
 }
 
 val gitHash: String

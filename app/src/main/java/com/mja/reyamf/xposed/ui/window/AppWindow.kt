@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.ActivityTaskManager
 import android.app.ITaskStackListener
+import android.app.ITaskStackListenerProxy
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -64,10 +65,20 @@ import com.mja.reyamf.xposed.utils.TipUtil
 import com.mja.reyamf.xposed.utils.animateAlpha
 import com.mja.reyamf.xposed.utils.animateResize
 import com.mja.reyamf.xposed.utils.animateScaleThenResize
+import com.mja.reyamf.xposed.utils.byteBuddyStrategy
 import com.mja.reyamf.xposed.utils.dpToPx
 import com.mja.reyamf.xposed.utils.getActivityInfoCompat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import net.bytebuddy.ByteBuddy
+import net.bytebuddy.android.AndroidClassLoadingStrategy
+import net.bytebuddy.implementation.MethodDelegation
+import net.bytebuddy.implementation.bind.annotation.AllArguments
+import net.bytebuddy.implementation.bind.annotation.Origin
+import net.bytebuddy.implementation.bind.annotation.RuntimeType
+import net.bytebuddy.matcher.ElementMatchers
+import java.io.File
+import java.lang.reflect.Method
 import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.sign
@@ -88,7 +99,17 @@ class AppWindow(
 
     lateinit var binding: WindowAppBinding
     private lateinit var virtualDisplay: VirtualDisplay
-    private val taskStackListener = TaskStackListener()
+    private val taskStackListener =
+        ITaskStackListenerProxy.newInstance(context.classLoader) { args, method ->
+            when (method.name) {
+                "onTaskMovedToFront" -> {
+                    onTaskMovedToFront(args[0] as ActivityManager.RunningTaskInfo)
+                }
+                "onTaskDescriptionChanged" -> {
+                    onTaskDescriptionChanged(args[0] as ActivityManager.RunningTaskInfo)
+                }
+            }
+        }
     private val rotationWatcher = RotationWatcher()
     private val surfaceOnTouchListener = SurfaceOnTouchListener()
     private val surfaceOnGenericMotionListener = SurfaceOnGenericMotionListener()
@@ -497,45 +518,19 @@ class AppWindow(
         }
     }
 
-    inner class TaskStackListener : ITaskStackListener.Stub() {
-        override fun onTaskStackChanged() {}
-        override fun onActivityPinned(packageName: String?, userId: Int, taskId: Int, stackId: Int) {}
-        override fun onActivityUnpinned() {}
-        override fun onActivityRestartAttempt(task: ActivityManager.RunningTaskInfo?, homeTaskVisible: Boolean, clearedTask: Boolean, wasVisible: Boolean) {}
-        override fun onActivityForcedResizable(packageName: String?, taskId: Int, reason: Int) {}
-        override fun onActivityDismissingDockedTask() {}
-        override fun onActivityLaunchOnSecondaryDisplayFailed(taskInfo: ActivityManager.RunningTaskInfo?, requestedDisplayId: Int) {}
-        override fun onActivityLaunchOnSecondaryDisplayRerouted(taskInfo: ActivityManager.RunningTaskInfo?, requestedDisplayId: Int) {}
-        override fun onTaskCreated(taskId: Int, componentName: ComponentName?) {}
-        override fun onTaskRemoved(taskId: Int) {}
-        override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
-            if (taskInfo.getObject("displayId") == displayId) {
-                updateTask(taskInfo)
-            }
+    fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
+        if (taskInfo.getObject("displayId") == displayId) {
+            updateTask(taskInfo)
         }
-        override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo) {
-            if (taskInfo.getObject("displayId") == displayId) {
-                if(!taskInfo.isVisible){
-                    return
-                }
-                updateTask(taskInfo)
-            }
-        }
-        override fun onActivityRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {}
-        override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {}
-//        override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?, userId: Int) {}
+    }
 
-        override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?) {}
-        override fun onTaskSnapshotChanged(taskId: Int, snapshot: TaskSnapshot?) {}
-        override fun onBackPressedOnTaskRoot(taskInfo: ActivityManager.RunningTaskInfo?) {}
-        override fun onTaskDisplayChanged(taskId: Int, newDisplayId: Int) {}
-        override fun onRecentTaskListUpdated() {}
-        override fun onRecentTaskListFrozenChanged(frozen: Boolean) {}
-        override fun onTaskFocusChanged(taskId: Int, focused: Boolean) {}
-        override fun onTaskRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {}
-        override fun onActivityRotation(displayId: Int) {}
-        override fun onTaskMovedToBack(taskInfo: ActivityManager.RunningTaskInfo?) {}
-        override fun onLockTaskModeChanged(mode: Int) {}
+    fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo) {
+        if (taskInfo.getObject("displayId") == displayId) {
+            if(!taskInfo.isVisible){
+                return
+            }
+            updateTask(taskInfo)
+        }
     }
 
     inner class RotationWatcher : IRotationWatcher.Stub() {
